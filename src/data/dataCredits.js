@@ -139,6 +139,13 @@ export const DATA_CREDITS = [
       '(public domain; audio delivered directly by each broadcaster)',
   },
   {
+    key: 'rainviewer',
+    html:
+      'Weather radar: ' +
+      '<a href="https://www.rainviewer.com/" target="_blank" rel="noopener">RainViewer</a> ' +
+      '(free public API — personal/educational/small-scale community use)',
+  },
+  {
     key: 'reearth-terrain',
     html:
       'Terrain (keyless globe stacks): ' +

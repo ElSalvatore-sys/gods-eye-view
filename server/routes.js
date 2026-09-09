@@ -10,6 +10,7 @@
 import { createCelestrakRoute } from './routes/celestrak.js';
 import { createHudSummaryRoute } from './routes/hudSummary.js';
 import { createAiStatusRoute } from './routes/aiStatus.js';
+import { createRainviewerRoute } from './routes/rainviewer.js';
 
 /**
  * @typedef {object} RouteEntry
@@ -22,4 +23,5 @@ export const ROUTES = [
   { mount: '/api/celestrak', handler: createCelestrakRoute() },
   { mount: '/api/openai/hud-summary', handler: createHudSummaryRoute() },
   { mount: '/api/ai/status', handler: createAiStatusRoute() },
+  { mount: '/api/rainviewer', handler: createRainviewerRoute() },
 ];
