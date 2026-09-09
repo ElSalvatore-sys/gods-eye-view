@@ -129,6 +129,62 @@ Use the same controls before attributing a difference to the application:
 7. Treat a live-source outage as missing coverage, not as evidence of low client
    rendering cost.
 
+## Detection overlay: projection vs. draw calls (perf-detection-offscreen)
+
+Idea #3 proposed moving the detection overlay's box/label drawing to an
+OffscreenCanvas worker, leaving only the screen-space projection (which needs
+Cesium's camera/view-projection matrix) on the main thread. Before building
+that, `detection.js` was instrumented with a same-pattern diagnostic split
+next to its existing `paintMs`/`solveMs` fields (see `getDetectionDiagnostics()`):
+
+- `projectionMs` — the per-object loop (view-projection matrix multiply,
+  ellipsoid occlusion cull, bracket-alpha/path-building, label-cohort
+  bookkeeping) plus the label-arbiter solve and the render-entry bookkeeping
+  that turns a solve into replayable callout rows.
+- `drawMs` — the actual `CanvasRenderingContext2D` calls: the batched bracket
+  `stroke()` calls, scanlines, the sparse-focus ring, and the mode banner.
+- `calloutMs` — the callout lane's own canvas calls (plate, accent bar, id/
+  metric text), timed separately because it paints in its own host lane after
+  the sensor/bracket lane.
+
+Measured with `node scripts/qa-overlay-baseline.mjs --scene
+detection-25,detection-50,detection-100 --url http://localhost:4209`, both
+under the default SwiftShader software renderer and with `--hardware-gpu`
+(Apple M2 Pro, Metal), sampling `window.__godsEyeView.styleManager
+.getDetectionDiagnostics()` at rest. At the ~8,000-8,170-observation
+population this report's baseline used (OpenSky's live flight count varies
+run to run — a `--hardware-gpu` capture on the same day saw as few as ~1,230
+observations when the feed happened to be sparse):
+
+| Density | observations | visible | selected | projectionMs | solveMs | drawMs | calloutMs | draw share |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 25% (SwiftShader) | 8,057 | 4,053 | 14 | 2.6 | 0.0 | 0.3 | 0.1 | 13.3% |
+| 50% (SwiftShader) | 8,057 | 4,067 | 28 | 2.6 | 0.1 | 0.2 | 0.3 | 15.6% |
+| 100% (SwiftShader) | 8,058 | 4,068 | 56 | 2.6 | 0.2 | 0.2 | 0.3 | 15.2% |
+| 100% (SwiftShader, repeat ×2) | 8,011 | 4,048–4,055 | 56 | 2.6 | 0.4 | 0.3 | 0.3–0.4 | ≈17.8% |
+| 100% (`--hardware-gpu`) | 7,993 | 4,458 | 56 | 1.8 | 0.0 | 0.3 | 0.3 | 25.0% |
+
+`draw share` = `(drawMs + calloutMs) / (projectionMs + solveMs + drawMs +
+calloutMs)`. Every capture puts drawing well under half the mission's 30%
+worth-building threshold, at all three densities, on both renderer backends.
+`drawMs` and `calloutMs` barely move with density (they scale with the
+*visible/labeled* count, ~4,000 brackets and 14-56 labels throughout) while
+`projectionMs` scales with the *observation* count, which is the same
+~8,000-object pool at every density stop — projection over the full candidate
+pool, not drawing, is what detection at higher density actually costs more
+of. (The one low-observation `--hardware-gpu` sample, ~1,230 objects, pushed
+the draw share to ~30-40% — but that is the live feed happening to be sparse
+that run, not the documented baseline population above.)
+
+**VERDICT: NOT-WORTH-IT.** Drawing is not the dominant cost at the density
+levels and object population this report's 39/37/34 FPS finding was measured
+against, so per the mission brief no OffscreenCanvas worker was built — the
+IPC/message-passing and Float32Array-transfer overhead of a worker split would
+be spent moving a sub-millisecond `drawMs`/`calloutMs` off-thread while
+leaving the actual bottleneck (per-object projection over ~8,000 candidates,
+already necessarily on the main thread for its Cesium camera/matrix reads) in
+place.
+
 ## What is not established yet
 
 - This report does not establish Windows performance.

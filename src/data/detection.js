@@ -688,6 +688,13 @@ function _paintDetectionLane(frame) {
     _lastDiagnostics.paintMs = _lastPaintMs;
     _lastDiagnostics.solveMs = _lastSolveMs;
     _lastDiagnostics.throttleSkipCount = _throttleSkipCount;
+    // Screen-space projection/cull/label-bookkeeping vs actual canvas paint
+    // calls (bracket stroke + scanlines/ring/banner) — see the
+    // perf-detection-offscreen investigation in `docs/PERFORMANCE.md`. Solve
+    // (`solveMs`, above) is the label-allocation arbiter and is counted
+    // separately from both.
+    _lastDiagnostics.projectionMs = result.projectionMs || 0;
+    _lastDiagnostics.drawMs = result.drawMs || 0;
   }
   if (result.didSolve) _publishDiagnostics();
   // Detection holds nothing, so a time-based animation has to ask for its own
@@ -982,9 +989,13 @@ function _stashCallout(entry, acquireFade, keyhole) {
  * @param {Object} frame Host paint frame.
  */
 function _paintCalloutLane(frame) {
-  if (_mode === MODE_OFF || _suspended || _calloutCount === 0) return;
+  if (_mode === MODE_OFF || _suspended || _calloutCount === 0) {
+    if (_lastDiagnostics) _lastDiagnostics.calloutMs = 0;
+    return;
+  }
   const ctx = frame.ctx;
   if (!ctx) return;
+  const start = performance.now();
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   for (let i = 0; i < _calloutCount; i++) {
@@ -992,6 +1003,10 @@ function _paintCalloutLane(frame) {
     paintDetectionCallout(ctx, row, row.alpha);
   }
   ctx.globalAlpha = 1;
+  // The callout lane's own canvas paint calls (text/plate/leader line) — the
+  // other half of `drawMs` above, since callouts replay in a separate host
+  // lane from the sensor/bracket paint.
+  if (_lastDiagnostics) _lastDiagnostics.calloutMs = performance.now() - start;
 }
 
 /**
@@ -1129,7 +1144,7 @@ function _drawOverlay(frame) {
     // whole mechanism exists to remove.
     _lastLabelSolveAt = now;
     _labelSolveDirty = false;
-    return { didSolve: false, solveMs: 0, fadingCount: 0, animatingCount: 0, solvePending: false };
+    return { didSolve: false, solveMs: 0, fadingCount: 0, animatingCount: 0, solvePending: false, projectionMs: 0, drawMs: 0 };
   }
 
   // Horizon culling, keyhole geometry, and camera transforms are shared with
@@ -1186,6 +1201,11 @@ function _drawOverlay(frame) {
   const cohortBuilders = shouldSolve ? new Map() : null;
   const demandByLayer = shouldSolve ? new Map() : null;
   let placementBuildCount = 0;
+  // Split for the perf-detection-offscreen investigation: screen-space
+  // projection (matrix multiply, occlusion cull, bracket-alpha/path building,
+  // cohort demand) versus the actual canvas paint calls below. See
+  // `docs/PERFORMANCE.md` for the measured split.
+  const _projectionStart = performance.now();
   for (let i = 0; i < objects.length; i++) {
     const obj = objects[i];
     if (!obj.position) continue;
@@ -1285,6 +1305,7 @@ function _drawOverlay(frame) {
       if (candidate && !candidateMap.has(candidate.key)) candidateMap.set(candidate.key, candidate);
     }
   }
+  const _projectionMs = performance.now() - _projectionStart;
 
   const altitude = _viewer?.camera?.positionCartographic?.height ?? 1e9;
   const collectiveBudget = labelBudgetFor(altitude, _densityPct);
@@ -1349,6 +1370,7 @@ function _drawOverlay(frame) {
   const bracketWidth = _mode === MODE_DENSE ? 1 : 1.25;
 
   // Brackets — batched by tier color and linear radial-opacity band.
+  const _bracketDrawStart = performance.now();
   _ctx.lineWidth = bracketWidth;
   for (const bands of bracketPaths.values()) {
     for (const entry of bands) {
@@ -1358,6 +1380,8 @@ function _drawOverlay(frame) {
       _ctx.stroke(entry.path);
     }
   }
+  const _bracketDrawMs = performance.now() - _bracketDrawStart;
+  const _bookkeepingStart = performance.now();
 
   const renderEntries = _labelArbiter.renderEntries(candidateMap, now);
   const fadingCount = countFadingRenderEntries(renderEntries);
@@ -1370,6 +1394,7 @@ function _drawOverlay(frame) {
   for (const entry of renderEntries) _stashCallout(entry, fade, keyhole);
   _ctx.font = FONT;
   _ctx.globalAlpha = 1;
+  const _bookkeepingMs = performance.now() - _bookkeepingStart;
 
   if (didSolve || !_lastDiagnostics) {
     const arbiterDiagnostics = _labelArbiter.diagnostics() || {};
@@ -1426,10 +1451,22 @@ function _drawOverlay(frame) {
     _lastDiagnostics.protectedVisibleCount = protectedVisibleCount;
   }
 
+  const _decorDrawStart = performance.now();
   _drawScanlines(width, height, now);
   _drawSparseFocusRing(width, height);
   _drawModeBanner(visibleCount, sampledCount);
+  const _decorDrawMs = performance.now() - _decorDrawStart;
   // `_labelSolveDirty` surviving a paint means the solve was owed and did not
   // run — the frame that carried the request cannot be the last one.
-  return { didSolve, solveMs, fadingCount, animatingCount, solvePending: _labelSolveDirty };
+  return {
+    didSolve,
+    solveMs,
+    fadingCount,
+    animatingCount,
+    solvePending: _labelSolveDirty,
+    // Screen-space projection/cull/bookkeeping vs actual canvas paint calls —
+    // see the perf-detection-offscreen investigation in `docs/PERFORMANCE.md`.
+    projectionMs: _projectionMs + _bookkeepingMs,
+    drawMs: _bracketDrawMs + _decorDrawMs,
+  };
 }
