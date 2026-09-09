@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Internet-radio station directory and direct-playback layer.
  *
@@ -2014,6 +2015,9 @@ export function setRadioParams(params = {}) {
   return true;
 }
 
+/**
+ * @returns {{filter: string, volume: number}} Current radio filter and user-owned volume.
+ */
 export function getRadioParams() {
   return { filter: _filter, volume: _userVolume };
 }

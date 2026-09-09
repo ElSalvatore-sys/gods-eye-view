@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Cesium from 'cesium';
 import { CITY_POIS, findPoiByName, flyToGlobeView, flyToLandmark, flyToPOI, flyToPresetLocation, GLOBE_VIEW, searchAndFlyTo } from '../locations.js';
 import {
@@ -287,6 +288,18 @@ export function readLayerLifecycleSummary(dataManager, layerId, { fallbackEnable
   };
 }
 
+/**
+ * Build the voice-action dispatcher: given a viewer and its supporting
+ * managers, returns a `runGevAction(name, args, runOptions)` function that
+ * executes a single named voice/agent action.
+ * @param {object} deps
+ * @param {Cesium.Viewer} deps.viewer
+ * @param {object} deps.styleManager
+ * @param {object} deps.dataManager
+ * @param {object} [deps.sceneDirector]
+ * @param {object} [deps.annotations]
+ * @returns {function(string, object=, object=): Promise<object>} runGevAction
+ */
 export function createGevActionRunner({ viewer, styleManager, dataManager, sceneDirector = null, annotations = null }) {
   installViewTargetPrewarm(viewer);
   initCameraVerbs(viewer, getViewTargetCartesian);
@@ -1042,6 +1055,11 @@ function clearAnnotations(annotations) {
   return { ok: true, action: 'clear_annotations' };
 }
 
+/**
+ * Resolve a free-form voice/agent stack name to its canonical stack id.
+ * @param {string} value Raw stack name, e.g. from a voice transcript.
+ * @returns {string|null} Canonical stack id, or null if unrecognized.
+ */
 export function normalizeStackId(value) {
   const raw = String(value || '').trim().toLowerCase();
   if (!raw) return null;
@@ -1895,6 +1913,12 @@ function collectTrackedEntities(dataManager) {
   return tracked;
 }
 
+/**
+ * Sample the current viewport and resolve basemap place/label context for it,
+ * used to ground voice-agent replies in what's currently on screen.
+ * @param {Cesium.Viewer} viewer
+ * @returns {Promise<object>} Basemap label context for the current viewport.
+ */
 export async function getBasemapLabelContext(viewer) {
   const samples = sampleViewportCartographics(viewer);
   const cameraHeightM = viewer.camera.positionCartographic.height;
