@@ -1,0 +1,1987 @@
+{
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/build-sf-neighborhoods.mjs": {
+    "mtime": 1788967703.9212751,
+    "ast_hash": "b48c99f092c500aa24925f31c22a317c",
+    "semantic_hash": "b48c99f092c500aa24925f31c22a317c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/dev-cctv.sh": {
+    "mtime": 1788967703.9214838,
+    "ast_hash": "924bb817c67c30bd5105dc0176e1c3e1",
+    "semantic_hash": "924bb817c67c30bd5105dc0176e1c3e1"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/dev-fresh.sh": {
+    "mtime": 1788967703.9215894,
+    "ast_hash": "a848ae7460fa5b0cf6634ea9642dcc89",
+    "semantic_hash": "a848ae7460fa5b0cf6634ea9642dcc89"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/dev-secure.sh": {
+    "mtime": 1788967703.9216726,
+    "ast_hash": "73629ae3fb0220f68822babb59870c46",
+    "semantic_hash": "73629ae3fb0220f68822babb59870c46"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/focus-allocation-check.mjs": {
+    "mtime": 1788967703.9246094,
+    "ast_hash": "dab98d61d0fcec604a677d67ed955147",
+    "semantic_hash": "dab98d61d0fcec604a677d67ed955147"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/opensky-import-client.sh": {
+    "mtime": 1788967703.924683,
+    "ast_hash": "b0abdbc4246963fdc3e624cd56bfa4b5",
+    "semantic_hash": "b0abdbc4246963fdc3e624cd56bfa4b5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/pinokio-environment.mjs": {
+    "mtime": 1788967703.9247692,
+    "ast_hash": "44478cd277a5b633d2b242577bbfdf78",
+    "semantic_hash": "44478cd277a5b633d2b242577bbfdf78"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/pinokio-install.mjs": {
+    "mtime": 1788967703.924837,
+    "ast_hash": "c0aee19d91ac94edc5b09bb84c09555e",
+    "semantic_hash": "c0aee19d91ac94edc5b09bb84c09555e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/pinokio-preflight.mjs": {
+    "mtime": 1788967703.9250898,
+    "ast_hash": "78d69873ea0605c5b2a051ad803db2e2",
+    "semantic_hash": "78d69873ea0605c5b2a051ad803db2e2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/pinokio-reset.mjs": {
+    "mtime": 1788967703.9251544,
+    "ast_hash": "93ff2e3d342b2a1fdd2b7092ec2baf68",
+    "semantic_hash": "93ff2e3d342b2a1fdd2b7092ec2baf68"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/pinokio-start.mjs": {
+    "mtime": 1788967703.9252257,
+    "ast_hash": "43244b34ecd02a74083bc170a8670e50",
+    "semantic_hash": "43244b34ecd02a74083bc170a8670e50"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/pinokio-update.mjs": {
+    "mtime": 1788967703.9252865,
+    "ast_hash": "b18ba0074c684c615eff8d0ca27b9e9c",
+    "semantic_hash": "b18ba0074c684c615eff8d0ca27b9e9c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-attribution-b12.mjs": {
+    "mtime": 1788967703.9256482,
+    "ast_hash": "ec2bd94d69e79f8818109ffd72d88919",
+    "semantic_hash": "ec2bd94d69e79f8818109ffd72d88919"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-cables-overlay.mjs": {
+    "mtime": 1788967703.9257765,
+    "ast_hash": "bd77d3cd40ef3b0a3554300cb604bfad",
+    "semantic_hash": "bd77d3cd40ef3b0a3554300cb604bfad"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-cables-render-probe.mjs": {
+    "mtime": 1788967703.9258525,
+    "ast_hash": "383f36f9088b4f8d92e8e59dd6d4d6d5",
+    "semantic_hash": "383f36f9088b4f8d92e8e59dd6d4d6d5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-cables-shot.mjs": {
+    "mtime": 1788967703.9259222,
+    "ast_hash": "6132c5af76bb253eca92247125c3a3f2",
+    "semantic_hash": "6132c5af76bb253eca92247125c3a3f2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-cctv-v2.mjs": {
+    "mtime": 1788967703.9261239,
+    "ast_hash": "fc91e29d0a0baa3689373d9ac22d8b34",
+    "semantic_hash": "fc91e29d0a0baa3689373d9ac22d8b34"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-cockpit-plates.mjs": {
+    "mtime": 1788967703.9262497,
+    "ast_hash": "6b72b1320dc72b52be47740bc31fae64",
+    "semantic_hash": "6b72b1320dc72b52be47740bc31fae64"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-cockpit-utility.mjs": {
+    "mtime": 1788967703.926449,
+    "ast_hash": "60f7dd86d134f74628bf5796fc2f4704",
+    "semantic_hash": "60f7dd86d134f74628bf5796fc2f4704"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-enrich-ambient.mjs": {
+    "mtime": 1788967703.9266968,
+    "ast_hash": "794e8ef2c98c6bcfb19e0185fcb8ddc3",
+    "semantic_hash": "794e8ef2c98c6bcfb19e0185fcb8ddc3"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-failstate-b10.mjs": {
+    "mtime": 1788967703.9268568,
+    "ast_hash": "a6f9e4e08df03e408562322506426fb4",
+    "semantic_hash": "a6f9e4e08df03e408562322506426fb4"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-firms.mjs": {
+    "mtime": 1788967703.9269743,
+    "ast_hash": "f2efe040104bb174259a81249238fb8b",
+    "semantic_hash": "f2efe040104bb174259a81249238fb8b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-firstrun-mutations.mjs": {
+    "mtime": 1788967703.9271033,
+    "ast_hash": "520b68a15c2d693b9a593c1e14c31dbf",
+    "semantic_hash": "520b68a15c2d693b9a593c1e14c31dbf"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-firstrun.mjs": {
+    "mtime": 1788967703.9272923,
+    "ast_hash": "4c32a3bd6bebbbf5084bf77eb3404a66",
+    "semantic_hash": "4c32a3bd6bebbbf5084bf77eb3404a66"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-floor-hold.mjs": {
+    "mtime": 1788967703.927412,
+    "ast_hash": "0949d2e3f01522307faa177bbd3edc4c",
+    "semantic_hash": "0949d2e3f01522307faa177bbd3edc4c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-floor-verify.mjs": {
+    "mtime": 1788967703.9275455,
+    "ast_hash": "0da4453db4c63ac6d2c997775ba84354",
+    "semantic_hash": "0da4453db4c63ac6d2c997775ba84354"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-floorhold-mutations.mjs": {
+    "mtime": 1788967703.9276736,
+    "ast_hash": "ecebd52450b6e46db09639b822b50b6f",
+    "semantic_hash": "ecebd52450b6e46db09639b822b50b6f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-floorhold-probe-cost.mjs": {
+    "mtime": 1788967703.927745,
+    "ast_hash": "e7971d9a63e29471568c74c94708f3fc",
+    "semantic_hash": "e7971d9a63e29471568c74c94708f3fc"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-floorhold-staircase.mjs": {
+    "mtime": 1788967703.9278634,
+    "ast_hash": "dd7c588fa8db00e0bad6c071390a5dcb",
+    "semantic_hash": "dd7c588fa8db00e0bad6c071390a5dcb"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-flyroute-cinema.mjs": {
+    "mtime": 1788967703.9280076,
+    "ast_hash": "18a58303f8b9b97cbad5bd1992204515",
+    "semantic_hash": "18a58303f8b9b97cbad5bd1992204515"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-flyroute-mutations.mjs": {
+    "mtime": 1788967703.92809,
+    "ast_hash": "3862827b5a589a1182217653cde0d0f6",
+    "semantic_hash": "3862827b5a589a1182217653cde0d0f6"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-focus-evidence.mjs": {
+    "mtime": 1788967703.9282322,
+    "ast_hash": "d7b0e31ea0cdb50a6d7ca8eb075f6136",
+    "semantic_hash": "d7b0e31ea0cdb50a6d7ca8eb075f6136"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-heading-b3.mjs": {
+    "mtime": 1788967703.9284456,
+    "ast_hash": "ffffb8026718151ecd53b96eed994675",
+    "semantic_hash": "ffffb8026718151ecd53b96eed994675"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-height-datum.mjs": {
+    "mtime": 1788967703.9286032,
+    "ast_hash": "8bfe6becc8a9c4c0e30b9c1f89890269",
+    "semantic_hash": "8bfe6becc8a9c4c0e30b9c1f89890269"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-l9-matrix.mjs": {
+    "mtime": 1788967703.9291036,
+    "ast_hash": "5b28334c0a03f56c51966e53bd2b3692",
+    "semantic_hash": "5b28334c0a03f56c51966e53bd2b3692"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-label-readability.mjs": {
+    "mtime": 1788967703.929347,
+    "ast_hash": "20da61adf6689a1cccebe837371cc201",
+    "semantic_hash": "20da61adf6689a1cccebe837371cc201"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-labels.mjs": {
+    "mtime": 1788967703.9295833,
+    "ast_hash": "6c129cbd9dbac32c2bbe18dd8731cd67",
+    "semantic_hash": "6c129cbd9dbac32c2bbe18dd8731cd67"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-map-source-tray.mjs": {
+    "mtime": 1788967703.9297354,
+    "ast_hash": "b88cc2deddc031c4ccf0555556c123d7",
+    "semantic_hash": "b88cc2deddc031c4ccf0555556c123d7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-overlay-baseline.mjs": {
+    "mtime": 1788967703.9298835,
+    "ast_hash": "0eaffba358425e03960ed3d4c7a0f310",
+    "semantic_hash": "0eaffba358425e03960ed3d4c7a0f310"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-perf.mjs": {
+    "mtime": 1788967703.9301167,
+    "ast_hash": "c4e2dca144f1307d37f382b17030cb08",
+    "semantic_hash": "c4e2dca144f1307d37f382b17030cb08"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-radio.mjs": {
+    "mtime": 1788967703.9309165,
+    "ast_hash": "21c97effde611b01fadcf148ce7e8466",
+    "semantic_hash": "21c97effde611b01fadcf148ce7e8466"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-sprites-b5.mjs": {
+    "mtime": 1788967703.9310782,
+    "ast_hash": "a1e2ba897fadd0ad1b0325b5d8434c53",
+    "semantic_hash": "a1e2ba897fadd0ad1b0325b5d8434c53"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-traffic-baseline.mjs": {
+    "mtime": 1788967703.9312923,
+    "ast_hash": "0d07ec6025512b85b4c25e9720c8ad0f",
+    "semantic_hash": "0d07ec6025512b85b4c25e9720c8ad0f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-traffic-jamviz-ab.mjs": {
+    "mtime": 1788967703.931431,
+    "ast_hash": "3b81a185e515e4eb01a5f609a4509752",
+    "semantic_hash": "3b81a185e515e4eb01a5f609a4509752"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-traffic-preset-ab.mjs": {
+    "mtime": 1788967703.9315681,
+    "ast_hash": "14558307d4caafc605f794e91aad570d",
+    "semantic_hash": "14558307d4caafc605f794e91aad570d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-traffic.mjs": {
+    "mtime": 1788967703.931658,
+    "ast_hash": "f93e97cadff53859924811fc2d8a5ff5",
+    "semantic_hash": "f93e97cadff53859924811fc2d8a5ff5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-vessel-cards.mjs": {
+    "mtime": 1788967703.931765,
+    "ast_hash": "230e10652d734198874bdf7ada9d738f",
+    "semantic_hash": "230e10652d734198874bdf7ada9d738f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-vessel-datum.mjs": {
+    "mtime": 1788967703.9318786,
+    "ast_hash": "956d25b81879eb73432869a6495ab4dc",
+    "semantic_hash": "956d25b81879eb73432869a6495ab4dc"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-view-target-prewarm.mjs": {
+    "mtime": 1788967703.9319642,
+    "ast_hash": "ecbf0b8d5e89caf50e7f014e4715237e",
+    "semantic_hash": "ecbf0b8d5e89caf50e7f014e4715237e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-voice-routing.mjs": {
+    "mtime": 1788967703.932134,
+    "ast_hash": "9bfd26a9b6358763e1d5e47b030bc251",
+    "semantic_hash": "9bfd26a9b6358763e1d5e47b030bc251"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/qa-voice-wav.mjs": {
+    "mtime": 1788967703.9322155,
+    "ast_hash": "beb480ec0a6a86328f9b8db6bcce54e0",
+    "semantic_hash": "beb480ec0a6a86328f9b8db6bcce54e0"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/read-dotenv-value.mjs": {
+    "mtime": 1788967703.9322834,
+    "ast_hash": "21339324e73e4890780e299999040737",
+    "semantic_hash": "21339324e73e4890780e299999040737"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/run-unit-tests.mjs": {
+    "mtime": 1788967703.932353,
+    "ast_hash": "8780cde5d60efa08167bc3796c70636b",
+    "semantic_hash": "8780cde5d60efa08167bc3796c70636b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/setup-doctor.mjs": {
+    "mtime": 1788967703.9324746,
+    "ast_hash": "8fb8924f6f37e9166d62851e3c4b7ac3",
+    "semantic_hash": "8fb8924f6f37e9166d62851e3c4b7ac3"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/shot-sink.mjs": {
+    "mtime": 1788967703.93254,
+    "ast_hash": "7586b9956eebd18ddcdfc5fea5f1f073",
+    "semantic_hash": "7586b9956eebd18ddcdfc5fea5f1f073"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/track-regression.mjs": {
+    "mtime": 1788967703.933027,
+    "ast_hash": "c5bfa4af08b6922f03ea734470d033c0",
+    "semantic_hash": "c5bfa4af08b6922f03ea734470d033c0"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/annotationEngine.js": {
+    "mtime": 1788967703.933501,
+    "ast_hash": "610f61b5406fd9240d4029e27ef32502",
+    "semantic_hash": "610f61b5406fd9240d4029e27ef32502"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/annotationEngine.test.mjs": {
+    "mtime": 1788967703.9336565,
+    "ast_hash": "a593c9d6d80909e808372b207be96374",
+    "semantic_hash": "a593c9d6d80909e808372b207be96374"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/annotationGeoJson.js": {
+    "mtime": 1788967703.9337878,
+    "ast_hash": "85ca8ae39c775775c66c0a5cff21bf3a",
+    "semantic_hash": "85ca8ae39c775775c66c0a5cff21bf3a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/annotationGeoJson.test.mjs": {
+    "mtime": 1788967703.9338691,
+    "ast_hash": "d9ca80c60cee135a2d5cbed618df4a29",
+    "semantic_hash": "d9ca80c60cee135a2d5cbed618df4a29"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/annotationResolver.js": {
+    "mtime": 1788967703.934138,
+    "ast_hash": "b6f58551f202bc8367933ca08934398b",
+    "semantic_hash": "b6f58551f202bc8367933ca08934398b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/annotationResolver.test.mjs": {
+    "mtime": 1788967703.93423,
+    "ast_hash": "6eabe75d9a479a502f291ae6056db836",
+    "semantic_hash": "6eabe75d9a479a502f291ae6056db836"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/hybridAnnotationRenderer.js": {
+    "mtime": 1788967703.9343126,
+    "ast_hash": "ddee7e61ca71f1689e6cbf83b460be3c",
+    "semantic_hash": "ddee7e61ca71f1689e6cbf83b460be3c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/hybridAnnotationRenderer.test.mjs": {
+    "mtime": 1788967703.9344103,
+    "ast_hash": "f8308216d054715e863681a976746562",
+    "semantic_hash": "f8308216d054715e863681a976746562"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/index.js": {
+    "mtime": 1788967703.934475,
+    "ast_hash": "475af8c7f57e34a1ce19dc0f9ce30616",
+    "semantic_hash": "475af8c7f57e34a1ce19dc0f9ce30616"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/screenAnnotationRenderer.js": {
+    "mtime": 1788967703.9346259,
+    "ast_hash": "625222d6a6f6faf25ca19f975447bd27",
+    "semantic_hash": "625222d6a6f6faf25ca19f975447bd27"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/screenAnnotationRenderer.test.mjs": {
+    "mtime": 1788967703.9347756,
+    "ast_hash": "f8f67771a4afe3040157b4e2419249d9",
+    "semantic_hash": "f8f67771a4afe3040157b4e2419249d9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/annotations/worldAnnotationRenderer.js": {
+    "mtime": 1788967703.934896,
+    "ast_hash": "e08bc1008f12fffa957676d2f8f698c8",
+    "semantic_hash": "e08bc1008f12fffa957676d2f8f698c8"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/bloom.js": {
+    "mtime": 1788967703.9349601,
+    "ast_hash": "462a47eca0978d5ef07d0e460802c86e",
+    "semantic_hash": "462a47eca0978d5ef07d0e460802c86e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/browserModuleBoundary.test.mjs": {
+    "mtime": 1788967703.9350243,
+    "ast_hash": "b57c4a61c48d14e2fe2a6b3af1a5ee71",
+    "semantic_hash": "b57c4a61c48d14e2fe2a6b3af1a5ee71"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/camera.js": {
+    "mtime": 1788967703.9350843,
+    "ast_hash": "139eaaef821fe9d5727b31e353edbc6c",
+    "semantic_hash": "139eaaef821fe9d5727b31e353edbc6c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cameraHandoff.test.mjs": {
+    "mtime": 1788967703.9351773,
+    "ast_hash": "d27df14fdd1d5d9e9e40915e0e17ff86",
+    "semantic_hash": "d27df14fdd1d5d9e9e40915e0e17ff86"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cameraVerbs.js": {
+    "mtime": 1788967703.9353633,
+    "ast_hash": "a953814ee90b904b1c51b99b49a7f1db",
+    "semantic_hash": "a953814ee90b904b1c51b99b49a7f1db"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cctvFocusPolicy.js": {
+    "mtime": 1788967703.9354284,
+    "ast_hash": "f3790f63fd8f9c8f89660dce7b50c992",
+    "semantic_hash": "f3790f63fd8f9c8f89660dce7b50c992"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cctvFocusPolicy.test.mjs": {
+    "mtime": 1788967703.9354932,
+    "ast_hash": "559ed77b433990115e507fc2b1323c86",
+    "semantic_hash": "559ed77b433990115e507fc2b1323c86"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cctvFocusRequest.js": {
+    "mtime": 1788967703.9355567,
+    "ast_hash": "a5018334d9bc17d5bb8fc41114068085",
+    "semantic_hash": "a5018334d9bc17d5bb8fc41114068085"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cctvFocusRequest.test.mjs": {
+    "mtime": 1788967703.9356234,
+    "ast_hash": "d16161bd4e82c25f3f20418c1384a860",
+    "semantic_hash": "d16161bd4e82c25f3f20418c1384a860"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/celestialRing.js": {
+    "mtime": 1788967703.9359195,
+    "ast_hash": "37a32d1ca8941f8cb7643834b4998d6f",
+    "semantic_hash": "37a32d1ca8941f8cb7643834b4998d6f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/celestialRing.test.mjs": {
+    "mtime": 1788967703.9360056,
+    "ast_hash": "ad07baf8b0aba32924f9bbe445f62862",
+    "semantic_hash": "ad07baf8b0aba32924f9bbe445f62862"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitCloudEffects.js": {
+    "mtime": 1788967703.9361103,
+    "ast_hash": "5524ffb12b560c85cd311b5a4927cc55",
+    "semantic_hash": "5524ffb12b560c85cd311b5a4927cc55"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitCloudEffects.test.mjs": {
+    "mtime": 1788967703.936173,
+    "ast_hash": "fe6800cc5780ed606ad340f8e02c6b01",
+    "semantic_hash": "fe6800cc5780ed606ad340f8e02c6b01"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitMarkup.test.mjs": {
+    "mtime": 1788967703.9363568,
+    "ast_hash": "f495816e9a15cc52ccf1181c338aae42",
+    "semantic_hash": "f495816e9a15cc52ccf1181c338aae42"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitMath.js": {
+    "mtime": 1788967703.9364407,
+    "ast_hash": "72dd02f7c80398598e8ca6cc84126548",
+    "semantic_hash": "72dd02f7c80398598e8ca6cc84126548"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitMath.test.mjs": {
+    "mtime": 1788967703.9365215,
+    "ast_hash": "cf8c753d852a0b2b1bde7b6fb6108e9d",
+    "semantic_hash": "cf8c753d852a0b2b1bde7b6fb6108e9d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitTracking.js": {
+    "mtime": 1788967703.9365852,
+    "ast_hash": "d761a581bb60fcdde865f0097f2bd65a",
+    "semantic_hash": "d761a581bb60fcdde865f0097f2bd65a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitTracking.test.mjs": {
+    "mtime": 1788967703.936805,
+    "ast_hash": "7a15acc8bd4d9e7c7534443a45abf04e",
+    "semantic_hash": "7a15acc8bd4d9e7c7534443a45abf04e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitUtilityLayout.js": {
+    "mtime": 1788967703.9368675,
+    "ast_hash": "d63ba67611afc8cd9656c16e4b1aaa8a",
+    "semantic_hash": "d63ba67611afc8cd9656c16e4b1aaa8a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitUtilityLayout.test.mjs": {
+    "mtime": 1788967703.9369311,
+    "ast_hash": "77e938d9e0449a72378a43828905a4e5",
+    "semantic_hash": "77e938d9e0449a72378a43828905a4e5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitVisionPolicy.js": {
+    "mtime": 1788967703.9369915,
+    "ast_hash": "b96810495b2e2e9274de493699ac1ee6",
+    "semantic_hash": "b96810495b2e2e9274de493699ac1ee6"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/cockpitVisionPolicy.test.mjs": {
+    "mtime": 1788967703.93705,
+    "ast_hash": "869da428c02fa2a68ce6d71ccec88e53",
+    "semantic_hash": "869da428c02fa2a68ce6d71ccec88e53"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/contactsDetectionPolicy.js": {
+    "mtime": 1788967703.9371645,
+    "ast_hash": "ae92974ba3a3a4350a6227669879f11a",
+    "semantic_hash": "ae92974ba3a3a4350a6227669879f11a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/contactsDetectionPolicy.test.mjs": {
+    "mtime": 1788967703.9372537,
+    "ast_hash": "dc1b37db50c83f03e281aeb9c64d874d",
+    "semantic_hash": "dc1b37db50c83f03e281aeb9c64d874d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/contextModePolicy.js": {
+    "mtime": 1788967703.9373405,
+    "ast_hash": "28195ef39433ab4bf2b0115d4360a87d",
+    "semantic_hash": "28195ef39433ab4bf2b0115d4360a87d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/contextModePolicy.test.mjs": {
+    "mtime": 1788967703.9374423,
+    "ast_hash": "3b23bc3f19de8b60d26ad660ce045f54",
+    "semantic_hash": "3b23bc3f19de8b60d26ad660ce045f54"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/contextSessionOrdering.test.mjs": {
+    "mtime": 1788967703.9375448,
+    "ast_hash": "ff98de670066a1d446acc0ea336af1e6",
+    "semantic_hash": "ff98de670066a1d446acc0ea336af1e6"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/creditAttribution.test.mjs": {
+    "mtime": 1788967703.937691,
+    "ast_hash": "32dfab02b08b79b6660fcdb6148f790a",
+    "semantic_hash": "32dfab02b08b79b6660fcdb6148f790a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/adsbLolFallback.js": {
+    "mtime": 1788967703.9377878,
+    "ast_hash": "59ad9cd2e9494e485cac6a75f5648a9c",
+    "semantic_hash": "59ad9cd2e9494e485cac6a75f5648a9c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/adsbLolFallback.test.mjs": {
+    "mtime": 1788967703.937851,
+    "ast_hash": "78f6575a927eaa3ad38113b37e74e5ca",
+    "semantic_hash": "78f6575a927eaa3ad38113b37e74e5ca"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftClass.js": {
+    "mtime": 1788967703.9379332,
+    "ast_hash": "5615b1a888f5c1f9c1edbea0ce6fd249",
+    "semantic_hash": "5615b1a888f5c1f9c1edbea0ce6fd249"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftClass.test.mjs": {
+    "mtime": 1788967703.9380012,
+    "ast_hash": "4c1c83e2afccd6db5c23884def6e0553",
+    "semantic_hash": "4c1c83e2afccd6db5c23884def6e0553"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftIcons.js": {
+    "mtime": 1788967703.9380915,
+    "ast_hash": "2342aca2c0d5aa05ecf9bd31c7c068c5",
+    "semantic_hash": "2342aca2c0d5aa05ecf9bd31c7c068c5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftMeta.js": {
+    "mtime": 1788967703.9381487,
+    "ast_hash": "c3e818d7fcb3da8fdb15a3097edeab4e",
+    "semantic_hash": "c3e818d7fcb3da8fdb15a3097edeab4e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftMeta.test.mjs": {
+    "mtime": 1788967703.9382117,
+    "ast_hash": "226f0fdcfe9102919ff9e4b73dcbcd7c",
+    "semantic_hash": "226f0fdcfe9102919ff9e4b73dcbcd7c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftNearbyPolicy.js": {
+    "mtime": 1788967703.9382687,
+    "ast_hash": "24ab811015b9907cc8402fd74cfc92be",
+    "semantic_hash": "24ab811015b9907cc8402fd74cfc92be"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftNearbyPolicy.test.mjs": {
+    "mtime": 1788967703.9383276,
+    "ast_hash": "ed80160b3672fa2fce8a7c937ae8c13a",
+    "semantic_hash": "ed80160b3672fa2fce8a7c937ae8c13a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftRecession.js": {
+    "mtime": 1788967703.9386773,
+    "ast_hash": "7c0a334794ed53c4d00bee5e94e0dabe",
+    "semantic_hash": "7c0a334794ed53c4d00bee5e94e0dabe"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aircraftRecession.test.mjs": {
+    "mtime": 1788967703.938755,
+    "ast_hash": "d28bbf09d9679fefc69c6b9df66df324",
+    "semantic_hash": "d28bbf09d9679fefc69c6b9df66df324"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aisLiveVessels.analyst.test.mjs": {
+    "mtime": 1788967703.938814,
+    "ast_hash": "fccb64e3d5ac328512168e0710bfedee",
+    "semantic_hash": "fccb64e3d5ac328512168e0710bfedee"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aisLiveVessels.js": {
+    "mtime": 1788967703.93902,
+    "ast_hash": "faf3326391757f266b9ceb06506f7b22",
+    "semantic_hash": "faf3326391757f266b9ceb06506f7b22"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aisLiveVessels.test.mjs": {
+    "mtime": 1788967703.939348,
+    "ast_hash": "74519217e725380fb2c5805c3b05d01a",
+    "semantic_hash": "74519217e725380fb2c5805c3b05d01a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aisStreamAdapter.js": {
+    "mtime": 1788967703.9394555,
+    "ast_hash": "5b8a80d99036deb1d301cd7c0f318dde",
+    "semantic_hash": "5b8a80d99036deb1d301cd7c0f318dde"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aisStreamAdapter.test.mjs": {
+    "mtime": 1788967703.9396152,
+    "ast_hash": "0bf86ec99c324dd19fe16c4af0f06ff0",
+    "semantic_hash": "0bf86ec99c324dd19fe16c4af0f06ff0"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aisWatchdog.js": {
+    "mtime": 1788967703.9397168,
+    "ast_hash": "7125d8aa7587353a7a49ca2495ab13ad",
+    "semantic_hash": "7125d8aa7587353a7a49ca2495ab13ad"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aisWatchdog.test.mjs": {
+    "mtime": 1788967703.9398303,
+    "ast_hash": "2dd6e76d3b927a6298aed044d15ec7ca",
+    "semantic_hash": "2dd6e76d3b927a6298aed044d15ec7ca"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/aisWatchdogTransport.test.mjs": {
+    "mtime": 1788967703.9399107,
+    "ast_hash": "698e3ab9c7fad359671a12940214a6b5",
+    "semantic_hash": "698e3ab9c7fad359671a12940214a6b5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/analystEngine.js": {
+    "mtime": 1788967703.9400256,
+    "ast_hash": "4f8821da843e7834a7d70bd0fd1fa912",
+    "semantic_hash": "4f8821da843e7834a7d70bd0fd1fa912"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/analystEngine.test.mjs": {
+    "mtime": 1788967703.9402444,
+    "ast_hash": "d2423a8e83fff23b3f2eeb87419d4d85",
+    "semantic_hash": "d2423a8e83fff23b3f2eeb87419d4d85"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/bikeshare.js": {
+    "mtime": 1788967703.9404533,
+    "ast_hash": "660a24aaaf80c8e7d813f08a6c083364",
+    "semantic_hash": "660a24aaaf80c8e7d813f08a6c083364"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/bikeshare.test.mjs": {
+    "mtime": 1788967703.9405189,
+    "ast_hash": "5144080910042b95e1a54d5d7c4142b9",
+    "semantic_hash": "5144080910042b95e1a54d5d7c4142b9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctv.js": {
+    "mtime": 1788967703.9414454,
+    "ast_hash": "31f0637fc4268cab435779c16ba07fea",
+    "semantic_hash": "31f0637fc4268cab435779c16ba07fea"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctv.test.mjs": {
+    "mtime": 1788967703.9416275,
+    "ast_hash": "f2db6e8f3925445e2457df911591e01c",
+    "semantic_hash": "f2db6e8f3925445e2457df911591e01c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvCards.js": {
+    "mtime": 1788967703.9417362,
+    "ast_hash": "e16ccc023340f877c9ba51a3131b1be2",
+    "semantic_hash": "e16ccc023340f877c9ba51a3131b1be2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvCards.test.mjs": {
+    "mtime": 1788967703.9418266,
+    "ast_hash": "d0275abdc60929b775ff73c9cfb0a40c",
+    "semantic_hash": "d0275abdc60929b775ff73c9cfb0a40c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvGizmo.js": {
+    "mtime": 1788967703.9419634,
+    "ast_hash": "0d4ecc62d3128dc3395b891bc39a30c2",
+    "semantic_hash": "0d4ecc62d3128dc3395b891bc39a30c2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvGizmo.test.mjs": {
+    "mtime": 1788967703.9420445,
+    "ast_hash": "bf607d137d1dbc8e9726913959913c32",
+    "semantic_hash": "bf607d137d1dbc8e9726913959913c32"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvLod.js": {
+    "mtime": 1788967703.9421933,
+    "ast_hash": "e06607ab47eebc39d488880579f42d92",
+    "semantic_hash": "e06607ab47eebc39d488880579f42d92"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvLod.test.mjs": {
+    "mtime": 1788967703.9423137,
+    "ast_hash": "28a7938a67fcf640013f32a246ff2b69",
+    "semantic_hash": "28a7938a67fcf640013f32a246ff2b69"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvProxy.test.mjs": {
+    "mtime": 1788967703.9423883,
+    "ast_hash": "e574df476f9123d08d8ba441bc612b5a",
+    "semantic_hash": "e574df476f9123d08d8ba441bc612b5a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvViewshed.js": {
+    "mtime": 1788967703.9424715,
+    "ast_hash": "63d513f5b23f6f6da2c92c5ab575a457",
+    "semantic_hash": "63d513f5b23f6f6da2c92c5ab575a457"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cctvViewshed.test.mjs": {
+    "mtime": 1788967703.9425557,
+    "ast_hash": "173e88686f45e6d27937a8f27720c625",
+    "semantic_hash": "173e88686f45e6d27937a8f27720c625"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cockpitAirLod.js": {
+    "mtime": 1788967703.9427392,
+    "ast_hash": "391d17a362c6468a08bf908331c9e006",
+    "semantic_hash": "391d17a362c6468a08bf908331c9e006"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cockpitAirLod.test.mjs": {
+    "mtime": 1788967703.9428103,
+    "ast_hash": "1eba04ba5d5b2a46f6bfed6a84e0f8ad",
+    "semantic_hash": "1eba04ba5d5b2a46f6bfed6a84e0f8ad"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cockpitContactDot.js": {
+    "mtime": 1788967703.942882,
+    "ast_hash": "8c8934273ad7fb4ff0dbfa335c34d1b2",
+    "semantic_hash": "8c8934273ad7fb4ff0dbfa335c34d1b2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cockpitDetectionSubjects.test.mjs": {
+    "mtime": 1788967703.9429746,
+    "ast_hash": "0a538d51176ba6f24a1d48d53b551b6d",
+    "semantic_hash": "0a538d51176ba6f24a1d48d53b551b6d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/cockpitModels.test.mjs": {
+    "mtime": 1788967703.9430587,
+    "ast_hash": "538b48b64388ae3b3492cb4dfa0f0685",
+    "semantic_hash": "538b48b64388ae3b3492cb4dfa0f0685"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/contactMatch.js": {
+    "mtime": 1788967703.9431505,
+    "ast_hash": "476669fc81086d8c4cc6ae573eb68f7f",
+    "semantic_hash": "476669fc81086d8c4cc6ae573eb68f7f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/contactMatch.test.mjs": {
+    "mtime": 1788967703.9432447,
+    "ast_hash": "a8d1763f22bf06a82d007a23bf3a5ed2",
+    "semantic_hash": "a8d1763f22bf06a82d007a23bf3a5ed2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/contextStore.js": {
+    "mtime": 1788967703.9433327,
+    "ast_hash": "601ed96ede327bd1c2f9b0563ac65a0e",
+    "semantic_hash": "601ed96ede327bd1c2f9b0563ac65a0e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/contextStore.test.mjs": {
+    "mtime": 1788967703.943416,
+    "ast_hash": "10a90d9b0635c1519146899ae33c4f10",
+    "semantic_hash": "10a90d9b0635c1519146899ae33c4f10"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/dataCredits.js": {
+    "mtime": 1788967703.943661,
+    "ast_hash": "4c71eeba746d147585e1585ec52cefa1",
+    "semantic_hash": "4c71eeba746d147585e1585ec52cefa1"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detection.js": {
+    "mtime": 1788967703.9438555,
+    "ast_hash": "eba49514adc350446e13a2b9e61ff19d",
+    "semantic_hash": "eba49514adc350446e13a2b9e61ff19d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionCohort.js": {
+    "mtime": 1788967703.9439337,
+    "ast_hash": "d8a01aebadb1198ee2abbd89a50f28fb",
+    "semantic_hash": "d8a01aebadb1198ee2abbd89a50f28fb"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionCohort.test.mjs": {
+    "mtime": 1788967703.9440064,
+    "ast_hash": "f48b4111b47aca20e5e799dd373b2491",
+    "semantic_hash": "f48b4111b47aca20e5e799dd373b2491"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionDraw.js": {
+    "mtime": 1788967703.9442735,
+    "ast_hash": "5f17277287f7ef9fed3601b487bd2c2f",
+    "semantic_hash": "5f17277287f7ef9fed3601b487bd2c2f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionDraw.test.mjs": {
+    "mtime": 1788967703.9443588,
+    "ast_hash": "b702fdcee7f3888cae07dc732e1fd666",
+    "semantic_hash": "b702fdcee7f3888cae07dc732e1fd666"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionHost.test.mjs": {
+    "mtime": 1788967703.9444942,
+    "ast_hash": "4ad23f2a83ff7c86ecc4c70e5e2b84c7",
+    "semantic_hash": "4ad23f2a83ff7c86ecc4c70e5e2b84c7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionPolicy.js": {
+    "mtime": 1788967703.9446168,
+    "ast_hash": "4c0e068fcb6d2f41f816fe6b1e15d2c5",
+    "semantic_hash": "4c0e068fcb6d2f41f816fe6b1e15d2c5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionPolicy.test.mjs": {
+    "mtime": 1788967703.9449267,
+    "ast_hash": "409c1d8710e1cc9a4af2f0061da461be",
+    "semantic_hash": "409c1d8710e1cc9a4af2f0061da461be"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionPresentation.js": {
+    "mtime": 1788967703.9449968,
+    "ast_hash": "c3ec5cd372212e1769bd8dcf8a05f6da",
+    "semantic_hash": "c3ec5cd372212e1769bd8dcf8a05f6da"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionPresentation.test.mjs": {
+    "mtime": 1788967703.9450696,
+    "ast_hash": "12da31aaac969abcd0fe540ee246a7ef",
+    "semantic_hash": "12da31aaac969abcd0fe540ee246a7ef"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionRenderDemand.js": {
+    "mtime": 1788967703.9453301,
+    "ast_hash": "27189d38e2f2bccbe8bdd1f0b36b572e",
+    "semantic_hash": "27189d38e2f2bccbe8bdd1f0b36b572e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/detectionRenderDemand.test.mjs": {
+    "mtime": 1788967703.9454856,
+    "ast_hash": "3a642a8702e9cc4da76ae21dce7e306a",
+    "semantic_hash": "3a642a8702e9cc4da76ae21dce7e306a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/directionText.js": {
+    "mtime": 1788967703.945559,
+    "ast_hash": "36712962cf6596722bd3113b6f263343",
+    "semantic_hash": "36712962cf6596722bd3113b6f263343"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/directionText.test.mjs": {
+    "mtime": 1788967703.945635,
+    "ast_hash": "fc0c37fbe17a248b9b614d091ae6d89f",
+    "semantic_hash": "fc0c37fbe17a248b9b614d091ae6d89f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/earthquakes.js": {
+    "mtime": 1788967703.9458988,
+    "ast_hash": "089e06119bb9fde0cde1b35c05316fe5",
+    "semantic_hash": "089e06119bb9fde0cde1b35c05316fe5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/earthquakes.test.mjs": {
+    "mtime": 1788967703.9459865,
+    "ast_hash": "c675970606834c7ee112a23cbbd1329b",
+    "semantic_hash": "c675970606834c7ee112a23cbbd1329b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/fireAnchors.js": {
+    "mtime": 1788967703.9460545,
+    "ast_hash": "1f73d782ef59a9b1cb6e5556f42c6215",
+    "semantic_hash": "1f73d782ef59a9b1cb6e5556f42c6215"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/fireAnchors.test.mjs": {
+    "mtime": 1788967703.9461348,
+    "ast_hash": "572a3d9f0ec80e1251dbf647088b51b1",
+    "semantic_hash": "572a3d9f0ec80e1251dbf647088b51b1"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsAdapt.js": {
+    "mtime": 1788967703.9462016,
+    "ast_hash": "48a55cd3d052a54f763482cd1be74d92",
+    "semantic_hash": "48a55cd3d052a54f763482cd1be74d92"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsAdapt.test.mjs": {
+    "mtime": 1788967703.9462771,
+    "ast_hash": "8304a655330484453e6d81c5c0762930",
+    "semantic_hash": "8304a655330484453e6d81c5c0762930"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsCards.test.mjs": {
+    "mtime": 1788967703.9463701,
+    "ast_hash": "1f2d6db91daa8ab8d47d0eb3270f967a",
+    "semantic_hash": "1f2d6db91daa8ab8d47d0eb3270f967a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsCsv.js": {
+    "mtime": 1788967703.9464567,
+    "ast_hash": "95b4fd3aed14a2ce0e3eef2d65e4333b",
+    "semantic_hash": "95b4fd3aed14a2ce0e3eef2d65e4333b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsCsv.test.mjs": {
+    "mtime": 1788967703.946534,
+    "ast_hash": "3b4bd417533a0139e62f05067398dff8",
+    "semantic_hash": "3b4bd417533a0139e62f05067398dff8"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsHeatmap.js": {
+    "mtime": 1788967703.9467235,
+    "ast_hash": "87e7e562287f7e567ab559a8b04e395b",
+    "semantic_hash": "87e7e562287f7e567ab559a8b04e395b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsHeatmap.test.mjs": {
+    "mtime": 1788967703.9467983,
+    "ast_hash": "02965f6cd2d7e91a0ded5806f93d2f4e",
+    "semantic_hash": "02965f6cd2d7e91a0ded5806f93d2f4e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsHorizonCull.test.mjs": {
+    "mtime": 1788967703.9469337,
+    "ast_hash": "69686c038217a6ae9452d220e819a153",
+    "semantic_hash": "69686c038217a6ae9452d220e819a153"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsInteraction.test.mjs": {
+    "mtime": 1788967703.9470255,
+    "ast_hash": "3ebb12216d501852a75f4e6f2b7432fa",
+    "semantic_hash": "3ebb12216d501852a75f4e6f2b7432fa"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsLabels.js": {
+    "mtime": 1788967703.9470968,
+    "ast_hash": "9b78e06100fb2bc00e0662ccc1e79cf3",
+    "semantic_hash": "9b78e06100fb2bc00e0662ccc1e79cf3"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/firmsLabels.test.mjs": {
+    "mtime": 1788967703.9471781,
+    "ast_hash": "f41e3bc23b329cff2bc0818d19e8fefa",
+    "semantic_hash": "f41e3bc23b329cff2bc0818d19e8fefa"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/flights.js": {
+    "mtime": 1788967703.948838,
+    "ast_hash": "d8d06795ea187b42453415a48b1fe736",
+    "semantic_hash": "d8d06795ea187b42453415a48b1fe736"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/flights.test.mjs": {
+    "mtime": 1788967703.949042,
+    "ast_hash": "efcc40cde82bc3289bd0eb852fdf5bb8",
+    "semantic_hash": "efcc40cde82bc3289bd0eb852fdf5bb8"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/flowMatch.js": {
+    "mtime": 1788967703.9493153,
+    "ast_hash": "97e9b3f9f10d585ae8a0ccdd5723105d",
+    "semantic_hash": "97e9b3f9f10d585ae8a0ccdd5723105d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/flowMatch.test.mjs": {
+    "mtime": 1788967703.9493933,
+    "ast_hash": "0e9cd328ded12f5bad75807ad94ae9ce",
+    "semantic_hash": "0e9cd328ded12f5bad75807ad94ae9ce"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/flowTiles.js": {
+    "mtime": 1788967703.94947,
+    "ast_hash": "da10eb7840e85bbb468ea32e7d771c3c",
+    "semantic_hash": "da10eb7840e85bbb468ea32e7d771c3c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/flowTiles.test.mjs": {
+    "mtime": 1788967703.9495447,
+    "ast_hash": "14b7cf8b11a0dcc7ab05f778bbf270e3",
+    "semantic_hash": "14b7cf8b11a0dcc7ab05f778bbf270e3"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/focusAllocations.test.mjs": {
+    "mtime": 1788967703.9496105,
+    "ast_hash": "207bfc90510d6c795c631695d52d8c41",
+    "semantic_hash": "207bfc90510d6c795c631695d52d8c41"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/focusDeemphasis.js": {
+    "mtime": 1788967703.9497373,
+    "ast_hash": "89f0c4b1142a5375f92056912a40bb9c",
+    "semantic_hash": "89f0c4b1142a5375f92056912a40bb9c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/focusDeemphasis.test.mjs": {
+    "mtime": 1788967703.94982,
+    "ast_hash": "b444042472af3c4124340d4c0e5277b2",
+    "semantic_hash": "b444042472af3c4124340d4c0e5277b2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/focusResumeGate.test.mjs": {
+    "mtime": 1788967703.94988,
+    "ast_hash": "90c962458745e27f3b0442786d7c1148",
+    "semantic_hash": "90c962458745e27f3b0442786d7c1148"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/geoid.js": {
+    "mtime": 1788967703.949959,
+    "ast_hash": "610676b06ef052128fce98436ca8e52c",
+    "semantic_hash": "610676b06ef052128fce98436ca8e52c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/geoid.test.mjs": {
+    "mtime": 1788967703.950036,
+    "ast_hash": "95ec65eacfc4cdb766da5f5a956b557a",
+    "semantic_hash": "95ec65eacfc4cdb766da5f5a956b557a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/groundFloor.js": {
+    "mtime": 1788967703.9501913,
+    "ast_hash": "4b661c6635457f18b3f757c91457792a",
+    "semantic_hash": "4b661c6635457f18b3f757c91457792a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/groundFloor.test.mjs": {
+    "mtime": 1788967703.950314,
+    "ast_hash": "f3b2f02eedff840afe1dbf39c0f603cd",
+    "semantic_hash": "f3b2f02eedff840afe1dbf39c0f603cd"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/groundSnap.js": {
+    "mtime": 1788967703.9504209,
+    "ast_hash": "ea65ac80325924a1e432b17c9a050c33",
+    "semantic_hash": "ea65ac80325924a1e432b17c9a050c33"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/iconOrientation.js": {
+    "mtime": 1788967703.950656,
+    "ast_hash": "dd06cc3b9711556a824b4782f4448dcd",
+    "semantic_hash": "dd06cc3b9711556a824b4782f4448dcd"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/iconOrientation.test.mjs": {
+    "mtime": 1788967703.950773,
+    "ast_hash": "4198fecaeec90241283ff64352acab66",
+    "semantic_hash": "4198fecaeec90241283ff64352acab66"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/installationFeedback.js": {
+    "mtime": 1788967703.9508414,
+    "ast_hash": "3139212697255fb65246693c19dda9b9",
+    "semantic_hash": "3139212697255fb65246693c19dda9b9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/installationFeedback.test.mjs": {
+    "mtime": 1788967703.9509134,
+    "ast_hash": "61897c3d512bb840b390f9ca6d728d1e",
+    "semantic_hash": "61897c3d512bb840b390f9ca6d728d1e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/installationProxy.test.mjs": {
+    "mtime": 1788967703.9510128,
+    "ast_hash": "1878137ffb90244dde8f736207c22707",
+    "semantic_hash": "1878137ffb90244dde8f736207c22707"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/issPass.js": {
+    "mtime": 1788967703.951081,
+    "ast_hash": "e78b5a53a8afe6c2cb8950d224f6874e",
+    "semantic_hash": "e78b5a53a8afe6c2cb8950d224f6874e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/issPass.test.mjs": {
+    "mtime": 1788967703.951147,
+    "ast_hash": "0849631e1199bd46443f7c76c1087eb4",
+    "semantic_hash": "0849631e1199bd46443f7c76c1087eb4"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/labelArbiter.js": {
+    "mtime": 1788967703.9514453,
+    "ast_hash": "6c9e1580e349c4476641d124c364a6e2",
+    "semantic_hash": "6c9e1580e349c4476641d124c364a6e2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/labelArbiter.test.mjs": {
+    "mtime": 1788967703.9515553,
+    "ast_hash": "8e4dcaaa2dc2378a61ef6ae81bc07d19",
+    "semantic_hash": "8e4dcaaa2dc2378a61ef6ae81bc07d19"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/labelArbiterDifferential.test.mjs": {
+    "mtime": 1788967703.9516497,
+    "ast_hash": "646735fb9c243670cc2e102d6bb86f34",
+    "semantic_hash": "646735fb9c243670cc2e102d6bb86f34"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/layerState.js": {
+    "mtime": 1788967703.951804,
+    "ast_hash": "659317c70e8ab14c4ff8d18ec818cdac",
+    "semantic_hash": "659317c70e8ab14c4ff8d18ec818cdac"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/layerState.test.mjs": {
+    "mtime": 1788967703.9519994,
+    "ast_hash": "5862c34c22106f73c3fac520ba967691",
+    "semantic_hash": "5862c34c22106f73c3fac520ba967691"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/localGeojson.js": {
+    "mtime": 1788967703.9521537,
+    "ast_hash": "8504417b7b45da2c03d09107767becac",
+    "semantic_hash": "8504417b7b45da2c03d09107767becac"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/localGeojson.test.mjs": {
+    "mtime": 1788967703.9523015,
+    "ast_hash": "23ce0bac3e669eb3d31a9ae4b16db5ed",
+    "semantic_hash": "23ce0bac3e669eb3d31a9ae4b16db5ed"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/localLayers.js": {
+    "mtime": 1788967703.9523785,
+    "ast_hash": "62e3ea03752ff567519635fd1355bb42",
+    "semantic_hash": "62e3ea03752ff567519635fd1355bb42"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/natural_earth/marine.json": {
+    "mtime": 1788967703.9692068,
+    "ast_hash": "b7d9d3bb98efb25a387922fb6ef9e807",
+    "semantic_hash": "b7d9d3bb98efb25a387922fb6ef9e807"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/natural_earth/regions.json": {
+    "mtime": 1788967703.9780316,
+    "ast_hash": "724bd99d15423ba70db1d3f019855d45",
+    "semantic_hash": "724bd99d15423ba70db1d3f019855d45"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/neighborhoods/san-francisco.json": {
+    "mtime": 1788967703.9805863,
+    "ast_hash": "f58eec5c842dd777c674aac3c973ac3e",
+    "semantic_hash": "f58eec5c842dd777c674aac3c973ac3e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/telegeography_submarine_cables/cable-geo.json": {
+    "mtime": 1788967703.9847293,
+    "ast_hash": "4017df7e23c2120dec61f1f870e4baa7",
+    "semantic_hash": "4017df7e23c2120dec61f1f870e4baa7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/telegeography_submarine_cables/landing-point-geo.json": {
+    "mtime": 1788967703.9874835,
+    "ast_hash": "408527940b99d2cf119581498fc92f0a",
+    "semantic_hash": "408527940b99d2cf119581498fc92f0a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/telegeography_submarine_cables/source.json": {
+    "mtime": 1788967703.9876018,
+    "ast_hash": "db86ea21a95aa5439e63cc9048837868",
+    "semantic_hash": "db86ea21a95aa5439e63cc9048837868"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/manager.js": {
+    "mtime": 1788967703.9881215,
+    "ast_hash": "40191680b4d6595fe73c494a56688838",
+    "semantic_hash": "40191680b4d6595fe73c494a56688838"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/manager.test.mjs": {
+    "mtime": 1788967703.9887233,
+    "ast_hash": "da55441e1b4f06d4499c9ba9cbb9e251",
+    "semantic_hash": "da55441e1b4f06d4499c9ba9cbb9e251"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/meshFloorSampler.js": {
+    "mtime": 1788967703.988856,
+    "ast_hash": "60005172547a77849ebbcb6a545e2f62",
+    "semantic_hash": "60005172547a77849ebbcb6a545e2f62"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/meshFloorSampler.test.mjs": {
+    "mtime": 1788967703.9890602,
+    "ast_hash": "eda123a0d3cdcbdb353f66a1d7693509",
+    "semantic_hash": "eda123a0d3cdcbdb353f66a1d7693509"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryAwareness.js": {
+    "mtime": 1788967703.9894102,
+    "ast_hash": "90ba3854a921a57140464e50cf7f9de5",
+    "semantic_hash": "90ba3854a921a57140464e50cf7f9de5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryAwareness.test.mjs": {
+    "mtime": 1788967703.9904034,
+    "ast_hash": "5e6ce7b729250b6db6070699a20a0cc1",
+    "semantic_hash": "5e6ce7b729250b6db6070699a20a0cc1"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryAwarenessEngine.js": {
+    "mtime": 1788967703.990511,
+    "ast_hash": "a4f78d6dc2f5dc445fdcacfcb767f6d5",
+    "semantic_hash": "a4f78d6dc2f5dc445fdcacfcb767f6d5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryAwarenessEngine.test.mjs": {
+    "mtime": 1788967703.9905949,
+    "ast_hash": "01e580650b9ffdd15e04bff00f9daaba",
+    "semantic_hash": "01e580650b9ffdd15e04bff00f9daaba"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryFlights.js": {
+    "mtime": 1788967703.991356,
+    "ast_hash": "209e9cecd1bfd48e0129f0894ce55d06",
+    "semantic_hash": "209e9cecd1bfd48e0129f0894ce55d06"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryFlights.test.mjs": {
+    "mtime": 1788967703.991532,
+    "ast_hash": "d5277d1e424cb62fd77ad1e65d9394ec",
+    "semantic_hash": "d5277d1e424cb62fd77ad1e65d9394ec"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryInstallationData.js": {
+    "mtime": 1788967703.9916422,
+    "ast_hash": "61e12c9b2aa832eab34066e881e3ba9b",
+    "semantic_hash": "61e12c9b2aa832eab34066e881e3ba9b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryInstallationData.test.mjs": {
+    "mtime": 1788967703.991741,
+    "ast_hash": "1ff40e64680f378efec9157d209e215f",
+    "semantic_hash": "1ff40e64680f378efec9157d209e215f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryInstallations.js": {
+    "mtime": 1788967703.992195,
+    "ast_hash": "7993d2a7616f84b2808d0f1c8b6d19be",
+    "semantic_hash": "7993d2a7616f84b2808d0f1c8b6d19be"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryInstallations.test.mjs": {
+    "mtime": 1788967703.9923928,
+    "ast_hash": "406f970a13d0cab9bac12f7bb3177660",
+    "semantic_hash": "406f970a13d0cab9bac12f7bb3177660"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryRegistry.js": {
+    "mtime": 1788967703.9924777,
+    "ast_hash": "39992f1f9b117ce2076d1856867f2477",
+    "semantic_hash": "39992f1f9b117ce2076d1856867f2477"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/militaryRegistry.test.mjs": {
+    "mtime": 1788967703.9925401,
+    "ast_hash": "45eefdc67475db70e73e2c8368507c0d",
+    "semantic_hash": "45eefdc67475db70e73e2c8368507c0d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/modelMatrix.test.mjs": {
+    "mtime": 1788967703.9926116,
+    "ast_hash": "89e55735c1b220f28219f81b38cd6548",
+    "semantic_hash": "89e55735c1b220f28219f81b38cd6548"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/modelScale.test.mjs": {
+    "mtime": 1788967703.993162,
+    "ast_hash": "7381adb58f6755c2e2503bf36110ee6f",
+    "semantic_hash": "7381adb58f6755c2e2503bf36110ee6f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/modelVisualAnchor.js": {
+    "mtime": 1788967703.9932792,
+    "ast_hash": "d5402440e707d382e9c8ee5566e1e853",
+    "semantic_hash": "d5402440e707d382e9c8ee5566e1e853"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/motionModel.js": {
+    "mtime": 1788967703.993412,
+    "ast_hash": "da20a3a92d062f3488ed64636c4dcd2c",
+    "semantic_hash": "da20a3a92d062f3488ed64636c4dcd2c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/motionModel.test.mjs": {
+    "mtime": 1788967703.9935305,
+    "ast_hash": "697ac2450cf4db6c924b5cefee80fb58",
+    "semantic_hash": "697ac2450cf4db6c924b5cefee80fb58"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/naturalEarthRegions.js": {
+    "mtime": 1788967703.9938715,
+    "ast_hash": "5cefd379c033655349f236294158aeb8",
+    "semantic_hash": "5cefd379c033655349f236294158aeb8"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/naturalEarthRegions.test.mjs": {
+    "mtime": 1788967703.993955,
+    "ast_hash": "82c91efeedb094bec876fe8f2b29a231",
+    "semantic_hash": "82c91efeedb094bec876fe8f2b29a231"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/nearbyModelHandoff.test.mjs": {
+    "mtime": 1788967703.9940405,
+    "ast_hash": "175ba9baca690c36fddde8c3fb18f591",
+    "semantic_hash": "175ba9baca690c36fddde8c3fb18f591"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/neighborhoodPolygons.js": {
+    "mtime": 1788967703.9941373,
+    "ast_hash": "30c71fd6dd0429ccc7e96d243cd139aa",
+    "semantic_hash": "30c71fd6dd0429ccc7e96d243cd139aa"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/neighborhoodPolygons.test.mjs": {
+    "mtime": 1788967703.9942243,
+    "ast_hash": "2ec2f4008e950659614cbdcd62ab7533",
+    "semantic_hash": "2ec2f4008e950659614cbdcd62ab7533"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/overpassProxy.test.mjs": {
+    "mtime": 1788967703.9945178,
+    "ast_hash": "1f9087fe03437598904524892db15537",
+    "semantic_hash": "1f9087fe03437598904524892db15537"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/pickRegistry.js": {
+    "mtime": 1788967703.994588,
+    "ast_hash": "6434b1787e4f0ff5fe4f19817ff609f4",
+    "semantic_hash": "6434b1787e4f0ff5fe4f19817ff609f4"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/pickRegistry.test.mjs": {
+    "mtime": 1788967703.994675,
+    "ast_hash": "40107297e110c36899208bf580ecdcbc",
+    "semantic_hash": "40107297e110c36899208bf580ecdcbc"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/radio.js": {
+    "mtime": 1788967703.9954147,
+    "ast_hash": "0fcad7be53c8af3bf08225b0185f29e0",
+    "semantic_hash": "0fcad7be53c8af3bf08225b0185f29e0"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/radio.test.mjs": {
+    "mtime": 1788967703.9957433,
+    "ast_hash": "bd161d7e440fad60c234b67c2ecf3a0d",
+    "semantic_hash": "bd161d7e440fad60c234b67c2ecf3a0d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/radioCountry.js": {
+    "mtime": 1788967703.995823,
+    "ast_hash": "b82ed4a8607f1e13897b1afbdeb8c368",
+    "semantic_hash": "b82ed4a8607f1e13897b1afbdeb8c368"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/radioCountry.test.mjs": {
+    "mtime": 1788967703.9958858,
+    "ast_hash": "0fb33bec1184ff6edcdbefc7946d1921",
+    "semantic_hash": "0fb33bec1184ff6edcdbefc7946d1921"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/radioProxy.test.mjs": {
+    "mtime": 1788967703.9960163,
+    "ast_hash": "fd3a9e0ab6a6e0387f529410f9d5b4f3",
+    "semantic_hash": "fd3a9e0ab6a6e0387f529410f9d5b4f3"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/regionalBrief.js": {
+    "mtime": 1788967703.996112,
+    "ast_hash": "de7640d1c63620f781e4c91b6658c128",
+    "semantic_hash": "de7640d1c63620f781e4c91b6658c128"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/regionalBrief.test.mjs": {
+    "mtime": 1788967703.996176,
+    "ast_hash": "210d2c8d6bc1525895eeffd267ef8817",
+    "semantic_hash": "210d2c8d6bc1525895eeffd267ef8817"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/regionalProxy.test.mjs": {
+    "mtime": 1788967703.9962626,
+    "ast_hash": "7cbbbd06ec571a382aacd3b90ac0eee8",
+    "semantic_hash": "7cbbbd06ec571a382aacd3b90ac0eee8"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/renderAltitude.js": {
+    "mtime": 1788967703.9963386,
+    "ast_hash": "4b3cabc7e0dd066d0d6cb99c66dc5d5a",
+    "semantic_hash": "4b3cabc7e0dd066d0d6cb99c66dc5d5a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/renderAltitude.test.mjs": {
+    "mtime": 1788967703.9964154,
+    "ast_hash": "857797657b4e51305929e7f697d16d23",
+    "semantic_hash": "857797657b4e51305929e7f697d16d23"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/retryableLoad.js": {
+    "mtime": 1788967703.9964812,
+    "ast_hash": "c14719db1987f575939e46259d367dcb",
+    "semantic_hash": "c14719db1987f575939e46259d367dcb"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/retryableLoad.test.mjs": {
+    "mtime": 1788967703.9965625,
+    "ast_hash": "b4c72c95a9f352add6f2e824d9b59fef",
+    "semantic_hash": "b4c72c95a9f352add6f2e824d9b59fef"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/rocketLaunches.js": {
+    "mtime": 1788967703.9973192,
+    "ast_hash": "c16492dd1167247315b0b81bc770c38b",
+    "semantic_hash": "c16492dd1167247315b0b81bc770c38b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/rocketLaunches.test.mjs": {
+    "mtime": 1788967703.997694,
+    "ast_hash": "46ca367ef915f78580ab08273084bb2f",
+    "semantic_hash": "46ca367ef915f78580ab08273084bb2f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/routePlausible.js": {
+    "mtime": 1788967703.9977705,
+    "ast_hash": "2509108d895a65118003feb643dc0d7c",
+    "semantic_hash": "2509108d895a65118003feb643dc0d7c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/routePlausible.test.mjs": {
+    "mtime": 1788967703.9978373,
+    "ast_hash": "11080ceff4f01aaff0e07b9b0bec325f",
+    "semantic_hash": "11080ceff4f01aaff0e07b9b0bec325f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/satelliteClass.js": {
+    "mtime": 1788967703.997925,
+    "ast_hash": "568d94b08037b580b5eb4f828d9a13e9",
+    "semantic_hash": "568d94b08037b580b5eb4f828d9a13e9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/satelliteClass.test.mjs": {
+    "mtime": 1788967703.9981172,
+    "ast_hash": "efd564636d7ab2b8bc1737750b3f3cf6",
+    "semantic_hash": "efd564636d7ab2b8bc1737750b3f3cf6"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/satellites.js": {
+    "mtime": 1788967703.999049,
+    "ast_hash": "347f5910566dfcd88989fe1a9b1c10fa",
+    "semantic_hash": "347f5910566dfcd88989fe1a9b1c10fa"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/satellitesTrackedRefresh.test.mjs": {
+    "mtime": 1788967703.9991822,
+    "ast_hash": "8838b6e4ac8fd9cda8cd4f59cafdb13e",
+    "semantic_hash": "8838b6e4ac8fd9cda8cd4f59cafdb13e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/satellitesVisibility.test.mjs": {
+    "mtime": 1788967703.999243,
+    "ast_hash": "2eb0bd706b723a81082fd533acb802c7",
+    "semantic_hash": "2eb0bd706b723a81082fd533acb802c7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/scenePick.js": {
+    "mtime": 1788967703.9993064,
+    "ast_hash": "7849843e4c2cbf13c53520951cf64d97",
+    "semantic_hash": "7849843e4c2cbf13c53520951cf64d97"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/scenePick.test.mjs": {
+    "mtime": 1788967703.9995146,
+    "ast_hash": "22585eaa124dd4f57dd68e02344be957",
+    "semantic_hash": "22585eaa124dd4f57dd68e02344be957"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/spriteOrder.js": {
+    "mtime": 1788967703.9995751,
+    "ast_hash": "49d27880162d90be1216bd75a1e60d03",
+    "semantic_hash": "49d27880162d90be1216bd75a1e60d03"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/spriteOrder.test.mjs": {
+    "mtime": 1788967703.9996543,
+    "ast_hash": "7e81916f03dd10b2448acd897b46f7d0",
+    "semantic_hash": "7e81916f03dd10b2448acd897b46f7d0"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/telegeographySubmarineCables.js": {
+    "mtime": 1788967703.9999063,
+    "ast_hash": "4fed891d932a363be6b2014a9267dc17",
+    "semantic_hash": "4fed891d932a363be6b2014a9267dc17"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/telegeographySubmarineCables.test.mjs": {
+    "mtime": 1788967704.000178,
+    "ast_hash": "7ba7c48fe1e5358d90a03e9dda0db99a",
+    "semantic_hash": "7ba7c48fe1e5358d90a03e9dda0db99a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/terrainHeights.js": {
+    "mtime": 1788967704.0004532,
+    "ast_hash": "c5d86c662fd92e333aec90a500ff950d",
+    "semantic_hash": "c5d86c662fd92e333aec90a500ff950d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/terrainHeights.test.mjs": {
+    "mtime": 1788967704.0005786,
+    "ast_hash": "ba667c5ae236b82fdcfc753bd565ab30",
+    "semantic_hash": "ba667c5ae236b82fdcfc753bd565ab30"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/terrainHeightsProxy.js": {
+    "mtime": 1788967704.0009391,
+    "ast_hash": "8b1b19d17ad42db7cc2be7bf4f629fa3",
+    "semantic_hash": "8b1b19d17ad42db7cc2be7bf4f629fa3"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/terrainHeightsProxy.test.mjs": {
+    "mtime": 1788967704.001093,
+    "ast_hash": "04d4b3c2400396224a8837ec157ec0f8",
+    "semantic_hash": "04d4b3c2400396224a8837ec157ec0f8"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/tomtomTiles.js": {
+    "mtime": 1788967704.0011735,
+    "ast_hash": "35df0406640f75c377b5b0dd247ca748",
+    "semantic_hash": "35df0406640f75c377b5b0dd247ca748"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/tomtomTiles.test.mjs": {
+    "mtime": 1788967704.001262,
+    "ast_hash": "0ffe21b580e82ddcbc83d4fff8af524b",
+    "semantic_hash": "0ffe21b580e82ddcbc83d4fff8af524b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/tr3bRegistry.js": {
+    "mtime": 1788967704.0013425,
+    "ast_hash": "0b3f5949eb6d7187b02f1e2b0b0d3fe2",
+    "semantic_hash": "0b3f5949eb6d7187b02f1e2b0b0d3fe2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/tr3bRegistry.test.mjs": {
+    "mtime": 1788967704.0016127,
+    "ast_hash": "73faa73e8ecea81f68ca294e28903a96",
+    "semantic_hash": "73faa73e8ecea81f68ca294e28903a96"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trackedCamera.js": {
+    "mtime": 1788967704.0019119,
+    "ast_hash": "3470b7d4cf16578fa6da598810e563db",
+    "semantic_hash": "3470b7d4cf16578fa6da598810e563db"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trackedCamera.test.mjs": {
+    "mtime": 1788967704.0019884,
+    "ast_hash": "84b2d2c484e9e3ace5ad8c17d2498326",
+    "semantic_hash": "84b2d2c484e9e3ace5ad8c17d2498326"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trackedModelRegime.js": {
+    "mtime": 1788967704.0020745,
+    "ast_hash": "48bda04d52f0ea9619519fcefa80a18a",
+    "semantic_hash": "48bda04d52f0ea9619519fcefa80a18a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trackedModelRegime.test.mjs": {
+    "mtime": 1788967704.0024345,
+    "ast_hash": "51f6348a5fa7b94047bd72ffd6e834b5",
+    "semantic_hash": "51f6348a5fa7b94047bd72ffd6e834b5"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trackedReadout.js": {
+    "mtime": 1788967704.0026789,
+    "ast_hash": "c297afcf2e6c1d46e8e41e407f993fa9",
+    "semantic_hash": "c297afcf2e6c1d46e8e41e407f993fa9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trackedReadout.test.mjs": {
+    "mtime": 1788967704.002916,
+    "ast_hash": "a44ce496f93e93d9e82bbf4b2d76af55",
+    "semantic_hash": "a44ce496f93e93d9e82bbf4b2d76af55"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trackingClickGesture.js": {
+    "mtime": 1788967704.0029795,
+    "ast_hash": "6893a3d3c2806bc9003bfd6fae6c273c",
+    "semantic_hash": "6893a3d3c2806bc9003bfd6fae6c273c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trackingClickGesture.test.mjs": {
+    "mtime": 1788967704.0030518,
+    "ast_hash": "a162fe75e5683371f9480c88454fc2bd",
+    "semantic_hash": "a162fe75e5683371f9480c88454fc2bd"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/traffic.js": {
+    "mtime": 1788967704.003826,
+    "ast_hash": "3ddf8269e94c5dac1780e823c7edfd4f",
+    "semantic_hash": "3ddf8269e94c5dac1780e823c7edfd4f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/traffic.test.mjs": {
+    "mtime": 1788967704.0039482,
+    "ast_hash": "603b5959b4c25a621ea06929994c6bc2",
+    "semantic_hash": "603b5959b4c25a621ea06929994c6bc2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficBounds.js": {
+    "mtime": 1788967704.0040314,
+    "ast_hash": "b839d71ec1098666e54be0a9856f7763",
+    "semantic_hash": "b839d71ec1098666e54be0a9856f7763"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficBounds.test.mjs": {
+    "mtime": 1788967704.0041149,
+    "ast_hash": "e97635401eab4b4a0cd5f362c9fab3e9",
+    "semantic_hash": "e97635401eab4b4a0cd5f362c9fab3e9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficFlowStyle.js": {
+    "mtime": 1788967704.0041919,
+    "ast_hash": "39d768773a8af23bc618becf6799d9e7",
+    "semantic_hash": "39d768773a8af23bc618becf6799d9e7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficFlowStyle.test.mjs": {
+    "mtime": 1788967704.0042663,
+    "ast_hash": "eff1c8a11cb5785dd9a3eee2fb4b2141",
+    "semantic_hash": "eff1c8a11cb5785dd9a3eee2fb4b2141"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficPresetStyle.js": {
+    "mtime": 1788967704.0043502,
+    "ast_hash": "d9ba421b709ebffcfc16a619b4c45cb8",
+    "semantic_hash": "d9ba421b709ebffcfc16a619b4c45cb8"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficPresetStyle.test.mjs": {
+    "mtime": 1788967704.0044322,
+    "ast_hash": "4ab7a36cbc92cc4810f7065d661fa499",
+    "semantic_hash": "4ab7a36cbc92cc4810f7065d661fa499"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficQueue.js": {
+    "mtime": 1788967704.004504,
+    "ast_hash": "040326c9b6f0e4557780fc82df3a844b",
+    "semantic_hash": "040326c9b6f0e4557780fc82df3a844b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficQueue.test.mjs": {
+    "mtime": 1788967704.0045793,
+    "ast_hash": "1110f014a65fd5e096e73ff4a6c2f189",
+    "semantic_hash": "1110f014a65fd5e096e73ff4a6c2f189"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trafficTiming.test.mjs": {
+    "mtime": 1788967704.0047026,
+    "ast_hash": "77f9f2d112e5ba27e64d0ff6c3b58267",
+    "semantic_hash": "77f9f2d112e5ba27e64d0ff6c3b58267"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trailRenderer.js": {
+    "mtime": 1788967704.0047865,
+    "ast_hash": "b02095ca15c2240ab15c8c1b3c9e4207",
+    "semantic_hash": "b02095ca15c2240ab15c8c1b3c9e4207"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/trailRenderer.test.mjs": {
+    "mtime": 1788967704.0048563,
+    "ast_hash": "cb4e8437fca0ab251eaaacb47712a316",
+    "semantic_hash": "cb4e8437fca0ab251eaaacb47712a316"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/vesselLabels.js": {
+    "mtime": 1788967704.004936,
+    "ast_hash": "d8ffd452fb1d012697e52d97ca9fbaaf",
+    "semantic_hash": "d8ffd452fb1d012697e52d97ca9fbaaf"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/vesselLabels.test.mjs": {
+    "mtime": 1788967704.0050147,
+    "ast_hash": "923d066846f1bf4523259b6ab452110f",
+    "semantic_hash": "923d066846f1bf4523259b6ab452110f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/devFreshDotenv.test.mjs": {
+    "mtime": 1788967704.0050995,
+    "ast_hash": "051ddee69e67622afec0249f1be9271f",
+    "semantic_hash": "051ddee69e67622afec0249f1be9271f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/firstRunExperience.js": {
+    "mtime": 1788967704.0054984,
+    "ast_hash": "09b262ef480378292b265b50af7e2e6d",
+    "semantic_hash": "09b262ef480378292b265b50af7e2e6d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/firstRunExperience.test.mjs": {
+    "mtime": 1788967704.0058796,
+    "ast_hash": "0ff51d452f57fe7d28001f4eb8b11ffa",
+    "semantic_hash": "0ff51d452f57fe7d28001f4eb8b11ffa"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/googlePlacesKeyless.test.mjs": {
+    "mtime": 1788967704.0059783,
+    "ast_hash": "d67add63c2a8477f598ab805c3e59102",
+    "semantic_hash": "d67add63c2a8477f598ab805c3e59102"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/hud.js": {
+    "mtime": 1788967704.0062883,
+    "ast_hash": "b7ed44c6639506221594cda2d487fdff",
+    "semantic_hash": "b7ed44c6639506221594cda2d487fdff"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/hudAltitudeDatum.test.mjs": {
+    "mtime": 1788967704.0065675,
+    "ast_hash": "861b442d937f190f236a74c1cd44d388",
+    "semantic_hash": "861b442d937f190f236a74c1cd44d388"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/hudLocality.js": {
+    "mtime": 1788967704.0066516,
+    "ast_hash": "3f921c29e8a1b1c6e3ef0c0b11a72506",
+    "semantic_hash": "3f921c29e8a1b1c6e3ef0c0b11a72506"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/hudLocality.test.mjs": {
+    "mtime": 1788967704.0067337,
+    "ast_hash": "aa8c130fe14c8c43824ffd797da277f4",
+    "semantic_hash": "aa8c130fe14c8c43824ffd797da277f4"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/hudSummaryResponse.js": {
+    "mtime": 1788967704.006798,
+    "ast_hash": "0c0c66915ace74631cab6a184ffcdfc9",
+    "semantic_hash": "0c0c66915ace74631cab6a184ffcdfc9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/hudSummaryResponse.test.mjs": {
+    "mtime": 1788967704.0068784,
+    "ast_hash": "6235453b8b0a89412d8fbd45e6a4c588",
+    "semantic_hash": "6235453b8b0a89412d8fbd45e6a4c588"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/keySetup.js": {
+    "mtime": 1788967704.0070033,
+    "ast_hash": "d75e62109809f175d93c1571e9a4ebd1",
+    "semantic_hash": "d75e62109809f175d93c1571e9a4ebd1"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/keySetup.test.mjs": {
+    "mtime": 1788967704.007071,
+    "ast_hash": "19c97e11a66fb658c25d7ed6f88a2933",
+    "semantic_hash": "19c97e11a66fb658c25d7ed6f88a2933"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/keySetupCore.mjs": {
+    "mtime": 1788967704.0073485,
+    "ast_hash": "f7066139bc8c2526af65b79c1ecf18dd",
+    "semantic_hash": "f7066139bc8c2526af65b79c1ecf18dd"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/keySetupCore.test.mjs": {
+    "mtime": 1788967704.0074964,
+    "ast_hash": "8629ad94ad9676bf39af4907dcf9c448",
+    "semantic_hash": "8629ad94ad9676bf39af4907dcf9c448"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/keySetupHardening.mjs": {
+    "mtime": 1788967704.0075986,
+    "ast_hash": "8608a4d8a69dfe8407d1352a02609f98",
+    "semantic_hash": "8608a4d8a69dfe8407d1352a02609f98"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/keySetupHardening.test.mjs": {
+    "mtime": 1788967704.0077276,
+    "ast_hash": "4217a41f516080c1692b8339962aff13",
+    "semantic_hash": "4217a41f516080c1692b8339962aff13"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/loadingFeedback.js": {
+    "mtime": 1788967704.0078642,
+    "ast_hash": "4966058de144f591b866c3a92c0c79a9",
+    "semantic_hash": "4966058de144f591b866c3a92c0c79a9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/loadingFeedback.test.mjs": {
+    "mtime": 1788967704.0080736,
+    "ast_hash": "e7fcaa12961eb3cc174541ea9cea841a",
+    "semantic_hash": "e7fcaa12961eb3cc174541ea9cea841a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/locationReadouts.test.mjs": {
+    "mtime": 1788967704.0081608,
+    "ast_hash": "3a82f877a78a67584c638cb9d1a0ac62",
+    "semantic_hash": "3a82f877a78a67584c638cb9d1a0ac62"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/locationStatus.js": {
+    "mtime": 1788967704.0082314,
+    "ast_hash": "1f78ffd521fe634691e73dae5e3b0a33",
+    "semantic_hash": "1f78ffd521fe634691e73dae5e3b0a33"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/locationStatus.test.mjs": {
+    "mtime": 1788967704.0083008,
+    "ast_hash": "778eae8ab1cb0fcdd1c5a5ce1f165671",
+    "semantic_hash": "778eae8ab1cb0fcdd1c5a5ce1f165671"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/locations.js": {
+    "mtime": 1788967704.008704,
+    "ast_hash": "1d5366c555b73e2ed752f5b7ad3cd09a",
+    "semantic_hash": "1d5366c555b73e2ed752f5b7ad3cd09a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/locations.test.mjs": {
+    "mtime": 1788967704.0091164,
+    "ast_hash": "262a2a995a5d5f7454298726f83063a2",
+    "semantic_hash": "262a2a995a5d5f7454298726f83063a2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/logoGaze.js": {
+    "mtime": 1788967704.0092003,
+    "ast_hash": "6b838af7d532383d8b875d94240c186d",
+    "semantic_hash": "6b838af7d532383d8b875d94240c186d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/logoGaze.test.mjs": {
+    "mtime": 1788967704.0092661,
+    "ast_hash": "188a30ccd205023ad2610a5e390cf42e",
+    "semantic_hash": "188a30ccd205023ad2610a5e390cf42e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/main.js": {
+    "mtime": 1788967704.0096323,
+    "ast_hash": "a13b1a12f134fef6b6466ba2348b6a96",
+    "semantic_hash": "a13b1a12f134fef6b6466ba2348b6a96"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/mapStackChips.js": {
+    "mtime": 1788967704.0097237,
+    "ast_hash": "8608687211e3ccc3b0ee77c070e8994d",
+    "semantic_hash": "8608687211e3ccc3b0ee77c070e8994d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/mapStackChips.test.mjs": {
+    "mtime": 1788967704.009893,
+    "ast_hash": "cb1f28a07df3262c7283700e474adf9e",
+    "semantic_hash": "cb1f28a07df3262c7283700e474adf9e"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/mapStackController.js": {
+    "mtime": 1788967704.010059,
+    "ast_hash": "02ca2870bac10916ed54e098f120edc4",
+    "semantic_hash": "02ca2870bac10916ed54e098f120edc4"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/mapStackUnavailableReason.test.mjs": {
+    "mtime": 1788967704.0101264,
+    "ast_hash": "10bf629b289910331f0749546e4923fb",
+    "semantic_hash": "10bf629b289910331f0749546e4923fb"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/mapStartup.js": {
+    "mtime": 1788967704.0101917,
+    "ast_hash": "98ac23384fd6fd93741c163857049445",
+    "semantic_hash": "98ac23384fd6fd93741c163857049445"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/mapStartup.test.mjs": {
+    "mtime": 1788967704.010263,
+    "ast_hash": "62cac76615d4143f0cd79e5fe2042d79",
+    "semantic_hash": "62cac76615d4143f0cd79e5fe2042d79"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/navigationPolicy.js": {
+    "mtime": 1788967704.0103416,
+    "ast_hash": "ba0b89300cd71359df9e02b16c1259f6",
+    "semantic_hash": "ba0b89300cd71359df9e02b16c1259f6"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/navigationPolicy.test.mjs": {
+    "mtime": 1788967704.0106964,
+    "ast_hash": "ef106523a565818a175301c831cf98cf",
+    "semantic_hash": "ef106523a565818a175301c831cf98cf"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/orbit.js": {
+    "mtime": 1788967704.0107663,
+    "ast_hash": "9b4203fff96b7d7ae110637a8f884c74",
+    "semantic_hash": "9b4203fff96b7d7ae110637a8f884c74"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/overlays/worldOverlay.js": {
+    "mtime": 1788967704.0113354,
+    "ast_hash": "41e804e8fb8af1263ac7aafe12004b95",
+    "semantic_hash": "41e804e8fb8af1263ac7aafe12004b95"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/overlays/worldOverlay.test.mjs": {
+    "mtime": 1788967704.0119379,
+    "ast_hash": "0826b8bf037f8093284a626f88bd0028",
+    "semantic_hash": "0826b8bf037f8093284a626f88bd0028"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/overlays/worldOverlayAllocation.test.mjs": {
+    "mtime": 1788967704.0121129,
+    "ast_hash": "425bf711eac819eaf90293a03e0b77cb",
+    "semantic_hash": "425bf711eac819eaf90293a03e0b77cb"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/overlays/worldOverlayAllocation.worker.mjs": {
+    "mtime": 1788967704.0123472,
+    "ast_hash": "38f4c3811b5a4d33428f9b0c839afb02",
+    "semantic_hash": "38f4c3811b5a4d33428f9b0c839afb02"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/overlays/worldOverlayDraw.js": {
+    "mtime": 1788967704.0125408,
+    "ast_hash": "60146eaed4c4c85cb0e00445236d032a",
+    "semantic_hash": "60146eaed4c4c85cb0e00445236d032a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/overlays/worldOverlayDraw.test.mjs": {
+    "mtime": 1788967704.012863,
+    "ast_hash": "ec922fbd7e628dbc0f0180c7766f27a7",
+    "semantic_hash": "ec922fbd7e628dbc0f0180c7766f27a7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/overlays/worldOverlayTokens.js": {
+    "mtime": 1788967704.0129535,
+    "ast_hash": "f7991d6487eef7addcc2241f012ffad2",
+    "semantic_hash": "f7991d6487eef7addcc2241f012ffad2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/overpassProxy.test.mjs": {
+    "mtime": 1788967704.013202,
+    "ast_hash": "117fe0942285ce8f0cfd48afd661cb40",
+    "semantic_hash": "117fe0942285ce8f0cfd48afd661cb40"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/panelStackLayout.js": {
+    "mtime": 1788967704.0132854,
+    "ast_hash": "7d7de315f0e0662fe109b8168d3d36fc",
+    "semantic_hash": "7d7de315f0e0662fe109b8168d3d36fc"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/panelStackLayout.test.mjs": {
+    "mtime": 1788967704.0135314,
+    "ast_hash": "5cff2786d366c435a21082394a5980d9",
+    "semantic_hash": "5cff2786d366c435a21082394a5980d9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/pinokioEnvironment.test.mjs": {
+    "mtime": 1788967704.0137906,
+    "ast_hash": "772854027bc0de2bb53a657007393c07",
+    "semantic_hash": "772854027bc0de2bb53a657007393c07"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/pinokioLauncherContract.test.mjs": {
+    "mtime": 1788967704.0139253,
+    "ast_hash": "c7876f562e81a3a27b5976a5ca2dadda",
+    "semantic_hash": "c7876f562e81a3a27b5976a5ca2dadda"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/pinokioPreflight.test.mjs": {
+    "mtime": 1788967704.0140007,
+    "ast_hash": "f93f26762d24aabb89e205e795546fb7",
+    "semantic_hash": "f93f26762d24aabb89e205e795546fb7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/qaL9MatrixVerdicts.test.mjs": {
+    "mtime": 1788967704.0141442,
+    "ast_hash": "c8d710d096bd21283d7cc334bec76e43",
+    "semantic_hash": "c8d710d096bd21283d7cc334bec76e43"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/qaVesselCardsHarness.test.mjs": {
+    "mtime": 1788967704.0142186,
+    "ast_hash": "5eb3eb7781f29e6c5dcc8920d829eca2",
+    "semantic_hash": "5eb3eb7781f29e6c5dcc8920d829eca2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/radioMarkup.test.mjs": {
+    "mtime": 1788967704.0145633,
+    "ast_hash": "969c47ce8a8488a7aed3b81a7a49fd2d",
+    "semantic_hash": "969c47ce8a8488a7aed3b81a7a49fd2d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/reasonableDefaults.test.mjs": {
+    "mtime": 1788967704.0146701,
+    "ast_hash": "74ecaafc2f12e236994cd840819f0102",
+    "semantic_hash": "74ecaafc2f12e236994cd840819f0102"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/renderGovernor.js": {
+    "mtime": 1788967704.014761,
+    "ast_hash": "51c1d0dba9c2f4c651d1a5650d0b3bd1",
+    "semantic_hash": "51c1d0dba9c2f4c651d1a5650d0b3bd1"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/renderGovernor.test.mjs": {
+    "mtime": 1788967704.0148287,
+    "ast_hash": "411408ef1b1547110b8339f49a0be495",
+    "semantic_hash": "411408ef1b1547110b8339f49a0be495"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/rightRailPolicy.js": {
+    "mtime": 1788967704.0149047,
+    "ast_hash": "294b983a6ad1d6f51e9555054501e2c0",
+    "semantic_hash": "294b983a6ad1d6f51e9555054501e2c0"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/rightRailPolicy.test.mjs": {
+    "mtime": 1788967704.014978,
+    "ast_hash": "ff23d7031fa558ba32474fc0351e17e7",
+    "semantic_hash": "ff23d7031fa558ba32474fc0351e17e7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/routeCinematics.test.mjs": {
+    "mtime": 1788967704.0154593,
+    "ast_hash": "d34fd5367cfa52f4a830ed1f5de3a30d",
+    "semantic_hash": "d34fd5367cfa52f4a830ed1f5de3a30d"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/scenes/director.js": {
+    "mtime": 1788967704.0158312,
+    "ast_hash": "11ade8caa58edd0df87e112d005944a7",
+    "semantic_hash": "11ade8caa58edd0df87e112d005944a7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/scenes/director.test.mjs": {
+    "mtime": 1788967704.0159547,
+    "ast_hash": "2f126b755214bbfa0c180b4882f869c0",
+    "semantic_hash": "2f126b755214bbfa0c180b4882f869c0"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/scenes/recipes.js": {
+    "mtime": 1788967704.01603,
+    "ast_hash": "a45369c4d1791bbc483c161f3572097a",
+    "semantic_hash": "a45369c4d1791bbc483c161f3572097a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/scenes/scenePolicy.js": {
+    "mtime": 1788967704.0161076,
+    "ast_hash": "c24964e8cd4351972a33806b6d92b9e6",
+    "semantic_hash": "c24964e8cd4351972a33806b6d92b9e6"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/scenes/scenePolicy.test.mjs": {
+    "mtime": 1788967704.0163815,
+    "ast_hash": "b2c8bd3728b16c5d615b74d2800b96b7",
+    "semantic_hash": "b2c8bd3728b16c5d615b74d2800b96b7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/scopeMask.js": {
+    "mtime": 1788967704.0165079,
+    "ast_hash": "5f9265f1e7522411fa3c5f39270e3083",
+    "semantic_hash": "5f9265f1e7522411fa3c5f39270e3083"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/scopeMask.test.mjs": {
+    "mtime": 1788967704.0167396,
+    "ast_hash": "49bb3fde3d2ba14f1f2db93c7eecada4",
+    "semantic_hash": "49bb3fde3d2ba14f1f2db93c7eecada4"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/setupDoctor.test.mjs": {
+    "mtime": 1788967704.0170133,
+    "ast_hash": "b77b704c270a48f31e837d7ea7534776",
+    "semantic_hash": "b77b704c270a48f31e837d7ea7534776"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/sharelink.celestial.test.mjs": {
+    "mtime": 1788967704.0171354,
+    "ast_hash": "bb81886ca6f64b018a838b7e71b845bd",
+    "semantic_hash": "bb81886ca6f64b018a838b7e71b845bd"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/sharelink.js": {
+    "mtime": 1788967704.0174115,
+    "ast_hash": "78ab5fd0f64958a99a062447877b9d09",
+    "semantic_hash": "78ab5fd0f64958a99a062447877b9d09"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/splitFlap.js": {
+    "mtime": 1788967704.017533,
+    "ast_hash": "08c98197e368b05dff886f29174badf9",
+    "semantic_hash": "08c98197e368b05dff886f29174badf9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/splitFlap.test.mjs": {
+    "mtime": 1788967704.0176136,
+    "ast_hash": "a0587da36967440eff18f2758a0780c2",
+    "semantic_hash": "a0587da36967440eff18f2758a0780c2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/styles/anime.js": {
+    "mtime": 1788967704.017709,
+    "ast_hash": "57b2a5a7dfdfcc23bf63b2de3e952342",
+    "semantic_hash": "57b2a5a7dfdfcc23bf63b2de3e952342"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/styles/noir.js": {
+    "mtime": 1788967704.0177705,
+    "ast_hash": "883df37fec5311f4334ebecbcecb6f36",
+    "semantic_hash": "883df37fec5311f4334ebecbcecb6f36"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/styles/retro.js": {
+    "mtime": 1788967704.0178459,
+    "ast_hash": "66c6c837db436551a274142bd06e9728",
+    "semantic_hash": "66c6c837db436551a274142bd06e9728"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/styles/snow.js": {
+    "mtime": 1788967704.0179121,
+    "ast_hash": "ae648b740ff6d18ef42ad7b9f1b95709",
+    "semantic_hash": "ae648b740ff6d18ef42ad7b9f1b95709"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/styles/surveillance.js": {
+    "mtime": 1788967704.018047,
+    "ast_hash": "bbd78a63b9f928a0fa7c53ebfbc6bde1",
+    "semantic_hash": "bbd78a63b9f928a0fa7c53ebfbc6bde1"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/styles/thermal.js": {
+    "mtime": 1788967704.0182366,
+    "ast_hash": "9e30612cd9604af02672788945699287",
+    "semantic_hash": "9e30612cd9604af02672788945699287"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/ui.js": {
+    "mtime": 1788967704.0198503,
+    "ast_hash": "708609acd3561ae3e5a6d88848dc23e6",
+    "semantic_hash": "708609acd3561ae3e5a6d88848dc23e6"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/unitTestRunner.test.mjs": {
+    "mtime": 1788967704.0199735,
+    "ast_hash": "dd6279d8bc7357fae726b1f75c862760",
+    "semantic_hash": "dd6279d8bc7357fae726b1f75c862760"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/voice/aircraftIdentityNarration.test.mjs": {
+    "mtime": 1788967704.020076,
+    "ast_hash": "f56fc6022bfe6d7e4289f43e7f8b1773",
+    "semantic_hash": "f56fc6022bfe6d7e4289f43e7f8b1773"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/voice/gevActions.js": {
+    "mtime": 1788967704.0204897,
+    "ast_hash": "646ec3857e4ef6a42236ab8794bbf86f",
+    "semantic_hash": "646ec3857e4ef6a42236ab8794bbf86f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/voice/gevActions.test.mjs": {
+    "mtime": 1788967704.0209596,
+    "ast_hash": "a29493fbcb13d82e71a8097d6aff70ad",
+    "semantic_hash": "a29493fbcb13d82e71a8097d6aff70ad"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/voice/gevRealtime.js": {
+    "mtime": 1788967704.0217083,
+    "ast_hash": "f361fbd3592813eba19181dbdb920dad",
+    "semantic_hash": "f361fbd3592813eba19181dbdb920dad"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/voice/gevRealtime.test.mjs": {
+    "mtime": 1788967704.0228014,
+    "ast_hash": "307dce36cc2eac7892869bbcea2ded7f",
+    "semantic_hash": "307dce36cc2eac7892869bbcea2ded7f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/voice/voiceCost.js": {
+    "mtime": 1788967704.0230813,
+    "ast_hash": "4dcab860ade2ea0edc0b7eacd7a5be07",
+    "semantic_hash": "4dcab860ade2ea0edc0b7eacd7a5be07"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/voice/voiceCost.test.mjs": {
+    "mtime": 1788967704.023492,
+    "ast_hash": "0611b492e127eb5ccbe785cbda3c212b",
+    "semantic_hash": "0611b492e127eb5ccbe785cbda3c212b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/weatherEffectsMath.js": {
+    "mtime": 1788967704.0235577,
+    "ast_hash": "7c2acb002ab19a990e103956fab2bc00",
+    "semantic_hash": "7c2acb002ab19a990e103956fab2bc00"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/weatherEffectsMath.test.mjs": {
+    "mtime": 1788967704.0236237,
+    "ast_hash": "b51ad404b1a281f9113b431d3af84378",
+    "semantic_hash": "b51ad404b1a281f9113b431d3af84378"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/worldFocus.js": {
+    "mtime": 1788967704.0236897,
+    "ast_hash": "eda71d3dd779ca647dc223d76239c1f2",
+    "semantic_hash": "eda71d3dd779ca647dc223d76239c1f2"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/worldFocus.test.mjs": {
+    "mtime": 1788967704.0237756,
+    "ast_hash": "ad9eeba2e2324cc07d9d870d65faf64a",
+    "semantic_hash": "ad9eeba2e2324cc07d9d870d65faf64a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/vite.config.js": {
+    "mtime": 1788967704.028161,
+    "ast_hash": "b4cb263c621c640cd085936021206210",
+    "semantic_hash": "b4cb263c621c640cd085936021206210"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/100.md": {
+    "mtime": 1788967703.5823107,
+    "ast_hash": "7d8850215596ad59844b906ee36509bc",
+    "semantic_hash": "7d8850215596ad59844b906ee36509bc"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/DATA_SOURCES.md": {
+    "mtime": 1788967703.5827737,
+    "ast_hash": "50e066e99bf75d36957ec90ba790b62b",
+    "semantic_hash": "50e066e99bf75d36957ec90ba790b62b"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/README.md": {
+    "mtime": 1788967703.5831265,
+    "ast_hash": "96a8eaa075f51b8a8d53e8d75cc0e0c1",
+    "semantic_hash": "96a8eaa075f51b8a8d53e8d75cc0e0c1"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/docs/CURRENT-STATE.md": {
+    "mtime": 1788967703.5845864,
+    "ast_hash": "8ca8138c01d8256de9c20c2f825b047f",
+    "semantic_hash": "8ca8138c01d8256de9c20c2f825b047f"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/docs/KNOWN-ISSUES.md": {
+    "mtime": 1788967703.5847242,
+    "ast_hash": "fd64283172face1557f5b3f2b9849fe6",
+    "semantic_hash": "fd64283172face1557f5b3f2b9849fe6"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/docs/PERFORMANCE.md": {
+    "mtime": 1788967703.5848284,
+    "ast_hash": "a5e4073e76d29107850769d0e7e931e7",
+    "semantic_hash": "a5e4073e76d29107850769d0e7e931e7"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/docs/opensky-auth.md": {
+    "mtime": 1788967703.898007,
+    "ast_hash": "1f9d7864c762e24017e5d4b0e40beae3",
+    "semantic_hash": "1f9d7864c762e24017e5d4b0e40beae3"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/index.html": {
+    "mtime": 1788967703.898581,
+    "ast_hash": "6c6bb99cd82c50b464247bcbf3b94d08",
+    "semantic_hash": "6c6bb99cd82c50b464247bcbf3b94d08"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/fixtures/voice/README.md": {
+    "mtime": 1788967703.9218016,
+    "ast_hash": "5d56664fec4f5a21a4118a8490781772",
+    "semantic_hash": "5d56664fec4f5a21a4118a8490781772"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/fixtures/README.md": {
+    "mtime": 1788967703.9472866,
+    "ast_hash": "12dfb2b8e23a5d983de132a3ef0d936c",
+    "semantic_hash": "12dfb2b8e23a5d983de132a3ef0d936c"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/dams/README.md": {
+    "mtime": 1788967703.9525325,
+    "ast_hash": "4b1587d1aaf6fe76548e91fb49f077c9",
+    "semantic_hash": "4b1587d1aaf6fe76548e91fb49f077c9"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/datacenters/README.md": {
+    "mtime": 1788967703.9586387,
+    "ast_hash": "691f2c46980ac8d1f7f69c5771928334",
+    "semantic_hash": "691f2c46980ac8d1f7f69c5771928334"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/natural_earth/README.md": {
+    "mtime": 1788967703.9661517,
+    "ast_hash": "ad64582136be6270e15efd7498679f3a",
+    "semantic_hash": "ad64582136be6270e15efd7498679f3a"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/neighborhoods/SOURCE.md": {
+    "mtime": 1788967703.9784904,
+    "ast_hash": "c611d1b1d389e57c815f6ed66792ef98",
+    "semantic_hash": "c611d1b1d389e57c815f6ed66792ef98"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/src/data/local_data/telegeography_submarine_cables/README.md": {
+    "mtime": 1788967703.9807434,
+    "ast_hash": "c28d8d1d19f03fac1ee4d9a639dd77b3",
+    "semantic_hash": "c28d8d1d19f03fac1ee4d9a639dd77b3"
+  },
+  "/Users/eldiaploo/.claude-worktrees/wt-graphify-wt/scripts/fixtures/voice/full-globe-turn-on-radio.wav": {
+    "mtime": 1788967703.9244754,
+    "ast_hash": "8175c46d147b125e4a3e9b64d6c5fb97",
+    "semantic_hash": "8175c46d147b125e4a3e9b64d6c5fb97"
+  }
+}
