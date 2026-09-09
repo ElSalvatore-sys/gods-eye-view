@@ -343,6 +343,51 @@ test('detection holds nothing, and asks for its own frames instead', async () =>
     'and from the shared policy so the two cannot drift');
 });
 
+// ---------------------------------------------------------------------------
+// 5. PROJECTION-VS-DRAW SPLIT (perf-detection-offscreen investigation)
+// ---------------------------------------------------------------------------
+//
+// The mission that motivated this split needed to know how much of the
+// detection paint is screen-space projection/label bookkeeping versus actual
+// canvas draw calls, to decide whether moving drawing to an OffscreenCanvas
+// worker was worth it (see docs/PERFORMANCE.md). These pins keep the
+// diagnostics honest: every exit from the draw pass reports both numbers, and
+// they are wired from `_drawOverlay`'s return value rather than re-measured
+// ad hoc where they are published.
+
+test('detection reports a projection/draw time split on every exit', async () => {
+  const source = await readFile(new URL('./detection.js', import.meta.url), 'utf8');
+
+  const drawOverlay = /function _drawOverlay\([\s\S]*?\n\}/.exec(source)?.[0];
+  assert.ok(drawOverlay, 'detection.js still has a draw pass');
+  assert.match(drawOverlay, /projectionMs: _projectionMs \+ _bookkeepingMs,/,
+    'the populated exit reports the per-object projection loop plus label bookkeeping');
+  assert.match(drawOverlay, /drawMs: _bracketDrawMs \+ _decorDrawMs,/,
+    'and the actual canvas paint calls (bracket stroke + scanlines/ring/banner) separately');
+
+  const emptyExit = /\/\/ Drop the replay buffer with it[\s\S]*?return \{ didSolve: false[^\n]*\n/.exec(source)?.[0];
+  assert.ok(emptyExit, 'the zero-objects exit is still identifiable');
+  assert.match(emptyExit, /projectionMs: 0, drawMs: 0/,
+    'the empty exit reports zero for both rather than leaving them undefined');
+
+  // The paint lane republishes the split it got back, next to the existing
+  // solve/paint diagnostics it already republishes the same way.
+  const paintLane = /function _paintDetectionLane\([\s\S]*?\n\}/.exec(source)?.[0];
+  assert.ok(paintLane, 'detection.js still has a paint lane');
+  assert.match(paintLane, /_lastDiagnostics\.projectionMs = result\.projectionMs \|\| 0;/);
+  assert.match(paintLane, /_lastDiagnostics\.drawMs = result\.drawMs \|\| 0;/);
+
+  // The callout lane paints in its own host slot, after the sensor/bracket
+  // lane — its canvas calls are the other half of `drawMs` and must be timed
+  // separately rather than folded silently into the sensor lane's number.
+  const calloutLane = /function _paintCalloutLane\([\s\S]*?\n\}/.exec(source)?.[0];
+  assert.ok(calloutLane, 'detection.js still has a callout paint lane');
+  assert.match(calloutLane, /_lastDiagnostics\.calloutMs = performance\.now\(\) - start;/,
+    'callouts time their own canvas calls');
+  assert.match(calloutLane, /if \(_lastDiagnostics\) _lastDiagnostics\.calloutMs = 0;/,
+    'and report zero, not stale leftovers, on the nothing-to-paint exit');
+});
+
 test('a layer whose detectable set changed dirties the solve', async () => {
   // Detection PULLS candidates per paint but re-solves on a private 125 ms
   // throttle. A poll tick that replaces contact A with contact B requests one
