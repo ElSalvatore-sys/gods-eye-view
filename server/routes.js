@@ -16,6 +16,8 @@ import { createFirmsRoute } from './routes/firms.js';
 import { createTomtomRoute } from './routes/tomtom.js';
 import { createAdsbdbRoute } from './routes/adsbdb.js';
 import { createTerrainRoute } from './routes/terrain.js';
+import { createOverpassRoute, createOsrmRoutingRoute } from './routes/overpass.js';
+import { createMilitaryInstallationsRoute } from './routes/military.js';
 
 /**
  * @typedef {object} RouteEntry
@@ -34,4 +36,7 @@ export const ROUTES = [
   { mount: '/api/tomtom', handler: createTomtomRoute() },
   { mount: '/api/adsbdb', handler: createAdsbdbRoute() },
   { mount: '/api/terrain/heights', handler: createTerrainRoute() },
+  { mount: '/api/overpass', handler: createOverpassRoute() },
+  { mount: '/api/route', handler: createOsrmRoutingRoute() },
+  { mount: '/api/military-installations', handler: createMilitaryInstallationsRoute() },
 ];
