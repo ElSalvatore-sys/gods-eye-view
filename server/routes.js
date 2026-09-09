@@ -8,6 +8,7 @@
  */
 
 import { createCelestrakRoute } from './routes/celestrak.js';
+import { createRainviewerRoute } from './routes/rainviewer.js';
 
 /**
  * @typedef {object} RouteEntry
@@ -18,4 +19,5 @@ import { createCelestrakRoute } from './routes/celestrak.js';
 /** @type {RouteEntry[]} */
 export const ROUTES = [
   { mount: '/api/celestrak', handler: createCelestrakRoute() },
+  { mount: '/api/rainviewer', handler: createRainviewerRoute() },
 ];
