@@ -30,7 +30,7 @@ import {
   refreshTrackedSubjectContext,
   selectTrackedSubjectContext,
 } from './contextStore.js';
-import { holdContinuousRender, releaseContinuousRender } from '../renderGovernor.js';
+import { holdContinuousRender, releaseContinuousRender, governorRequestRender } from '../renderGovernor.js';
 import { isExplicitLayerStateOrigin } from './layerState.js';
 
 /**
@@ -181,7 +181,10 @@ function _pointStyleFor(noradId, group) {
   return POINT_STYLES[group] || POINT_STYLES.visual;
 }
 
-// Satellite catalog: { noradId → { name, satrec, group } }
+// Satellite catalog: { noradId → { name, satrec, group, line1, line2 } }
+// (line1/line2 kept alongside the parsed satrec so the bulk catalog can be
+// handed to the propagation worker, which parses its own satrecs — see
+// _postCatalogToWorker below.)
 let _catalog = new Map();
 let _pointCollection = null;
 let _points = new Map();          // noradId → point primitive
@@ -209,6 +212,15 @@ let _viewer = null;
 let _preRenderListener = null;
 let _lastPropagation = 0;
 let _lastRingRotation = 0;
+
+// Bulk propagation worker (perf: keeps SGP4 for the whole catalog off the
+// main thread — see satellitesPropagation.worker.js). null means "use the
+// main-thread fallback" (_propagateAll / _propagateDenseChunk below), either
+// because Worker is unavailable in this environment or because it errored.
+let _propagationWorker = null;
+let _workerErrorLogged = false;
+/** Cadence currently applied inside the worker, mirrored so we only postMessage on change. */
+let _workerIntervalMs = POSITION_UPDATE_MS;
 let _lastFocusUpdate = 0;
 /** Points whose animated emphasis remains outside the 1.0 deadband. */
 let _activeFocusCount = 0;
@@ -1024,9 +1036,107 @@ function _trackSatellite(noradId, { origin = 'programmatic' } = {}) {
 }
 
 /**
+ * Create the bulk-propagation Worker (perf: SGP4 for the whole catalog runs
+ * off the main thread instead of stealing time from Cesium's render loop —
+ * see satellitesPropagation.worker.js for the protocol). Returns null — and
+ * the caller then uses the _propagateAll/_propagateDenseChunk fallback below
+ * — when `Worker` is unavailable (e.g. this Node test environment) or when
+ * construction throws (older browsers, restrictive CSPs, module-worker
+ * bundling failures). A runtime error after construction is also treated as
+ * "no worker": production stays correct, just slower, rather than silently
+ * frozen positions.
+ */
+function _createPropagationWorker() {
+  if (typeof Worker === 'undefined') return null;
+  try {
+    const worker = new Worker(
+      new URL('./satellitesPropagation.worker.js', import.meta.url),
+      { type: 'module' },
+    );
+    worker.onmessage = (event) => {
+      const msg = event.data;
+      if (msg?.type === 'positions') _applyWorkerPositions(msg.ids, msg.lla);
+    };
+    worker.onerror = (err) => {
+      if (!_workerErrorLogged) {
+        console.warn(
+          '[Data:Satellites] Propagation worker failed; falling back to main-thread propagation:',
+          err?.message || err,
+        );
+        _workerErrorLogged = true;
+      }
+      try { worker.terminate(); } catch { /* already gone */ }
+      if (_propagationWorker === worker) _propagationWorker = null;
+    };
+    return worker;
+  } catch (e) {
+    if (!_workerErrorLogged) {
+      console.warn('[Data:Satellites] Propagation worker unavailable; using main-thread propagation:', e?.message || e);
+      _workerErrorLogged = true;
+    }
+    return null;
+  }
+}
+
+/**
+ * Apply one worker-computed positions batch to the point primitives.
+ * The TRACKED satellite is skipped here on purpose: it keeps its existing
+ * per-frame main-thread `propagatePosition` path (via `_getTrackedFramePosition`
+ * in `_preRenderTick`) for camera-follow smoothness, and that per-frame sample
+ * must win over a worker batch that can arrive at an arbitrary point in the
+ * frame. Non-finite triples (decayed/errored satrecs — see propagateBatch)
+ * are skipped rather than plotted.
+ */
+function _applyWorkerPositions(ids, lla) {
+  if (!ids || !lla || !_points) return;
+  // The worker is told to stop on disable() (see below), but a message it
+  // already posted before that took effect can still land here — drop it
+  // rather than request a render (and touch primitives) for a quiet layer.
+  if (!_enabled) return;
+  // Mirrors the fallback's showPoints guard (see _preRenderTick): a hidden
+  // fleet still gets computed positions from the worker (harmless, off
+  // thread) but must not have its point buffers touched, or Cesium re-uploads
+  // a "moving" GPU buffer that never actually renders.
+  if (!_params.showPoints) return;
+  for (let i = 0; i < ids.length; i++) {
+    const noradId = ids[i];
+    if (noradId === _trackedNorad) continue;
+    const offset = i * 3;
+    const lat = lla[offset];
+    const lon = lla[offset + 1];
+    const alt = lla[offset + 2];
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(alt)) continue;
+    const point = _points.get(noradId);
+    if (point) point.position = Cesium.Cartesian3.fromDegrees(lon, lat, alt);
+  }
+  governorRequestRender('satellites-worker-positions');
+}
+
+/**
+ * Hand the worker the whole catalog's TLE text (main → worker `load`). Sent
+ * once per catalog fetch/refresh — full core rebuild in update(), and again
+ * once the dense (Starlink) extras finish loading — never per frame. The
+ * worker parses its own satrecs; only text crosses the thread boundary.
+ */
+function _postCatalogToWorker() {
+  // Nothing to resume for a disabled layer — the worker is stopped (see
+  // disable() below) and would otherwise wake back up and keep posting
+  // positions (and requesting renders) after the layer went quiet. enable()
+  // resends the catalog itself once the layer is live again.
+  if (!_propagationWorker || !_enabled) return;
+  const sats = [];
+  for (const [noradId, sat] of _catalog) {
+    if (sat.line1 && sat.line2) sats.push({ id: noradId, line1: sat.line1, line2: sat.line2 });
+  }
+  _propagationWorker.postMessage({ type: 'load', sats });
+}
+
+/**
  * Propagate all CORE satellite positions and update point primitives.
  * (~840 sats ≈ 1.6 ms/pass — fine at the 1s/200ms cadence.) Dense extras are
  * excluded: they refresh on the round-robin budget in _propagateDenseChunk.
+ * Main-thread FALLBACK ONLY — the primary path is the propagation worker
+ * (see _createPropagationWorker); this runs when no worker is available.
  */
 function _propagateAll() {
   const now = new Date();
@@ -1055,6 +1165,10 @@ function _propagateAll() {
  * ~35 propagations (~0.1 ms) even with 10K+ Starlink sats — spreading the
  * work per frame avoids the once-per-second spike a tick-sized chunk
  * (~2K props ≈ 4ms) would cause.
+ * Main-thread FALLBACK ONLY (see _propagateAll) — with a worker available,
+ * the dense extras ride the same full-catalog worker batch as core sats and
+ * need no round-robin spreading, since that work no longer competes with a
+ * render frame at all.
  */
 function _propagateDenseChunk() {
   if (_denseIds.length === 0) return;
@@ -1125,7 +1239,13 @@ async function _loadDenseCatalog({ signal = null } = {}) {
         const pos = propagatePosition(satrec, now);
         if (!pos) continue;
 
-        _catalog.set(noradId, { name: entry.name, satrec, group: 'dense' });
+        _catalog.set(noradId, {
+          name: entry.name,
+          satrec,
+          group: 'dense',
+          line1: entry.line1,
+          line2: entry.line2,
+        });
         const point = _pointCollection.add({
           position: Cesium.Cartesian3.fromDegrees(pos.longitude, pos.latitude, pos.altitude),
           pixelSize: style.pixelSize,
@@ -1158,6 +1278,9 @@ async function _loadDenseCatalog({ signal = null } = {}) {
     _catalogRevision++;
     _denseStatus = 'ready';
     console.log(`[Data:Satellites] Dense catalog: +${added} ${DENSE_GROUP_PATH} (points only)`);
+    // Resend the full (core + dense) catalog now that the extras have
+    // landed — one upload for this load, not per chunk.
+    _postCatalogToWorker();
     // The panel would otherwise keep the pre-load count and legend until the
     // next natural refresh — up to the 5-minute catalog interval.
     _notifyRowControls();
@@ -1210,12 +1333,14 @@ function _removeDenseCatalog() {
   _denseCursor = 0;
   _count = _points.size;
   _catalogRevision++;
+  _postCatalogToWorker(); // drop the removed dense extras from the worker's set too
 }
 
 /**
  * Shared scene.preRender tick (single definition for init + enable):
- * - core fleet propagation at 200ms-tracked / 1s-idle cadence,
- * - dense extras on a per-frame round-robin budget,
+ * - core + dense fleet propagation, either read back from the worker's own
+ *   timer (primary path) or, without a worker, done here at 200ms-tracked /
+ *   1s-idle cadence for core plus a per-frame round-robin budget for dense,
  * - tracked satellite's point primitive per frame (WS-D2),
  * - orbit ring GMST re-alignment every ~1s (WS-D1).
  */
@@ -1224,16 +1349,24 @@ function _preRenderTick() {
   const now = focusNowMs(Date.now());
 
   const interval = _trackedNorad ? 200 : POSITION_UPDATE_MS;
-  // Space Missions keeps this layer enabled for TLE lookup while deliberately
-  // hiding its standalone fleet. Do not rebuild hidden point buffers on the
-  // one-second propagation cadence: that GPU upload presented as a periodic
-  // whole-globe pulse even though the camera remained stationary.
-  if (_params.showPoints && now - _lastPropagation >= interval) {
+  if (_propagationWorker) {
+    // Bulk propagation lives in the worker's own timer (see
+    // satellitesPropagation.worker.js) — nothing to drive here per frame,
+    // just keep its cadence in sync with tracked/idle mode.
+    if (_workerIntervalMs !== interval) {
+      _workerIntervalMs = interval;
+      _propagationWorker.postMessage({ type: 'setInterval', ms: interval });
+    }
+  } else if (_params.showPoints && now - _lastPropagation >= interval) {
+    // Space Missions keeps this layer enabled for TLE lookup while deliberately
+    // hiding its standalone fleet. Do not rebuild hidden point buffers on the
+    // one-second propagation cadence: that GPU upload presented as a periodic
+    // whole-globe pulse even though the camera remained stationary.
     _propagateAll();
     _lastPropagation = now;
   }
 
-  if (_params.showPoints) _propagateDenseChunk();
+  if (!_propagationWorker && _params.showPoints) _propagateDenseChunk();
 
   // Keep the tracked dot on the per-frame epoch shared with label + camera —
   // runs after _propagateAll so the per-frame sample wins over the 200ms one.
@@ -1558,6 +1691,14 @@ const satellitesLayer = {
     _pointCollection = new Cesium.PointPrimitiveCollection();
     viewer.scene.primitives.add(_pointCollection);
 
+    // Bulk propagation worker (perf: see _createPropagationWorker). Torn
+    // down and recreated with init() rather than reused, matching every
+    // other per-init collection above — a fresh worker starts with an empty
+    // working set that update() fills on its first catalog fetch.
+    _propagationWorker?.terminate();
+    _workerIntervalMs = POSITION_UPDATE_MS;
+    _propagationWorker = _createPropagationWorker();
+
     _installClickHandler(viewer);
 
     // Pre-render listener for real-time position updates
@@ -1585,6 +1726,10 @@ const satellitesLayer = {
     if (!_preRenderListener && viewer) {
       _preRenderListener = viewer.scene.preRender.addEventListener(_preRenderTick);
     }
+    // Resume the propagation worker (see disable() below — it is told to
+    // stop, not just ignored, so it doesn't keep waking the render governor
+    // for a hidden layer).
+    _postCatalogToWorker();
     _applyPendingTrackingRestore();
   },
 
@@ -1597,6 +1742,12 @@ const satellitesLayer = {
     for (const path of _orbitPaths.values()) path.primitive.show = false;
     _clearTracking();
     _syncIssOverlay();
+    // Stop the worker rather than let it keep ticking + posting positions
+    // (and requesting renders via _applyWorkerPositions) for a layer nobody
+    // can see — a live render-governor hold on a disabled layer is exactly
+    // the kind of always-on cost this worker exists to remove. enable()
+    // above reloads it.
+    _propagationWorker?.postMessage({ type: 'stop' });
     // Remove click handler + keydown listener + preRender propagation while disabled
     if (_clickHandler) {
       _clickHandler.destroy();
@@ -1705,11 +1856,14 @@ const satellitesLayer = {
         if (seen.has(noradId)) continue;
         seen.add(noradId);
 
-        // Store in catalog
+        // Store in catalog (line1/line2 kept for the propagation worker — see
+        // _postCatalogToWorker)
         _catalog.set(noradId, {
           name: entry.name,
           satrec,
           group: entry.group,
+          line1: entry.line1,
+          line2: entry.line2,
         });
 
         // Propagate initial position
@@ -1753,6 +1907,11 @@ const satellitesLayer = {
       };
       console.log(`[Data:Satellites] ${_count} satellites active, ISS path shown`);
 
+      // Hand the fresh core catalog to the propagation worker (main thread
+      // only uploads TLEs once per fetch/refresh — see _postCatalogToWorker).
+      // Dense extras, if any, resend the full (core + dense) set once loaded.
+      _postCatalogToWorker();
+
       // Re-apply dense mode after a full catalog rebuild (fire-and-forget —
       // _loadDenseCatalog handles its own errors and token invalidation).
       _denseLoadPromise = _params.catalog === 'dense'
@@ -1778,6 +1937,8 @@ const satellitesLayer = {
   destroy(viewer) {
     _abortActiveUpdates();
     releaseContinuousRender('satellites'); // direct-destroy path (perf wave 2 fix)
+    _propagationWorker?.terminate();
+    _propagationWorker = null;
     _enabled = false;
     _clearTracking();
     _cancelPendingTrackingRestore();
