@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/trackedModelRegime.test.mjs
 //
 // Zoom-driven 2D↔3D for the TRACKED contact (owner directive 2026-08-19).

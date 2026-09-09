@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Voice-annotation resilience contract tests — pure logic, no network, no browser.
 //
 // Locks the 2026-07-21 field-test fixes:

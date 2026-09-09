@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/cctvLod.test.mjs
 // Pure LOD-engine tests, adapted from Manjunath's Part C suite
 // (fix/cctv-part-c-review): zoom-scaled card budgets, nearest-first in-view

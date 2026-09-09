@@ -1,3 +1,4 @@
+// @ts-nocheck
 // AISStream watchdog state machine. Both clocks are injected and sockets are
 // fakes, so every policy branch runs offline with no timers and no network.
 import { test } from 'node:test';

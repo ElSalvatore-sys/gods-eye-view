@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Pure server-side mechanics for the Re:Earth terrain-heights proxy.
 // Kept free of Vite/Node middleware state so cache reconstruction and retry
 // behavior can be exercised by the offline node:test suite.

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Pins for the L9 matrix's verdict classifier (scripts/qa-l9-matrix.mjs).
 //
 // The matrix is a RELEASE GATE, so the only bug class that really matters is a

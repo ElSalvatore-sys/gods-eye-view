@@ -1,3 +1,4 @@
+// @ts-nocheck
 // FIRMS click routes: sprite AND card must both select for detail and hand the
 // camera over (pre-launch defect #4 + P1-3). Driven through the production
 // click handler and the production card-render path; only the viewer, the

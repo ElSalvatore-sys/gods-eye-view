@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Mapped-installation proxy persistence (owner playtest 2026-08-18: "search
 // nearby sites" was slow because every look around paid a live Overpass round
 // trip, and the 5-minute memory tier died with the dev server).

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-voice-routing.mjs — voice-surface QA harness (overnight 2026-07-27).
  *

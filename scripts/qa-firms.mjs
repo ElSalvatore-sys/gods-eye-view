@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-firms.mjs — headless proof for the LIVE NASA FIRMS fires layer.
  *

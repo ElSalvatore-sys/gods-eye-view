@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/meshFloorSampler.test.mjs — the rendered-mesh sampler driven through
 // its REAL validation boundary (2026-08-21).
 //

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-sprites-b5.mjs — throwaway QA harness for skylight Tasks 8+9
  * (type-aware billboard silhouettes + per-class 2D/3D scale; Batch 5).

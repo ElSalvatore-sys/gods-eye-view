@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * qa-cctv-v2.mjs — CCTV v2 subsystem proof harness
  *

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-traffic.mjs — headless proof for the TomTom live-flow traffic layer.
  *

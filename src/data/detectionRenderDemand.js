@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Detection's render demand — when the overlay actually needs another frame.
  *

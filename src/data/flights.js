@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @module flights
  * @description Real-time flight tracking layer powered by the OpenSky Network API

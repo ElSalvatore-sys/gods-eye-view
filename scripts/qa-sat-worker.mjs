@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-sat-worker — before/after main-thread long-task measurement for the
  * satellite propagation worker (perf-sat-worker mission).

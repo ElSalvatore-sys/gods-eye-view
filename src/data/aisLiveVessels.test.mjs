@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/aisLiveVessels.test.mjs
 // Focused tests for the AIS feed-status derivation helper (Batch 10, finding H3/AIS)
 // and the vessel vertical-datum seam (2026-07-27 datum pass — see

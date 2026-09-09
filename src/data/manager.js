@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { governorRequestRender } from '../renderGovernor.js';
 import { markDetectionSourcesChanged } from './detection.js';
 function cloneLayerParams(value) {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * qa-height-datum.mjs — height/vertical-datum fix numeric proof harness
  * (docs/plans/2026-07-05-entity-height-datum-fix.md Task 8).

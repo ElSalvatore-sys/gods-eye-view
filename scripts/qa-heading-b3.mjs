@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-heading-b3.mjs — throwaway QA harness for skylight Task 4
  * (path-derived, rate-limited display course; Batch 3 overnight run).

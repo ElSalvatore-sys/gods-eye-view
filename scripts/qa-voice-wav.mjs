@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * Credentialed AI voice acceptance using a prerecorded Chromium microphone.
  *

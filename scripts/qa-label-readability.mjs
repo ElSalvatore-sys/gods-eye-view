@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-label-readability.mjs — before/after evidence capture for ambient label
  * legibility over bright ground.

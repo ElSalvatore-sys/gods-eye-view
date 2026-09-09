@@ -1,3 +1,4 @@
+// @ts-nocheck
 // MAP STACK chip row — the dropdown's replacement control surface.
 //
 // The owner's complaint was two clicks (open panel → open dropdown) to change

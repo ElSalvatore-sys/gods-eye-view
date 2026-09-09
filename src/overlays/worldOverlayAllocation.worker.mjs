@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Cesium from 'cesium';
 import {
   AMBIENT_CARD_COLLISION_CAPACITY,

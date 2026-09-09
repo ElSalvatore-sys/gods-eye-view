@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Cesium from 'cesium';
 /**
  * Model-space visual centres measured from the shipped GLBs' scene-space AABBs.

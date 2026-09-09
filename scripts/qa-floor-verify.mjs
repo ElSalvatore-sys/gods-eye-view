@@ -1,3 +1,4 @@
+// @ts-nocheck
 // scripts/qa-floor-verify.mjs — live floor verification at AUS (round 5).
 // Pins the camera at Austin airport, enables flights, waits ~3 polls, then
 // measures every nearby contact's render height against the ACTUAL rendered

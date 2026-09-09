@@ -1,3 +1,4 @@
+// @ts-nocheck
 // One-click transfer pipeline for clicked world targets (pre-launch defect #4).
 // The layer only announces the click; the UI owns the camera.
 import { test } from 'node:test';

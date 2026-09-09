@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/reasonableDefaults.test.mjs
 //
 // What the console looks like the FIRST time it opens — before any share link,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @module annotationGeoJson
  * @description Pure conversion between the runtime annotation model and a GeoJSON

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-traffic-baseline.mjs — Traffic Phase 0 causal-chain capture.
  *

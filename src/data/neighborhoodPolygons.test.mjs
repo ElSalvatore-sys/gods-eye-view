@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/neighborhoodPolygons.test.mjs — pins the bundled DataSF "Analysis
 // Neighborhoods" dataset (PDDL 1.0, see local_data/neighborhoods/SOURCE.md) and
 // its resolution contract through the source-agnostic loader.

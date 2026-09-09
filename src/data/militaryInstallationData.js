@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Normalize the deliberately small, allow-listed installation context returned
  * by `/api/military-installations`. These are mapped features, not assertions

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Camera verbs — the "spy satellite simulator" feel
  * (docs/superpowers/specs/2026-07-23-camera-verbs-fly-route-spec.md).

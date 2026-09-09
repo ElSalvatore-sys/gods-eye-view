@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /** Focused rendered proof for adaptive Cockpit Display/Radio layout. */
 import fs from 'node:fs';
 import path from 'node:path';

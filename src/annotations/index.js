@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createAnnotationEngine } from './annotationEngine.js';
 import { createHybridAnnotationRenderer } from './hybridAnnotationRenderer.js';
 

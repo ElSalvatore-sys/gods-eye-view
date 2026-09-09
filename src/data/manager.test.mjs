@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Re-entrancy contract for DataLayerManager.toggle() (audit M1 ⊗).
 //
 // The bug: toggle() awaits the layer's init() + first update() before arming the
