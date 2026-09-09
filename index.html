@@ -682,6 +682,49 @@
 
   </div>
 
+  <!-- Alerts Panel (idea #16): rule-based alerts over live layers.
+       Deliberately OUTSIDE #left-panel-stack — a standalone floating panel
+       (like pp-toggles), not a stack member, so it does not need entries in
+       every stack-order/flex-basis selector list in style.css. -->
+  <div id="alerts-panel" class="panel-collapsible collapsed" data-panel-id="alerts-panel">
+    <div class="panel-glow"></div>
+    <div class="alerts-panel-inner">
+      <div class="panel-header">
+        <span class="panel-drag-handle alerts-drag-handle" title="Drag to move">⠿</span>
+        <span class="panel-title">ALERTS</span>
+        <span class="panel-divider"></span>
+        <button class="panel-collapse-btn" data-collapse-target="alerts-panel" title="Collapse panel">+</button>
+      </div>
+      <div id="alerts-rule-list" class="alerts-rule-list"></div>
+      <div class="alerts-controls">
+        <button id="alerts-new-rule-btn" type="button" class="scene-btn">+ RULE</button>
+      </div>
+      <form id="alerts-rule-form" class="alerts-rule-form" hidden>
+        <input id="alerts-rule-name" type="text" placeholder="Rule name" aria-label="Rule name" />
+        <select id="alerts-rule-layer" aria-label="Layer">
+          <option value="flights">Flights</option>
+          <option value="military">Military</option>
+          <option value="ais-live-vessels">Vessels</option>
+          <option value="earthquakes">Earthquakes</option>
+          <option value="local-firms">Fires</option>
+          <option value="satellites">Satellites</option>
+        </select>
+        <div id="alerts-rule-conditions" class="alerts-rule-conditions"></div>
+        <label class="alerts-rule-geo-toggle">
+          <input id="alerts-rule-geo-enable" type="checkbox" />
+          within <input id="alerts-rule-geo-km" type="number" min="1" value="50" aria-label="Radius in km" /> km of current camera centre
+        </label>
+        <div class="alerts-controls">
+          <button type="submit" id="alerts-rule-save-btn" class="scene-btn">SAVE</button>
+          <button type="button" id="alerts-rule-cancel-btn" class="scene-btn scene-btn-danger">CANCEL</button>
+        </div>
+      </form>
+      <div class="alerts-feed-label">RECENT ALERTS</div>
+      <div id="alerts-feed-list" class="alerts-feed-list"></div>
+      <div id="alerts-status">No rules enabled</div>
+    </div>
+  </div>
+
   <!-- Global Context is deliberately independent from the left layer accordion. -->
   <aside id="right-context-rail">
     <div id="global-context-panel" class="panel-collapsible collapsed" data-panel-id="global-context-panel">

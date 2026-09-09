@@ -53,6 +53,7 @@ const FULL_INFO = {
   originCountry: 'United States',
   airline: 'Southwest Airlines',
   route: { origin: { code: 'AUS' }, destination: { code: 'LAX' } },
+  squawk: '1200',
 };
 
 test('flights analyst record: full record maps every contract field', () => {
@@ -74,7 +75,15 @@ test('flights analyst record: full record maps every contract field', () => {
     operator: 'Southwest Airlines',
     routeOrigin: 'AUS',
     routeDestination: 'LAX',
+    squawk: '1200',
   });
+});
+
+test('flights analyst record: squawk maps through for the alerts-engine seam (idea #16)', () => {
+  const emergency = mapAnalystRecord('a1b2c3', { ...FULL_INFO, squawk: '7700' });
+  assert.equal(emergency.squawk, '7700');
+  const missing = mapAnalystRecord('a1b2c3', { ...FULL_INFO, squawk: undefined });
+  assert.equal(missing.squawk, null, 'missing squawk is null, never undefined');
 });
 
 test('flights analyst record: implausible route is suppressed (routeOk=false)', () => {

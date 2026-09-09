@@ -3722,7 +3722,8 @@ function _onMilitaryActiveChange(active) {
  *   lon: number|null, altitudeM: number|null, speedMps: number|null,
  *   heading: number|null, verticalRateMps: number|null, onGround: boolean,
  *   military: boolean, aircraftClass: string|null, originCountry: string|null,
- *   operator: string|null, routeOrigin: string|null, routeDestination: string|null}}
+ *   operator: string|null, routeOrigin: string|null, routeDestination: string|null,
+ *   squawk: string|null}}
  */
 export function mapAnalystRecord(icao24, info, { military = false, routeOk = false } = {}) {
   const num = (v) => (Number.isFinite(v) ? v : null);
@@ -3750,6 +3751,9 @@ export function mapAnalystRecord(icao24, info, { military = false, routeOk = fal
     operator: text(info?.airline),
     routeOrigin: routeOk ? text(info?.route?.origin?.code) : null,
     routeDestination: routeOk ? text(info?.route?.destination?.code) : null,
+    // Alerts-engine seam (idea #16): transponder squawk code — see the
+    // emergency-squawk example rule in src/alerts/alertRules.js.
+    squawk: text(info?.squawk),
   };
 }
 
@@ -4177,12 +4181,13 @@ const flightsLayer = {
       // [4] last_contact, [5] longitude, [6] latitude, [7] baro_altitude,
       // [8] on_ground, [9] velocity, [10] true_track, [11] vertical_rate,
       // [12] sensors, [13] geo_altitude (WGS84 ellipsoidal — the CORRECT
-      // globe-render height when present; height-datum fix Task 6).
+      // globe-render height when present; height-datum fix Task 6),
+      // [14] squawk (transponder code — alerts-engine seam, e.g. 7500/7600/7700).
       // Keep military classification fresh while the military layer is off
       refreshMilitaryRegistryIfStale();
 
       for (const state of usableStates) {
-        const [rawIcao24, callsign, origin_country, time_position, last_contact, lon, lat, baro_alt, on_ground, velocity, true_track, , , geo_alt] = state;
+        const [rawIcao24, callsign, origin_country, time_position, last_contact, lon, lat, baro_alt, on_ground, velocity, true_track, , , geo_alt, squawk] = state;
         const icao24 = _normalizeTrackedIcao(rawIcao24);
         const category = Number.isFinite(state[17]) ? state[17] : null; // extended=1 emitter category
         const vertical_rate = Number.isFinite(state[11]) ? state[11] : null; // m/s, + = climbing
@@ -4374,6 +4379,11 @@ const flightsLayer = {
           // Analyst seam: OpenSky origin_country (state[2]) — additive, sticky
           // like callsign so a transient blank row doesn't blank the field.
           originCountry: stickyText(origin_country, prevMeta?.originCountry) || null,
+          // Alerts-engine seam: OpenSky squawk (state[14]) — sticky like
+          // callsign/originCountry so a transient blank poll doesn't blank a
+          // real emergency code (7500/7600/7700) before the alert's cooldown
+          // has a chance to clear it.
+          squawk: stickyText(squawk, prevMeta?.squawk) || null,
           // OpenSky distinguishes the last position epoch from the last
           // transponder message. The fleet coast horizon uses this actual
           // contact time so a temporarily old position does not hard-freeze
