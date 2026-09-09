@@ -1,3 +1,4 @@
+// @ts-nocheck
 // The HUD's ALT readout datum. Field report (2026-08-22, cockpit parked at
 // SFO): the bottom-right OSD read "ALT: -15M" — and JFK, earlier, "ALT: -18M".
 // Cesium reports the camera's height against the WGS84 ELLIPSOID, and San

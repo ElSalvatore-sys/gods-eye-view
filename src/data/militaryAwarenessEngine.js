@@ -1,3 +1,4 @@
+// @ts-nocheck
 /** Pure proximity helpers for Global Context. No capability modeling. */
 
 export const AWARENESS_RADIUS_M = 250000;

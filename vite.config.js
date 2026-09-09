@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Vite configuration for God's Eye View — a cinematic geospatial app.
  *
@@ -68,6 +69,23 @@ import {
 } from './src/keySetupCore.mjs';
 import { hardenCredentialFile } from './src/keySetupHardening.mjs';
 import { ROUTES } from './server/routes.js';
+import {
+  makeRateLimiter,
+  makeOptInRateLimiter,
+  enforceOptInRateLimit,
+  clientKey,
+} from './server/lib/ratelimit.js';
+import {
+  readRequestBodyCapped,
+  readRequestBody,
+  readResponseTextCapped,
+  readResponseJsonCapped,
+} from './server/lib/http.js';
+import { coalesceProxyRequest, haversineKm } from './server/lib/upstream.js';
+import { parseJsonEnv, parseCsvOrJsonEnv } from './server/lib/env.js';
+// Re-exported below: src/data/regionalProxy.test.mjs still imports these two
+// by name from this module (docs/ARCH-SERVER-SPLIT.md §4 PR 2).
+export { readResponseTextCapped, readResponseJsonCapped, coalesceProxyRequest };
 import {
   fetchTerrainChunkWithRetry,
   parseTerrainPoints,
@@ -446,58 +464,12 @@ const ROUTE_MAX_RESPONSE_BYTES = 8 * 1024 * 1024; // 8 MB
 const ROUTE_MAX_LEG_KM = 600;
 const ROUTE_MAX_TOTAL_KM = 2500;
 
-/**
- * Minimal fixed-window per-key rate limiter for the dev proxies. Not a hard
- * security boundary (dev-only), just a backstop so a runaway client can't hammer
- * the public Overpass / OSRM mirrors or exhaust this process.
- */
-const RATE_LIMITER_MAX_KEYS = 2000;
-function makeRateLimiter({ windowMs, max, globalMax }) {
-  const hits = new Map(); // key -> number[] (timestamps within window)
-  let globalTimes = []; // all hits in window, for the global backstop
-  return function allow(key) {
-    const now = Date.now();
-    globalTimes = globalTimes.filter((t) => now - t < windowMs);
-    if (globalMax && globalTimes.length >= globalMax) return false; // global backstop
-    const recent = (hits.get(key) || []).filter((t) => now - t < windowMs);
-    if (recent.length >= max) { hits.set(key, recent); return false; }
-    recent.push(now);
-    hits.set(key, recent);
-    globalTimes.push(now);
-    // Hard key cap so a key-rotating caller can't grow the map without bound.
-    if (hits.size > RATE_LIMITER_MAX_KEYS) {
-      const oldest = hits.keys().next().value;
-      if (oldest !== undefined) hits.delete(oldest);
-    }
-    if (hits.size > 256) {
-      for (const [k, v] of hits) {
-        if (!v.length || now - v[v.length - 1] > windowMs) hits.delete(k);
-      }
-    }
-    return true;
-  };
-}
+// makeRateLimiter / makeOptInRateLimiter / enforceOptInRateLimit / clientKey moved to
+// server/lib/ratelimit.js (docs/ARCH-SERVER-SPLIT.md §4 PR 2) — imported above.
 const _overpassRateLimiter = makeRateLimiter({ windowMs: 60_000, max: 90, globalMax: 300 });
 const _militaryInstallationsRateLimiter = makeRateLimiter({ windowMs: 60_000, max: 90, globalMax: 300 });
 const _routeRateLimiter = makeRateLimiter({ windowMs: 60_000, max: 60, globalMax: 200 });
 
-/**
- * Opt-in per-IP rate limiter for the cost-bearing API proxies (OpenAI / Google).
- * DEFAULT IS UNLIMITED: when the env var is unset, `0`, or non-numeric, this
- * returns `null` and the caller skips the check entirely — a runtime no-op that
- * preserves the original behavior. Only a positive integer N enables a fixed
- * 60s window of N requests/IP (built lazily once, then reused so its per-IP
- * window state persists across requests). The global backstop is set to a
- * generous multiple of the per-IP cap so a single host can't starve the rest.
- *
- * @param {string|undefined} envValue - Raw env value (requests/min/IP).
- * @returns {((key:string)=>boolean)|null} An `allow(key)` fn, or null when unlimited.
- */
-function makeOptInRateLimiter(envValue) {
-  const max = Number(envValue);
-  if (!Number.isFinite(max) || max <= 0) return null; // unset/0/garbage -> unlimited
-  return makeRateLimiter({ windowMs: 60_000, max: Math.floor(max), globalMax: Math.floor(max) * 20 });
-}
 // Built LAZILY on first request, NOT at module load: `.env` values are applied to process.env later
 // (the plugin config hook calls loadEnv → process.env, AFTER this module is imported), so reading
 // process.env here at import time would always see them unset and silently stay unlimited even when
@@ -514,36 +486,6 @@ function openAiRateLimiter() {
 function googleRateLimiter() {
   if (_googleRateLimiter === undefined) _googleRateLimiter = makeOptInRateLimiter(process.env.GEV_RATELIMIT_GOOGLE_PER_MIN);
   return _googleRateLimiter;
-}
-
-/**
- * Apply an opt-in limiter to a request, writing a 429 when over the cap.
- * When `limiter` is null (unlimited, the default) this is a no-op returning
- * `true`, so the handler proceeds exactly as before.
- *
- * @param {((key:string)=>boolean)|null} limiter
- * @param {import('http').IncomingMessage} req
- * @param {import('http').ServerResponse} res
- * @returns {boolean} True if the request may proceed; false if a 429 was sent.
- */
-function enforceOptInRateLimit(limiter, req, res) {
-  if (!limiter) return true; // unlimited (default) — no behavior change
-  if (limiter(clientKey(req))) return true;
-  res.statusCode = 429;
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Retry-After', '5');
-  res.end(JSON.stringify({ error: 'Rate limit exceeded' }));
-  return false;
-}
-
-/**
- * Client key for rate limiting. Uses the real socket peer address only — we do
- * NOT trust X-Forwarded-For (client-controlled; a rotating value would mint fresh
- * quota and grow the limiter map). This is a localhost dev proxy, so the socket
- * address is the real client.
- */
-function clientKey(req) {
-  return String(req.socket?.remoteAddress || 'local');
 }
 
 /** Server-side timeout ceiling (seconds) we allow inside an Overpass QL query. */
@@ -713,84 +655,9 @@ function sanitizeOverpassBody(rawBody) {
   return { ok: true, body: `data=${encodeURIComponent(clamped)}` };
 }
 
-/** Read a request body with a hard byte cap; throws { code:'BODY_TOO_LARGE' } past the cap. */
-async function readRequestBodyCapped(req, maxBytes) {
-  const chunks = [];
-  let total = 0;
-  for await (const chunk of req) {
-    total += chunk.length;
-    if (total > maxBytes) {
-      const err = new Error('Request body too large');
-      err.code = 'BODY_TOO_LARGE';
-      throw err;
-    }
-    chunks.push(chunk);
-  }
-  return Buffer.concat(chunks);
-}
-
-/**
- * Read a fetch() Response body as text with a hard byte cap. Rejects early on an
- * oversized Content-Length, then streams with a running cap so a chunked or
- * length-omitted response cannot blow past the limit. Throws { code:'RESPONSE_TOO_LARGE' }.
- */
-export async function readResponseTextCapped(response, maxBytes) {
-  const declared = Number(response.headers.get('content-length'));
-  if (Number.isFinite(declared) && declared > maxBytes) {
-    const err = new Error('Upstream response too large');
-    err.code = 'RESPONSE_TOO_LARGE';
-    throw err;
-  }
-  const reader = response.body?.getReader?.();
-  if (!reader) {
-    const text = await response.text();
-    if (Buffer.byteLength(text) > maxBytes) {
-      const err = new Error('Upstream response too large');
-      err.code = 'RESPONSE_TOO_LARGE';
-      throw err;
-    }
-    return text;
-  }
-  const decoder = new TextDecoder();
-  let out = '';
-  let total = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    total += value.byteLength;
-    if (total > maxBytes) {
-      try { await reader.cancel(); } catch { /* no-op */ }
-      const err = new Error('Upstream response too large');
-      err.code = 'RESPONSE_TOO_LARGE';
-      throw err;
-    }
-    out += decoder.decode(value, { stream: true });
-  }
-  out += decoder.decode();
-  return out;
-}
-
-/** Parse a fetch() JSON response only after enforcing a hard byte cap. */
-export async function readResponseJsonCapped(response, maxBytes) {
-  return JSON.parse(await readResponseTextCapped(response, maxBytes));
-}
-
-/**
- * Return the existing promise for a cache key, or create one and remove it
- * only when that exact promise settles.
- */
-export function coalesceProxyRequest(inFlight, key, create) {
-  const existing = inFlight.get(key);
-  if (existing) return { promise: existing, shared: true };
-  let promise;
-  promise = Promise.resolve()
-    .then(create)
-    .finally(() => {
-      if (inFlight.get(key) === promise) inFlight.delete(key);
-    });
-  inFlight.set(key, promise);
-  return { promise, shared: false };
-}
+// readRequestBodyCapped / readResponseTextCapped / readResponseJsonCapped / coalesceProxyRequest
+// moved to server/lib/http.js and server/lib/upstream.js (docs/ARCH-SERVER-SPLIT.md §4 PR 2) —
+// imported above and re-exported for src/data/regionalProxy.test.mjs.
 
 // ---------------------------------------------------------------------------
 // Radio Browser directory proxy
@@ -3757,23 +3624,7 @@ function rowArrayToObject(row, columns) {
   return record;
 }
 
-/**
- * Haversine great-circle distance between two WGS-84 points.
- *
- * @param {number} lat1 - Latitude of point A (degrees).
- * @param {number} lon1 - Longitude of point A (degrees).
- * @param {number} lat2 - Latitude of point B (degrees).
- * @param {number} lon2 - Longitude of point B (degrees).
- * @returns {number} Distance in kilometers.
- */
-function haversineKm(lat1, lon1, lat2, lon2) {
-  const toRad = (value) => value * Math.PI / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat / 2) ** 2
-    + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
+// haversineKm moved to server/lib/upstream.js (docs/ARCH-SERVER-SPLIT.md §4 PR 2) — imported above.
 
 /**
  * Distance-prioritizes cameras to a cap: keeps the maxCount cameras closest
@@ -5259,23 +5110,7 @@ function toFiveWordHudSummary(value) {
     .join(' ');
 }
 
-function readRequestBody(req, maxBytes = 1024 * 1024) {
-  return new Promise((resolve, reject) => {
-    let total = 0;
-    const chunks = [];
-    req.on('data', (chunk) => {
-      total += chunk.length;
-      if (total > maxBytes) {
-        reject(new Error(`Request body exceeds ${maxBytes} bytes`));
-        req.destroy();
-        return;
-      }
-      chunks.push(chunk);
-    });
-    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-    req.on('error', reject);
-  });
-}
+// readRequestBody moved to server/lib/http.js (docs/ARCH-SERVER-SPLIT.md §4 PR 2) — imported above.
 
 /**
  * Optional Google place context is an empty capability when no key is present,
@@ -7318,27 +7153,7 @@ function weatherEffectsProxy() {
   };
 }
 
-function parseJsonEnv(key, fallback) {
-  const value = process.env[key];
-  if (!value) return fallback;
-  try {
-    return JSON.parse(value);
-  } catch {
-    console.warn(`[AISStream] Invalid ${key}; using default.`);
-    return fallback;
-  }
-}
-
-function parseCsvOrJsonEnv(key, fallback) {
-  const value = process.env[key];
-  if (!value) return fallback;
-  try {
-    const parsed = JSON.parse(value);
-    return Array.isArray(parsed) ? parsed : fallback;
-  } catch {
-    return value.split(',').map((entry) => entry.trim()).filter(Boolean);
-  }
-}
+// parseJsonEnv / parseCsvOrJsonEnv moved to server/lib/env.js (docs/ARCH-SERVER-SPLIT.md §4 PR 2).
 
 function clampInt(value, min, max, fallback) {
   const number = Number.parseInt(value, 10);

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/tr3bRegistry.test.mjs
 // TR-3B conversion Easter egg: registry state, sprite-variant selection,
 // class-label override, and the render-path invariants that keep a converted

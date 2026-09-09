@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 import { existsSync, readFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';

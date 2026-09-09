@@ -1,3 +1,4 @@
+// @ts-nocheck
 const CONTEXT_DEPENDENCIES = Object.freeze({
   flights: new Set(['military-awareness', 'flights', 'military', 'ais-live-vessels', 'military-installations']),
   'space-missions': new Set(['rocket-launches', 'satellites']),

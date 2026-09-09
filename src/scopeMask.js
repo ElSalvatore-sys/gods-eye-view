@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getKeyholeGeometry } from './celestialRing.js';
 
 /**

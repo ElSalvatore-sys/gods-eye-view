@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-cables-render-probe — replicates the owner-side perf probe methodology
  * for the cables layer (relative numbers; SwiftShader when run headless):

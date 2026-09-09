@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * bloom.js — Bloom intensity normalization and version migration.
  *

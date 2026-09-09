@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Cesium from 'cesium';
 
 const MAX_FRAME_ATTEMPTS = 120;

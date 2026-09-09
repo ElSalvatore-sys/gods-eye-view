@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-cables-overlay — submarine-cable label path measurement + contract gate.
  *

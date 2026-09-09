@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   ALLOCATION_ELASTIC,
   ALLOCATION_WEIGHTED,

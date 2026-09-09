@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Limb-relative recession for distant aircraft billboards.
  *

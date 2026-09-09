@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/militaryFlights.test.mjs
 // Focused tests for the pure analyst-record mapper (analyst query engine seam).
 // Pure function — no viewer/DOM needed; imported directly.

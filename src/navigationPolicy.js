@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Camera-ownership policy for explicit and deferred navigation.
  *

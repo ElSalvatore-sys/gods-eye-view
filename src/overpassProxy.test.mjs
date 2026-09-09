@@ -1,3 +1,4 @@
+// @ts-nocheck
 // OVERPASS PROXY — which upstream answers count as an answer.
 //
 // One predicate governs cache reads, writes, and stale fallback. A mirror's

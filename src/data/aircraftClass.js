@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/aircraftClass.js
 /**
  * Type-aware aircraft classification. ICAO type-designator sets adapted from

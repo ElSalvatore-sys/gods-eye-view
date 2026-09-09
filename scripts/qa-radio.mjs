@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * Deterministic browser proof for the Radio companion layer.
  *

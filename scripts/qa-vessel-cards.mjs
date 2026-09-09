@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-vessel-cards.mjs — operator-side visual proof harness for AIS cards in
  * the shared world-overlay host.

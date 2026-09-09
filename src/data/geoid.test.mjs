@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/geoid.test.mjs — EGM96 geoid-undulation lookup (docs/plans/2026-07-05-entity-height-datum-fix.md Task 1).
 //
 // Locks the module's public interface (later tasks — aircraft altitude

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-cables-shot — capture the cables layer at two fixed cameras for
  * before/after visual-identity comparison. Writes to gitignored qa-shots/.

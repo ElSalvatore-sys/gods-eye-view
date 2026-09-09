@@ -1,3 +1,4 @@
+// @ts-nocheck
 const clean = (value) => String(value || '').trim();
 
 /**

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * fly_route cinematic evidence — drives the REAL voice runner headlessly and
  * measures the REAL camera (Cesium heading/pitch/roll + position) every

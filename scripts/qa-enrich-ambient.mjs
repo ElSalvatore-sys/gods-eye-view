@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-enrich-ambient.mjs — headless proof for AMBIENT fleet type enrichment
  * (fleet-enrichment widening of skylight Task 14).

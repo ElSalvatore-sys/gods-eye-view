@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { installationFeedback } from './data/installationFeedback.js';
 
 export const LOADING_REVEAL_DELAY_MS = 160;

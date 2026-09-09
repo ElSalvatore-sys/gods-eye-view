@@ -125,9 +125,9 @@ export function createHybridAnnotationRenderer(viewer) {
     if (failure) throw failure;
   }
 
-  function sync(annotations) {
-    world.sync(annotations);
-    screen.sync(annotations);
+  function sync() {
+    world.sync();
+    screen.sync();
   }
 
   function destroy() {

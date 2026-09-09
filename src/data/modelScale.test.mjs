@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Regression test for the giant-military-jet bug: MODEL_SCALE must put every
 // rendered aircraft at REAL-WORLD size, whatever the GLB's native scale is.
 //

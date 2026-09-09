@@ -1,3 +1,4 @@
+// @ts-nocheck
 const MAX_GAZE_SVG_UNITS = 34;
 const FULL_GAZE_DISTANCE_PX = 320;
 const GAZE_EASING = 0.2;

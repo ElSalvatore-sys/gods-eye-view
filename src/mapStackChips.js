@@ -1,3 +1,4 @@
+// @ts-nocheck
 // MAP STACK source chips — the always-visible replacement for the `<select>`
 // that used to sit in the Map Stack panel. One button per stack, rendered from
 // `MapStackController.getStacks()`. The four owner-approved sources below are

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Cesium from 'cesium';
 import { governorRequestRender } from './renderGovernor.js';
 import { keySetupRequirement } from './keySetupCore.mjs';

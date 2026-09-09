@@ -1,4 +1,4 @@
-import { readdirSync } from 'node:fs';
+import { readdirSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -21,9 +21,16 @@ export function assertNode24AllocationRuntime(version = process.versions.node) {
   return version;
 }
 
+/**
+ * Directories scanned for `*.test.mjs` files, relative to the repo root.
+ * `server/` was added in docs/ARCH-SERVER-SPLIT.md PR 2 so the extracted
+ * `server/lib/*.js` helpers (and PR 1's `server/lib/mount.test.mjs`) run
+ * under `npm test` instead of only via a manual `node --test`.
+ */
+const UNIT_TEST_ROOTS = Object.freeze(['src', 'server']);
+
 /** Discover repository unit tests in stable path order. */
 export function discoverUnitTestFiles(root = process.cwd()) {
-  const sourceRoot = path.join(root, 'src');
   const files = [];
   const visit = (directory) => {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {
@@ -34,7 +41,10 @@ export function discoverUnitTestFiles(root = process.cwd()) {
       }
     }
   };
-  visit(sourceRoot);
+  for (const dir of UNIT_TEST_ROOTS) {
+    const sourceRoot = path.join(root, dir);
+    if (existsSync(sourceRoot)) visit(sourceRoot);
+  }
   return files.sort();
 }
 

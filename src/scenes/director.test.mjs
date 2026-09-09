@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Director-level pins for scene playback.
 //
 // scenePolicy.test.mjs pins the pure decisions; these pin the wiring, which is

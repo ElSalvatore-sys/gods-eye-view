@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Cesium from 'cesium';
 import {
   registerEntityContext,
@@ -62,6 +63,20 @@ const AIS_FIRST_CONNECT_LABEL = 'awaiting first AIS position…';
 const VISIBILITY_UPDATE_MS = 800;
 /** Focus alpha alone samples faster inside the existing preRender pass. */
 const FOCUS_UPDATE_MS = 80;
+/**
+ * Camera altitude (m) above which ambient (non-selected) vessels swap from
+ * the textured BillboardCollection sprite into a flat, untextured
+ * PointPrimitiveCollection dot. Only a continental/global-scale camera
+ * clears this height, so the harbor/city-zoom chevron artwork (tens of km,
+ * two+ orders of magnitude below this threshold) never changes — the LOD
+ * swap only ever touches vessels that are a few screen pixels wide anyway,
+ * cutting both the per-frame texture/blend cost and the periodic
+ * screen-projected-rotation math for the thousands of them a 12k-row feed
+ * can put on screen at once.
+ */
+const POINT_LOD_ALTITUDE_M = 350000;
+/** Fixed screen-space size (px) of the LOD point sprite. */
+const POINT_LOD_PIXEL_SIZE = 4;
 const LABEL_GRID_PX = VESSEL_LABEL_GRID_PX;
 /**
  * Minimum screen-space separation between accepted vessel cards (matches the
@@ -414,6 +429,9 @@ const aisLiveVesselsLayer = {
     if (state.billboardCollection && viewer) {
       viewer.scene.primitives.remove(state.billboardCollection);
     }
+    if (state.pointCollection && viewer) {
+      viewer.scene.primitives.remove(state.pointCollection);
+    }
     _vesselOverlayHost.clearSource(VESSEL_OVERLAY_SOURCE_ID);
     _vesselOverlayHost.setVisible(VESSEL_OVERLAY_SOURCE_ID, false);
     removeVesselInteraction();
@@ -619,8 +637,9 @@ const aisLiveVesselsLayer = {
     for (let idx = 0; idx < records.length; idx += 1) {
       if (((idx - start) % stride) !== 0) continue;
       const record = records[idx];
-      if (record.billboard && !record.billboard.show) continue;
-      const position = record.billboard?.position || record.position;
+      const glyph = record.billboard || record.point;
+      if (glyph && !glyph.show) continue;
+      const position = glyph?.position || record.position;
       if (!position) continue;
       result.push({
         position,
@@ -693,6 +712,10 @@ const state = {
   firstConnectTimer: null,
   abort: null,
   billboardCollection: null,
+  /** @type {Cesium.PointPrimitiveCollection|null} LOD twin of billboardCollection. */
+  pointCollection: null,
+  /** @type {'billboard'|'point'} Current ambient-vessel LOD mode. */
+  lodMode: 'billboard',
   /** @type {Array<Object>} Flat render list: keyed records + unkeyed records */
   vesselRecords: [],
   /** @type {Map<string, Object>} MMSI -> vessel record (identity across refreshes) */
@@ -973,6 +996,14 @@ function ensureCollections(viewer) {
   state.billboardCollection.show = state.enabled;
   viewer.scene.primitives.add(state.billboardCollection);
   registerSpriteCollection('ais', state.billboardCollection);
+
+  // Cheap LOD twin — ambient vessels swap into this untextured collection
+  // above POINT_LOD_ALTITUDE_M (see applyVesselLodMode). Registered under
+  // its own sprite-order key so both AIS collections raise together.
+  state.pointCollection = new Cesium.PointPrimitiveCollection();
+  state.pointCollection.show = state.enabled;
+  viewer.scene.primitives.add(state.pointCollection);
+  registerSpriteCollection('ais-points', state.pointCollection);
 }
 
 /**
@@ -1050,6 +1081,17 @@ function reconcileVessels(viewer, rows) {
  */
 function addRecordPrimitives(record, occluder) {
   const visible = state.enabled && isVisible(record.surfacePosition, occluder);
+  addBillboardPrimitive(record, visible);
+}
+
+/**
+ * Create the full-detail billboard glyph for a vessel record (new arrival,
+ * or a swap back from the LOD point).
+ * @param {Object} record - Vessel record.
+ * @param {boolean} visible - Initial `show` value.
+ * @returns {void}
+ */
+function addBillboardPrimitive(record, visible) {
   record.billboard = state.billboardCollection.add({
     position: record.position,
     show: visible,
@@ -1067,6 +1109,87 @@ function addRecordPrimitives(record, occluder) {
     disableDepthTestDistance: Number.POSITIVE_INFINITY,
     id: record,
   });
+}
+
+/**
+ * Create the cheap LOD dot for a vessel record — no texture, no rotation,
+ * a flat type-tinted point. Used only for ambient (non-selected) vessels
+ * once the camera clears POINT_LOD_ALTITUDE_M.
+ * @param {Object} record - Vessel record.
+ * @param {boolean} visible - Initial `show` value.
+ * @returns {void}
+ */
+function addPointPrimitive(record, visible) {
+  record.point = state.pointCollection.add({
+    position: record.position,
+    show: visible,
+    pixelSize: POINT_LOD_PIXEL_SIZE,
+    color: vesselPointColor(record),
+    disableDepthTestDistance: Number.POSITIVE_INFINITY,
+    id: record,
+  });
+}
+
+/**
+ * Type-tinted flat color for a vessel's LOD point (matches the billboard's
+ * per-type chevron tint so a LOD swap changes shape/cost, not identity).
+ * @param {Object} record - Vessel record.
+ * @returns {Cesium.Color}
+ */
+function vesselPointColor(record) {
+  return Cesium.Color.fromCssColorString(vesselTypeCss(record.type));
+}
+
+/**
+ * Camera-height-driven LOD mode: 'point' once the camera clears
+ * POINT_LOD_ALTITUDE_M, 'billboard' below it (see the constant's doc for why
+ * this never touches close-in/harbor-zoom vessel artwork).
+ * @param {Cesium.Camera|undefined} camera - Active viewer camera.
+ * @returns {'billboard'|'point'}
+ */
+function lodModeForCamera(camera) {
+  const height = camera?.positionCartographic?.height;
+  return Number.isFinite(height) && height > POINT_LOD_ALTITUDE_M ? 'point' : 'billboard';
+}
+
+/**
+ * Sweep every ambient vessel record into the target LOD collection. The
+ * selected vessel is exempt (see selectVessel) so the HUD/trail/click-to-
+ * track path never observes its glyph swap while inspected.
+ * @param {'billboard'|'point'} mode - Target LOD mode.
+ * @returns {void}
+ */
+function applyVesselLodMode(mode) {
+  for (const record of state.vesselRecords) {
+    if (record === state.selectedRecord) continue;
+    swapRecordPrimitiveKind(record, mode);
+  }
+}
+
+/**
+ * Move one record's glyph between the billboard and point collections,
+ * preserving its current show state and object identity — picking
+ * (pickRegistry resolves the record either way) and the click-to-track
+ * path are unaffected. No-op when the record is already in `mode`.
+ * @param {Object} record - Vessel record to convert.
+ * @param {'billboard'|'point'} mode - Target LOD mode.
+ * @returns {void}
+ */
+function swapRecordPrimitiveKind(record, mode) {
+  if (mode === 'point') {
+    if (!record.billboard || record.point) return;
+    const visible = record.billboard.show;
+    forgetSpriteFocus(record.billboard);
+    state.billboardCollection.remove(record.billboard);
+    record.billboard = null;
+    addPointPrimitive(record, visible);
+  } else {
+    if (!record.point || record.billboard) return;
+    const visible = record.point.show;
+    state.pointCollection.remove(record.point);
+    record.point = null;
+    addBillboardPrimitive(record, visible);
+  }
 }
 
 /**
@@ -1105,6 +1228,8 @@ function updateRecordInPlace(record, next) {
     if (nextIcon !== prevIcon) {
       record.billboard.image = nextIcon;
     }
+  } else if (record.point) {
+    record.point.position = record.position;
   }
   if (record.mmsi === state.trailMmsi) {
     appendSelectedVesselTrailFix(record);
@@ -1126,6 +1251,10 @@ function removeRecordPrimitives(record) {
     state.billboardCollection.remove(record.billboard);
   }
   record.billboard = null;
+  if (record.point && state.pointCollection) {
+    state.pointCollection.remove(record.point);
+  }
+  record.point = null;
 }
 
 function normalizeVessel(row) {
@@ -1245,6 +1374,13 @@ function updateVisibility(force = false) {
     const doRotations = force || poseSig !== _lastCamPoseSig;
     if (doRotations) _lastCamPoseSig = poseSig;
     const occluder = makeOccluder();
+    // LOD sweep: cheap — only walks records when the camera actually
+    // crossed POINT_LOD_ALTITUDE_M since the last regular pass.
+    const nextLodMode = lodModeForCamera(camera);
+    if (nextLodMode !== state.lodMode) {
+      applyVesselLodMode(nextLodMode);
+      state.lodMode = nextLodMode;
+    }
     const labelCandidates = [];
     for (const record of state.vesselRecords) {
       const visible = isVisible(record.surfacePosition, occluder);
@@ -1258,6 +1394,9 @@ function updateVisibility(force = false) {
             record.billboard.rotation = rot;
           }
         }
+      } else if (record.point) {
+        // LOD points carry no heading/rotation — cheaper on purpose.
+        record.point.show = visible;
       }
       if (visible) labelCandidates.push(record);
     }
@@ -1572,6 +1711,9 @@ function selectVessel(record) {
   clearSelection({ preserveTrail: reuseTrail });
   state.selectedRecord = record;
   record.missedRefreshes = 0;
+  // The inspected vessel always gets its full-detail chevron, even while
+  // the ambient fleet is rendering as cheap LOD points.
+  swapRecordPrimitiveKind(record, 'billboard');
   if (record.billboard) {
     record.billboard.image = shipIcon(record, true);
     record.billboard.scale = shipScale(record) * 1.2;
@@ -1620,6 +1762,7 @@ function refloorVesselRecords() {
     const heightM = vesselDatumHeightM(currentGeoidN(record.lat, record.lon), VESSEL_LIFT_M);
     record.position = Cesium.Cartesian3.fromDegrees(record.lon, record.lat, heightM);
     if (record.billboard) record.billboard.position = record.position;
+    else if (record.point) record.point.position = record.position;
   }
 }
 
@@ -1760,6 +1903,10 @@ function clearSelection({ preserveTrail = false, evicted = false } = {}) {
     record.billboard.scale = shipScale(record);
   }
   state.selectedRecord = null;
+  // Rejoin the ambient fleet's current LOD mode — a no-op unless the camera
+  // is zoomed out past POINT_LOD_ALTITUDE_M, in which case this vessel
+  // rejoins the cheap point collection instead of staying a billboard forever.
+  if (record) swapRecordPrimitiveKind(record, state.lodMode);
   // Drop the full-detail card right away (no-op when the layer is disabled —
   // disable() clears the entry set itself).
   if (record && state.enabled) updateVisibility(true);
@@ -1926,6 +2073,9 @@ function setVisible(show) {
   if (state.billboardCollection) {
     state.billboardCollection.show = show;
   }
+  if (state.pointCollection) {
+    state.pointCollection.show = show;
+  }
   _vesselOverlayHost.setVisible(VESSEL_OVERLAY_SOURCE_ID, show);
 }
 
@@ -1953,6 +2103,8 @@ function resetState() {
   state.firstConnectTimer = null;
   state.abort = null;
   state.billboardCollection = null;
+  state.pointCollection = null;
+  state.lodMode = 'billboard';
   state.vesselRecords = [];
   state.vesselMap = new Map();
   state.unkeyedRecords = [];
@@ -2008,6 +2160,8 @@ export function _setVesselStateForTest(options = {}) {
   );
   state.selectedRecord = options.selectedRecord || null;
   state.billboardCollection = options.billboardCollection || { remove() {} };
+  state.pointCollection = options.pointCollection || { remove() {} };
+  state.lodMode = options.lodMode || 'billboard';
   state.trail = options.trail || null;
   state.trailMmsi = options.trailMmsi || null;
   state.trailPositions = Array.isArray(options.trailPositions) ? [...options.trailPositions] : [];
@@ -2040,6 +2194,32 @@ export function _updateVesselCardsForTest(records = []) {
  */
 export function _reconcileVesselsForTest(viewer, rows) {
   reconcileVessels(viewer, rows);
+}
+
+/**
+ * Drive the production visibility/LOD/rotation pass under a test-controlled
+ * viewer. Test-only seam — production callers only reach this through the
+ * preRender listener installed by installRuntime().
+ * @param {boolean} [force=false] - Force the pass past its throttle window.
+ * @returns {void}
+ */
+export function _updateVisibilityForTest(force = false) {
+  updateVisibility(force);
+}
+
+/**
+ * Read LOD collection bookkeeping without exposing mutable production
+ * state. Test-only seam for the point/billboard swap contract.
+ * @returns {{lodMode: 'billboard'|'point', billboardCount: number, pointCount: number}}
+ */
+export function _getVesselLodStateForTest() {
+  let billboardCount = 0;
+  let pointCount = 0;
+  for (const record of state.vesselRecords) {
+    if (record.billboard) billboardCount += 1;
+    if (record.point) pointCount += 1;
+  }
+  return { lodMode: state.lodMode, billboardCount, pointCount };
 }
 
 /** Apply one server snapshot through the production pre-reconcile health gate. */

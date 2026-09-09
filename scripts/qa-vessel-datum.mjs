@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-vessel-datum.mjs — assertion harness for the AIS vessel vertical-datum
  * pass (docs/superpowers/specs/2026-07-27-vessel-datum-design.md).

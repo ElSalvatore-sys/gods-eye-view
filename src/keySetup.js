@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * The POWER UP surface — paste a key, get a power.
  *

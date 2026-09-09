@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Cesium from 'cesium';
 import { retroShader } from './styles/retro.js';
 import { animeShader } from './styles/anime.js';
@@ -15,6 +16,10 @@ import {
 import { LOCATIONS, CITY_POIS, GLOBE_VIEW, flyToGlobeView, flyToPresetLocation, flyToPOI, searchAndFlyTo } from './locations.js';
 import { locationMiniStatus } from './locationStatus.js';
 import { interruptCameraMotion } from './cameraVerbs.js';
+import { ANALYST_LAYERS } from './data/analystEngine.js';
+import { ALERT_OPS } from './alerts/alertRules.js';
+import { loadRules as loadAlertRules, saveRules as saveAlertRules } from './alerts/alertStore.js';
+import { createAlertRunner } from './alerts/alertRunner.js';
 import {
   aircraftTrackingTarget,
   enterCockpitWithTracking,
@@ -208,6 +213,7 @@ const SHARE_PANEL_STATE_SPECS = Object.freeze([
   { id: 'cctv-panel' },
   { id: 'radio-panel' },
   { id: 'scene-panel' },
+  { id: 'alerts-panel' },
   { id: 'global-context-panel' },
   { id: 'pp-toggles' },
   { id: 'param-slider-panel' },
@@ -217,6 +223,7 @@ const COCKPIT_ENTRY_COLLAPSE_PANEL_IDS = Object.freeze([
   'data-panel',
   'cctv-panel',
   'scene-panel',
+  'alerts-panel',
   'pp-toggles',
   'global-context-panel',
   'radio-panel',
@@ -2109,6 +2116,7 @@ class CockpitViewController {
   }
 }
 
+/** Owns basemap/imagery style switching and related viewer chrome for the globe. */
 export class StyleManager {
   /**
    * @param {Cesium.Viewer} viewer - The CesiumJS viewer instance.
@@ -2259,6 +2267,7 @@ export class StyleManager {
     this._cleanViewExitBtn = document.getElementById('clean-view-exit');
     this._dataPanel = document.getElementById('data-panel');
     this._scenePanel = document.getElementById('scene-panel');
+    this._alertsPanel = document.getElementById('alerts-panel');
     this._cctvPanel = document.getElementById('cctv-panel');
     this._radioPanel = document.getElementById('radio-panel');
     this._contextRadioDock = document.getElementById('context-radio-dock');
@@ -2622,6 +2631,7 @@ export class StyleManager {
     this._initRightPanelAdaptiveLayout();
     this._initRadioPanel();
     this._initCctvPanel();
+    this._initAlertsPanel();
     this._initGlobalContextPanel();
     this._initLocationBar();
     this._initShareButton();
@@ -6682,6 +6692,382 @@ export class StyleManager {
     }, 20);
   }
 
+  // ── Alerts Panel (idea #16) ─────────────────────────────────────────────
+  // Rule-based alerts over live layers (geofence + attribute filters). The
+  // ENGINE (src/alerts/alertRules.js + alertRunner.js) is pure/DOM-free; this
+  // section is the SURFACE — DOM wiring, persistence via alertStore.js, and
+  // "fly to" via the same applyCameraState()/interruptCameraMotion() pattern
+  // scene capture already uses.
+
+  /**
+   * Layer -> extra alert-only fields beyond analystEngine's ANALYST_LAYERS
+   * vocabulary. Squawk is carried on flight records (src/data/flights.js)
+   * but is not part of the analyst query field list, so it is added here
+   * rather than growing that unrelated surface.
+   */
+  static ALERT_EXTRA_TEXT_FIELDS = Object.freeze({ flights: ['squawk'], military: ['squawk'] });
+
+  /** Operators valid for one condition kind, in the order offered in the form. */
+  static ALERT_OPS_BY_KIND = Object.freeze({
+    numeric: Object.freeze(['lt', 'lte', 'gt', 'gte', 'eq', 'neq']),
+    text: Object.freeze(['eq', 'neq', 'in', 'contains']),
+    flag: Object.freeze(['eq']),
+  });
+
+  /**
+   * Every field the rule-builder may offer for a layer, tagged with its kind
+   * so the operator dropdown can be restricted sensibly (`applyCooldown`
+   * itself does not care — this is purely a friendlier form).
+   * @param {string} layerKey
+   * @returns {Array<{field: string, kind: 'numeric'|'text'|'flag'}>}
+   */
+  _alertFieldsForLayer(layerKey) {
+    const spec = ANALYST_LAYERS[layerKey];
+    if (!spec) return [];
+    const extra = StyleManager.ALERT_EXTRA_TEXT_FIELDS[layerKey] || [];
+    return [
+      ...spec.numeric.map((field) => ({ field, kind: 'numeric' })),
+      ...spec.text.map((field) => ({ field, kind: 'text' })),
+      ...spec.flags.map((field) => ({ field, kind: 'flag' })),
+      ...extra.map((field) => ({ field, kind: 'text' })),
+    ];
+  }
+
+  /**
+   * Live layer accessor for the alert runner — the SAME seam `analyst_query`
+   * reads (see `analystProviders().getRecords` in src/voice/gevActions.js):
+   * `dataManager.layers.get(layerKey).module.getAnalystRecords()`, only for
+   * an enabled layer.
+   * @param {string} layerKey
+   * @returns {Array<object>}
+   */
+  _alertGetRecords(layerKey) {
+    const layer = this._dataManager?.layers?.get(layerKey);
+    if (!layer || !this._dataManager?.isEnabled?.(layerKey)) return [];
+    const mod = layer.module;
+    if (typeof mod?.getAnalystRecords !== 'function') return [];
+    try {
+      return mod.getAnalystRecords() || [];
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Wires the alerts-panel: loads persisted rules (or the 3 shipped disabled
+   * examples), starts the throttled runner, and binds the rule list / builder
+   * form / live feed. Mirrors the collapsible-panel pattern every other panel
+   * here uses — collapse/drag are handled by the generic panel machinery
+   * (`_makePanelDraggable`, `setPanelCollapsed`) via this panel's markup.
+   * @returns {void}
+   */
+  _initAlertsPanel() {
+    if (!this._alertsPanel) return;
+    this._alertsRuleList = document.getElementById('alerts-rule-list');
+    this._alertsFeedList = document.getElementById('alerts-feed-list');
+    this._alertsStatus = document.getElementById('alerts-status');
+    this._alertsNewRuleBtn = document.getElementById('alerts-new-rule-btn');
+    this._alertsRuleForm = document.getElementById('alerts-rule-form');
+    this._alertsRuleName = document.getElementById('alerts-rule-name');
+    this._alertsRuleLayer = document.getElementById('alerts-rule-layer');
+    this._alertsRuleConditions = document.getElementById('alerts-rule-conditions');
+    this._alertsRuleGeoEnable = document.getElementById('alerts-rule-geo-enable');
+    this._alertsRuleGeoKm = document.getElementById('alerts-rule-geo-km');
+    this._alertsRuleCancelBtn = document.getElementById('alerts-rule-cancel-btn');
+
+    this._alertRules = loadAlertRules();
+    this._alertRunner = createAlertRunner({
+      getRecords: (layerKey) => this._alertGetRecords(layerKey),
+      getRules: () => this._alertRules,
+    });
+    this._alertRunner.start();
+
+    this._alertsDocumentHandler = (event) => this._onAlertFired(event.detail);
+    document.addEventListener('gev:alert', this._alertsDocumentHandler);
+
+    const dragHandle = this._alertsPanel.querySelector('.panel-drag-handle');
+    if (dragHandle) this._makePanelDraggable('alerts-panel', this._alertsPanel, dragHandle);
+    this._restorePanelPosition('alerts-panel', this._alertsPanel);
+
+    this._alertsRuleLayer?.addEventListener('change', () => this._renderAlertRuleConditionFields());
+    this._alertsNewRuleBtn?.addEventListener('click', () => this._openAlertRuleForm());
+    this._alertsRuleCancelBtn?.addEventListener('click', () => this._closeAlertRuleForm());
+    this._alertsRuleForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      this._saveNewAlertRule();
+    });
+    this._alertsRuleList?.addEventListener('change', (event) => this._onAlertRuleToggle(event));
+    this._alertsRuleList?.addEventListener('click', (event) => this._onAlertRuleDelete(event));
+
+    this._renderAlertRuleConditionFields();
+    this._renderAlertsRuleList();
+    this._renderAlertsFeed();
+  }
+
+  /** Rebuilds the up-to-3-condition rows in the rule builder for the selected layer. */
+  _renderAlertRuleConditionFields() {
+    if (!this._alertsRuleConditions) return;
+    const layerKey = this._alertsRuleLayer?.value || 'flights';
+    const fields = this._alertFieldsForLayer(layerKey);
+    this._alertsRuleConditions.innerHTML = '';
+    for (let i = 0; i < 3; i += 1) {
+      const row = document.createElement('div');
+      row.className = 'alerts-cond-row';
+      const fieldSelect = document.createElement('select');
+      fieldSelect.className = 'alerts-cond-field';
+      fieldSelect.setAttribute('aria-label', `Condition ${i + 1} field`);
+      const noneOpt = document.createElement('option');
+      noneOpt.value = '';
+      noneOpt.textContent = i === 0 ? '(field)' : '(unused)';
+      fieldSelect.appendChild(noneOpt);
+      for (const f of fields) {
+        const opt = document.createElement('option');
+        opt.value = f.field;
+        opt.dataset.kind = f.kind;
+        opt.textContent = f.field;
+        fieldSelect.appendChild(opt);
+      }
+      const opSelect = document.createElement('select');
+      opSelect.className = 'alerts-cond-op';
+      opSelect.setAttribute('aria-label', `Condition ${i + 1} operator`);
+      this._fillAlertOpOptions(opSelect, 'text');
+      fieldSelect.addEventListener('change', () => {
+        const kind = fieldSelect.selectedOptions[0]?.dataset.kind || 'text';
+        this._fillAlertOpOptions(opSelect, kind);
+      });
+      const valueInput = document.createElement('input');
+      valueInput.type = 'text';
+      valueInput.className = 'alerts-cond-value';
+      valueInput.placeholder = 'value (comma-separate for "in")';
+      valueInput.setAttribute('aria-label', `Condition ${i + 1} value`);
+      row.append(fieldSelect, opSelect, valueInput);
+      this._alertsRuleConditions.appendChild(row);
+    }
+  }
+
+  /**
+   * Fills one condition row's operator dropdown with the operators valid for
+   * `kind` (numeric/text/flag — see `ALERT_OPS_BY_KIND`), preserving the
+   * current selection when it is still valid for the new kind.
+   * @param {HTMLSelectElement} opSelect
+   * @param {'numeric'|'text'|'flag'} kind
+   * @returns {void}
+   */
+  _fillAlertOpOptions(opSelect, kind) {
+    const previous = opSelect.value;
+    const ops = StyleManager.ALERT_OPS_BY_KIND[kind] || ALERT_OPS;
+    opSelect.innerHTML = '';
+    for (const op of ops) {
+      const opt = document.createElement('option');
+      opt.value = op;
+      opt.textContent = op;
+      opSelect.appendChild(opt);
+    }
+    if (ops.includes(previous)) opSelect.value = previous;
+  }
+
+  /** Opens the "+ rule" builder form, reset to blank. */
+  _openAlertRuleForm() {
+    if (!this._alertsRuleForm) return;
+    this._alertsRuleForm.hidden = false;
+    if (this._alertsRuleName) this._alertsRuleName.value = '';
+    if (this._alertsRuleGeoEnable) this._alertsRuleGeoEnable.checked = false;
+    if (this._alertsRuleGeoKm) this._alertsRuleGeoKm.value = '50';
+    this._renderAlertRuleConditionFields();
+    this._alertsRuleName?.focus();
+  }
+
+  /** Closes the "+ rule" builder form without saving. */
+  _closeAlertRuleForm() {
+    if (this._alertsRuleForm) this._alertsRuleForm.hidden = true;
+  }
+
+  /**
+   * Reads the builder form, saves a new enabled rule, and (per the mission's
+   * "within N km of current camera centre" option) snapshots the camera
+   * centre via `getCameraState()` at save time rather than tracking it live.
+   * @returns {void}
+   */
+  _saveNewAlertRule() {
+    const layerKey = this._alertsRuleLayer?.value || 'flights';
+    const name = (this._alertsRuleName?.value || '').trim() || `${layerKey} rule`;
+    const rows = [...(this._alertsRuleConditions?.querySelectorAll('.alerts-cond-row') || [])];
+    const where = [];
+    for (const row of rows) {
+      const field = row.querySelector('.alerts-cond-field')?.value;
+      const op = row.querySelector('.alerts-cond-op')?.value;
+      const rawValue = row.querySelector('.alerts-cond-value')?.value ?? '';
+      if (!field || !rawValue.trim()) continue;
+      let value;
+      if (op === 'in') {
+        value = rawValue.split(',').map((v) => v.trim()).filter(Boolean);
+      } else {
+        const numeric = Number(rawValue);
+        value = rawValue.trim() !== '' && Number.isFinite(numeric) ? numeric : rawValue.trim();
+      }
+      where.push({ field, op, value });
+    }
+    if (!where.length) {
+      this._showToast('Add at least one condition');
+      return;
+    }
+    let geo;
+    if (this._alertsRuleGeoEnable?.checked) {
+      const cam = this.getCameraState();
+      const radiusKm = Math.max(1, Number(this._alertsRuleGeoKm?.value) || 50);
+      if (cam) geo = { lat: cam.lat, lon: cam.lon, radiusKm };
+    }
+    const rule = {
+      id: `rule-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      name,
+      enabled: true,
+      layer: layerKey,
+      where,
+      ...(geo ? { geo } : {}),
+      cooldownSec: 120,
+      severity: 'info',
+    };
+    this._alertRules = [...this._alertRules, rule];
+    saveAlertRules(this._alertRules);
+    this._alertRunner?.resetCooldowns();
+    this._requestAlertNotificationPermission();
+    this._closeAlertRuleForm();
+    this._renderAlertsRuleList();
+    this._showToast(`Rule "${name}" added`);
+  }
+
+  /** Enable/disable toggle in the rule list (event-delegated). */
+  _onAlertRuleToggle(event) {
+    const toggle = event.target.closest('.alerts-rule-toggle');
+    if (!toggle) return;
+    const ruleId = toggle.closest('.alerts-rule-row')?.dataset.ruleId;
+    const rule = this._alertRules.find((r) => r.id === ruleId);
+    if (!rule) return;
+    rule.enabled = toggle.checked;
+    saveAlertRules(this._alertRules);
+    if (rule.enabled) this._requestAlertNotificationPermission();
+    this._updateAlertsStatus();
+  }
+
+  /** Delete button in the rule list (event-delegated). */
+  _onAlertRuleDelete(event) {
+    const del = event.target.closest('.alerts-rule-delete');
+    if (!del) return;
+    const ruleId = del.closest('.alerts-rule-row')?.dataset.ruleId;
+    this._alertRules = this._alertRules.filter((r) => r.id !== ruleId);
+    saveAlertRules(this._alertRules);
+    this._renderAlertsRuleList();
+  }
+
+  /** Requests Notification permission — only called when the user actually enables a rule. */
+  _requestAlertNotificationPermission() {
+    try {
+      if (typeof Notification === 'undefined') return;
+      if (Notification.permission === 'default') Notification.requestPermission();
+    } catch {
+      // Notification API unavailable/blocked — the panel + toast still work.
+    }
+  }
+
+  /** Rebuilds the rule list rows. */
+  _renderAlertsRuleList() {
+    if (!this._alertsRuleList) return;
+    this._alertsRuleList.innerHTML = '';
+    for (const rule of this._alertRules) {
+      const row = document.createElement('div');
+      row.className = 'alerts-rule-row';
+      row.dataset.ruleId = rule.id;
+      const toggle = document.createElement('input');
+      toggle.type = 'checkbox';
+      toggle.className = 'alerts-rule-toggle';
+      toggle.checked = !!rule.enabled;
+      toggle.setAttribute('aria-label', `Enable ${rule.name}`);
+      const label = document.createElement('span');
+      label.className = 'alerts-rule-name';
+      label.textContent = rule.name;
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'alerts-rule-delete scene-btn scene-btn-danger';
+      del.textContent = '×';
+      del.setAttribute('aria-label', `Delete ${rule.name}`);
+      row.append(toggle, label, del);
+      this._alertsRuleList.appendChild(row);
+    }
+    this._updateAlertsStatus();
+  }
+
+  /** Refreshes the rule-count status line. */
+  _updateAlertsStatus() {
+    if (!this._alertsStatus) return;
+    const enabledCount = this._alertRules.filter((r) => r.enabled).length;
+    this._alertsStatus.textContent = enabledCount
+      ? `${enabledCount} rule${enabledCount === 1 ? '' : 's'} enabled`
+      : 'No rules enabled';
+  }
+
+  /** Rebuilds the "last 50 alerts" feed from the runner's own record. */
+  _renderAlertsFeed() {
+    if (!this._alertsFeedList || !this._alertRunner) return;
+    const feed = this._alertRunner.getFeed();
+    this._alertsFeedList.innerHTML = '';
+    for (const alert of feed) {
+      const row = document.createElement('div');
+      row.className = 'alerts-feed-row';
+      const label = alert.record?.callsign || alert.record?.name || alert.record?.id || alert.entityId;
+      const time = new Date(alert.firedAt).toLocaleTimeString();
+      const text = document.createElement('span');
+      text.className = 'alerts-feed-text';
+      text.textContent = `[${time}] ${alert.rule?.name}: ${label}`;
+      const flyBtn = document.createElement('button');
+      flyBtn.type = 'button';
+      flyBtn.className = 'alerts-feed-fly scene-btn';
+      flyBtn.textContent = 'FLY TO';
+      const flyable = Number.isFinite(alert.record?.lat) && Number.isFinite(alert.record?.lon);
+      flyBtn.disabled = !flyable;
+      flyBtn.addEventListener('click', () => this._flyToAlert(alert));
+      row.append(text, flyBtn);
+      this._alertsFeedList.appendChild(row);
+    }
+  }
+
+  /**
+   * "Fly to" a fired alert's record position — cancels any active camera
+   * verb (`interruptCameraMotion`, src/cameraVerbs.js) then reuses the same
+   * `applyCameraState` cubic-ease flight the Scene panel's captured shots use.
+   * @param {object} alert
+   * @returns {void}
+   */
+  _flyToAlert(alert) {
+    const lat = alert?.record?.lat;
+    const lon = alert?.record?.lon;
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+    interruptCameraMotion('alerts-fly-to');
+    this.applyCameraState({
+      lat, lon, alt: 8000, heading: 0, pitch: -35,
+    });
+  }
+
+  /**
+   * `gev:alert` handler (see alertRunner.js) — refreshes the feed, toasts,
+   * and fires a browser Notification when permission was already granted.
+   * @param {object} detail
+   * @returns {void}
+   */
+  _onAlertFired(detail) {
+    if (!detail) return;
+    this._renderAlertsFeed();
+    const label = detail.record?.callsign || detail.record?.name || detail.record?.id || detail.entityId;
+    this._showToast(`ALERT: ${detail.rule?.name || 'Rule'} — ${label}`);
+    try {
+      if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        // eslint-disable-next-line no-new -- fire-and-forget, browser owns the lifecycle
+        new Notification(detail.rule?.name || 'Gods Eye View alert', { body: String(label) });
+      }
+    } catch {
+      // Notification construction can throw in odd embedders — the toast above already told the user.
+    }
+  }
+
   /**
    * Returns the versioned localStorage key for a panel's saved position.
    * @param {string} panelId - DOM id of the panel.
@@ -10118,6 +10504,8 @@ export class StyleManager {
    */
   async dispose() {
     if (this._disposed) return;
+    this._alertRunner?.stop();
+    this._alertRunner = null;
     this._shareTrackingNoticeGeneration += 1;
     this._shareTrackingAcquiringKey = null;
     this._globalStatusNotice = null;

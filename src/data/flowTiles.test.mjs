@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/flowTiles.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

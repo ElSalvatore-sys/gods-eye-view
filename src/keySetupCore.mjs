@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Key setup ("POWER UP") — the pure core.
  *

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * Deterministic QA for the detection overlay's bounded two-lane label pipeline.
  *

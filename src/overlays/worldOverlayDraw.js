@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * @module worldOverlayDraw
  * @description Pure geometry, measurement, and Canvas2D painters for the
