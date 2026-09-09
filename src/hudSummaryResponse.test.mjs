@@ -6,6 +6,7 @@ import {
   keylessHudSummaryResponse,
 } from './hudSummaryResponse.js';
 import { openAiRealtimeProxy } from '../vite.config.js';
+import { createHudSummaryRoute } from '../server/routes/hudSummary.js';
 
 const UNCONFIGURED_PAYLOAD = {
   configured: false,
@@ -37,8 +38,18 @@ function invokeRoute(handler, { method = 'GET', url = '/', remoteAddress = '127.
     };
     const res = {
       statusCode: 200,
+      headersSent: false,
       setHeader(name, value) {
         headers.set(String(name).toLowerCase(), String(value));
+      },
+      // server/lib/http.js's sendJson/sendText write via writeHead(status, headers)
+      // rather than statusCode + setHeader — support both call styles.
+      writeHead(status, headerMap = {}) {
+        this.statusCode = status;
+        this.headersSent = true;
+        for (const [name, value] of Object.entries(headerMap)) {
+          headers.set(String(name).toLowerCase(), String(value));
+        }
       },
       end(body = '') {
         resolve({
@@ -98,13 +109,19 @@ test('does not hide real provider and HTTP failures', () => {
 
 test('the installed keyless HUD route stays successful after the voice quota is exhausted', async () => {
   const previousKey = process.env.OPENAI_API_KEY;
+  const previousBaseUrl = process.env.AI_BASE_URL;
   const previousLimit = process.env.GEV_RATELIMIT_OPENAI_PER_MIN;
   process.env.OPENAI_API_KEY = '';
+  delete process.env.AI_BASE_URL;
   process.env.GEV_RATELIMIT_OPENAI_PER_MIN = '1';
   try {
     const routes = installOpenAiRoutes();
     const token = routes.get('/api/realtime/token');
-    const hud = routes.get('/api/openai/hud-summary');
+    // hud-summary lives in server/routes/hudSummary.js since docs/ARCH-SERVER-SPLIT.md
+    // §3 (the local-ai-provider mission) — no longer part of openAiRealtimeProxy.
+    // Constructed here, after the env above is set, matching how server/routes.js
+    // itself only builds the provider lazily on first request (see that file).
+    const hud = createHudSummaryRoute();
     assert.equal(typeof token, 'function');
     assert.equal(typeof hud, 'function');
 
@@ -124,6 +141,8 @@ test('the installed keyless HUD route stays successful after the voice quota is 
   } finally {
     if (previousKey === undefined) delete process.env.OPENAI_API_KEY;
     else process.env.OPENAI_API_KEY = previousKey;
+    if (previousBaseUrl === undefined) delete process.env.AI_BASE_URL;
+    else process.env.AI_BASE_URL = previousBaseUrl;
     if (previousLimit === undefined) delete process.env.GEV_RATELIMIT_OPENAI_PER_MIN;
     else process.env.GEV_RATELIMIT_OPENAI_PER_MIN = previousLimit;
   }

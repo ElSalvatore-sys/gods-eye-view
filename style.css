@@ -9663,6 +9663,16 @@ body.scene-playback-mode #first-run-launcher {
   font-size: 0.66rem;
 }
 
+/* Live /api/ai/status readout on the AI PROVIDER row — everything else here
+   is registry text (set, not probed); this one line is a live health check. */
+.key-setup-ai-status {
+  margin: 0.3rem 0 0;
+  color: rgba(148, 220, 200, 0.75);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.02rem;
+}
+
 .key-setup-fields {
   display: grid;
   gap: 0.3rem;

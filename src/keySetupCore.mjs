@@ -47,6 +47,14 @@ export const KEY_SETUP_KEYS = Object.freeze([
     tier: 'metered',
   }),
   Object.freeze({
+    id: 'ai-provider',
+    title: 'AI PROVIDER',
+    unlocks: 'Route non-voice AI calls (HUD summaries) to a local OpenAI-compatible server instead of OpenAI — see docs/LOCAL-AI.md',
+    getUrl: 'https://github.com/ElSalvatore-sys/gods-eye-view/blob/main/docs/LOCAL-AI.md',
+    envVars: Object.freeze(['AI_BASE_URL', 'AI_MODEL']),
+    tier: 'free',
+  }),
+  Object.freeze({
     id: 'aisstream',
     title: 'AISSTREAM',
     unlocks: 'Live ships, worldwide',

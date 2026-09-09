@@ -58,8 +58,23 @@ export function stripKeylessBasemapFromHash(hash) {
 
 const TIER_DOTS = Object.freeze({ metered: '🔴', free: '🟡' });
 
+/**
+ * Format the `/api/ai/status` payload for the AI PROVIDER row — pure, exported
+ * for tests. Empty string when there is nothing to show yet (status not
+ * fetched, or fetch failed — the row still works without it).
+ */
+export function formatAiStatusLine(aiStatus) {
+  if (!aiStatus || typeof aiStatus !== 'object') return '';
+  const label = aiStatus.provider === 'local' ? 'LOCAL' : aiStatus.provider === 'openai' ? 'OPENAI' : 'NONE';
+  const bits = [label];
+  if (aiStatus.model) bits.push(String(aiStatus.model));
+  if (aiStatus.baseUrlHost) bits.push(String(aiStatus.baseUrlHost));
+  if (aiStatus.provider !== 'none') bits.push(aiStatus.healthy ? 'healthy' : 'unreachable');
+  return `Active: ${bits.join(' · ')}`;
+}
+
 /** Build one key row. All content is our own registry text, set via textContent. */
-function buildRow(documentRef, key) {
+function buildRow(documentRef, key, aiStatus) {
   const row = documentRef.createElement('section');
   row.className = 'key-setup-row';
   row.dataset.keyId = key.id;
@@ -108,6 +123,18 @@ function buildRow(documentRef, key) {
   unlocks.textContent = key.unlocks;
 
   row.append(head, unlocks);
+  // AI PROVIDER is the one row backed by a live status probe (/api/ai/status)
+  // rather than just presence — AI_BASE_URL alone doesn't say whether the
+  // configured endpoint actually answers.
+  if (key.id === 'ai-provider') {
+    const statusText = formatAiStatusLine(aiStatus);
+    if (statusText) {
+      const line = documentRef.createElement('p');
+      line.className = 'key-setup-ai-status';
+      line.textContent = statusText;
+      row.append(line);
+    }
+  }
   if (!external) {
     const fields = documentRef.createElement('div');
     fields.className = 'key-setup-fields';
@@ -163,6 +190,17 @@ export async function initKeySetup({ documentRef = globalThis.document, fetchImp
     return null;
   }
 
+  // Best-effort: the AI PROVIDER row works without this (it falls back to
+  // showing nothing extra), so a failed or absent /api/ai/status never blocks
+  // the rest of the panel the way a failed /api/setup/status does above.
+  let aiStatus = null;
+  try {
+    const response = await doFetch('/api/ai/status', { cache: 'no-store' });
+    if (response.ok) aiStatus = await response.json();
+  } catch {
+    // No status line this session — not fatal.
+  }
+
   const rowsHost = root.querySelector('[data-key-setup-rows]');
   const applyButton = root.querySelector('[data-key-setup-apply]');
   const closeButton = root.querySelector('[data-key-setup-close]');
@@ -181,7 +219,7 @@ export async function initKeySetup({ documentRef = globalThis.document, fetchImp
     chip.hidden = status.setCount >= status.total;
     if (!rowsHost) return;
     rowsHost.textContent = '';
-    for (const key of status.keys || []) rowsHost.append(buildRow(documentRef, key));
+    for (const key of status.keys || []) rowsHost.append(buildRow(documentRef, key, aiStatus));
   };
 
   const visible = () => root.isConnected
