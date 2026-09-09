@@ -12,3 +12,7 @@ output/
 3d-models/
 pinokio/ENVIRONMENT
 pinokio/.installed
+
+# Tauri desktop shell (apps/desktop) build output — not source
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/

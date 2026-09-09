@@ -38,6 +38,8 @@
     "opensky:import": "./scripts/opensky-import-client.sh",
     "build": "vite build",
     "preview": "vite preview",
+    "desktop:dev": "cd apps/desktop && tauri dev",
+    "desktop:build": "cd apps/desktop && tauri build",
     "test": "node scripts/run-unit-tests.mjs",
     "test:track": "node scripts/track-regression.mjs",
     "typecheck": "tsc --noEmit",
@@ -53,6 +55,7 @@
     "sirv": "^3.0.2"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
     "@types/node": "^26.5.0",
     "puppeteer": "^24.37.5",
     "sharp": "^0.34.5",
