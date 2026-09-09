@@ -6746,6 +6746,11 @@ body.cockpit-mode #intel-hud .hud-right-edge { right: 22px; }
   background: rgba(255, 255, 255, 0.03);
 }
 
+/* An author `display` on this class outranks the UA [hidden] rule otherwise. */
+.alerts-rule-form[hidden] {
+  display: none;
+}
+
 .alerts-rule-form input[type="text"],
 .alerts-rule-form select {
   background: rgba(255, 255, 255, 0.06);
