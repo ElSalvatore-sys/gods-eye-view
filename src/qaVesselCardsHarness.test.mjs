@@ -6,6 +6,7 @@ import {
   buildVesselCardManifest,
   isHardwareRenderer,
   isHeadfulMode,
+  isTileGateApplicable,
   parseDataMode,
   vesselCardManifestFilename,
   vesselCardProvenanceLines,
@@ -88,4 +89,16 @@ test('vessel-card QA distinguishes hardware evidence from software rendering', (
   assert.equal(isHardwareRenderer({ vendor: 'Apple', renderer: 'ANGLE Metal Renderer: Apple M3' }), true);
   assert.equal(isHardwareRenderer({ vendor: 'Google Inc.', renderer: 'ANGLE (SwiftShader)' }), false);
   assert.equal(isHardwareRenderer({ vendor: 'unavailable', renderer: 'unavailable' }), false);
+});
+
+test('vessel-card QA only gates on tilesLoaded when a photoreal tileset is actually active', () => {
+  // No GOOGLE_MAPS_API_KEY/CESIUM_ION_TOKEN -> MapStackController falls back
+  // to 'esri-imagery' and window.__godsEyeView.tileset is null: the gate
+  // must not block forever on a tileset that will never exist this run.
+  assert.equal(isTileGateApplicable({ activeStack: 'esri-imagery', tilesetVisible: undefined }), false);
+  assert.equal(isTileGateApplicable({ activeStack: null, tilesetVisible: undefined }), false);
+  // Photoreal active and visible -> the real tilesLoaded gate still applies.
+  assert.equal(isTileGateApplicable({ activeStack: 'photoreal', tilesetVisible: true }), true);
+  // Photoreal stack selected but the tileset itself is hidden (e.g. mid-swap).
+  assert.equal(isTileGateApplicable({ activeStack: 'photoreal', tilesetVisible: false }), false);
 });

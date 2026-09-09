@@ -79,6 +79,22 @@ export function vesselCardManifestFilename(screenshotFilename) {
   return screenshotFilename.replace(/\.png$/i, '.json');
 }
 
+/**
+ * True when the photoreal Google tileset gate should block a settle-wait on
+ * `tilesLoaded`. Without a GOOGLE_MAPS_API_KEY/CESIUM_ION_TOKEN,
+ * loadPhotorealisticTileset() (src/mapStartup.js) returns tileset: null and
+ * MapStackController falls back to the keyless 'esri-imagery' stack
+ * (src/mapStackController.js) — a supported production route, not a broken
+ * run. `window.__godsEyeView.tileset` stays null forever on that route, so
+ * gating on `tileset?.tilesLoaded` unconditionally times out every run on a
+ * machine with no map credentials, independent of the AIS layer under test.
+ * Mirrors the applicability check qa-focus-evidence.mjs already uses for the
+ * same fallback (readTileReadiness/awaitTilesSettled).
+ */
+export function isTileGateApplicable({ activeStack, tilesetVisible } = {}) {
+  return activeStack === 'photoreal' && tilesetVisible !== false;
+}
+
 /** True when renderer evidence is available and does not identify a software rasterizer. */
 export function isHardwareRenderer(renderer = {}) {
   const description = `${renderer.vendor || ''} ${renderer.renderer || ''}`.trim();
@@ -291,14 +307,17 @@ async function main() {
         + `artifact provenance=${DATA_PROVENANCE_SLUGS[DATA_MODE]}`,
       );
 
-      // Wait for the photoreal tileset and at least one vessel refresh.
+      // Wait for the photoreal tileset (when the active map stack actually
+      // has one — see isTileGateApplicable) and at least one vessel refresh.
       const settled = await page
         .waitForFunction(() => {
           const gev = window.__godsEyeView;
           const t = gev.tileset;
+          const activeStack = gev.mapStackController?.getActiveId?.() || null;
+          const tileGateApplicable = activeStack === 'photoreal' && t?.show !== false;
           const ais = gev.dataManager.getAll().find((l) => l.id === 'ais-live-vessels');
           const count = ais?.stats?.count ?? 0;
-          return t?.tilesLoaded && count > 0;
+          return (!tileGateApplicable || t?.tilesLoaded === true) && count > 0;
         }, { timeout: 90000, polling: 500 })
         .then(() => true)
         .catch(() => false);
@@ -323,15 +342,34 @@ async function main() {
       const resettled = settled ? true : await page
         .waitForFunction(() => {
           const gev = window.__godsEyeView;
+          const t = gev.tileset;
+          const activeStack = gev.mapStackController?.getActiveId?.() || null;
+          const tileGateApplicable = activeStack === 'photoreal' && t?.show !== false;
           const ais = gev.dataManager.getAll().find((l) => l.id === 'ais-live-vessels');
-          return gev.tileset?.tilesLoaded && (ais?.stats?.count ?? 0) > 0;
+          return (!tileGateApplicable || t?.tilesLoaded === true) && (ais?.stats?.count ?? 0) > 0;
         }, { timeout: 60000, polling: 500 })
         .then(() => true)
         .catch(() => false);
 
-      // Let two visibility/declutter cycles (800 ms) and host rendering settle.
-      await new Promise((r) => setTimeout(r, 2500));
+      // Let the card overlay's declutter pass (VISIBILITY_UPDATE_MS = 800ms
+      // in aisLiveVessels.js) converge on the re-asserted camera pose: wait
+      // for every injected vessel to register an overlay entry and at least
+      // one to paint, rather than a flat sleep. Before isTileGateApplicable,
+      // the (broken) tilesLoaded wait above always timed out for ~150s on a
+      // machine with no map credentials, which incidentally gave declutter
+      // all the time it needed; now that the tile gate resolves promptly,
+      // that incidental buffer is gone and must be waited for explicitly.
       const expectedFixtureIds = syntheticRows.map((row) => row.mmsi);
+      await page
+        .waitForFunction((fixtureIds) => {
+          const diagnostics = window.__gevWorldOverlay?.getDiagnostics?.();
+          const entries = diagnostics?.entriesBySource?.['ais-live-vessels'] || 0;
+          const painted = diagnostics?.paintedBySource?.['ais-live-vessels'] || 0;
+          return entries > 0 && painted > 0 && (!fixtureIds.length || entries >= fixtureIds.length);
+        }, { timeout: 8000, polling: 250 }, expectedFixtureIds)
+        .catch(() => {}); // best-effort — overlayEvidence below still records whatever landed
+      // Small trailing buffer so the last paint pass lands before the shot.
+      await new Promise((r) => setTimeout(r, 500));
       const overlayEvidence = await page.evaluate((fixtureIds) => {
         const diagnostics = window.__gevWorldOverlay?.getDiagnostics?.();
         const gl = window.__godsEyeView?.viewer?.scene?.context?._gl;
