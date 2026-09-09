@@ -5692,6 +5692,7 @@ const GEV_REALTIME_TOOLS = [
             'local-dams',
             'telegeography-submarine-cables',
             'local-firms',
+            'weather-radar',
           ],
         },
         enabled: { type: 'boolean' },
