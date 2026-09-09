@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   collectKeyUpdates,
+  formatAiStatusLine,
   keySetupChipLabel,
   stripKeylessBasemapFromHash,
 } from './keySetup.js';
@@ -38,4 +39,18 @@ test('the first Google key strips ONLY the keyless OSM basemap from the share ha
   assert.equal(stripKeylessBasemapFromHash('lat=1&lon=2'), null, 'no stack, nothing to do');
   assert.equal(stripKeylessBasemapFromHash(''), null);
   assert.equal(stripKeylessBasemapFromHash(undefined), null);
+});
+
+test('formatAiStatusLine renders provider, model, host, and health — or nothing without a status', () => {
+  assert.equal(formatAiStatusLine(null), '');
+  assert.equal(formatAiStatusLine(undefined), '');
+  assert.equal(
+    formatAiStatusLine({ provider: 'local', model: 'mlx-community/Qwen3-30B-A3B-4bit', baseUrlHost: 'oasiss-mac-studio:4000', healthy: true }),
+    'Active: LOCAL · mlx-community/Qwen3-30B-A3B-4bit · oasiss-mac-studio:4000 · healthy'
+  );
+  assert.equal(
+    formatAiStatusLine({ provider: 'openai', model: 'gpt-5-nano', baseUrlHost: 'api.openai.com', healthy: false }),
+    'Active: OPENAI · gpt-5-nano · api.openai.com · unreachable'
+  );
+  assert.equal(formatAiStatusLine({ provider: 'none', model: null, baseUrlHost: null, healthy: false }), 'Active: NONE');
 });
