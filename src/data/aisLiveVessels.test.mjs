@@ -26,6 +26,8 @@ import {
   _getVesselFeedStateForTest,
   _setVesselOverlayHostForTest,
   _updateVesselCardsForTest,
+  _updateVisibilityForTest,
+  _getVesselLodStateForTest,
   applyVesselFocusDeemphasis,
   mapAnalystRecord,
 } from './aisLiveVessels.js';
@@ -848,6 +850,33 @@ function makeRecord(overrides = {}) {
   };
 }
 
+/** Minimal Cesium Camera stand-in — enough for cameraPoseSignature() + the LOD height check. */
+function makeCameraMock(heightM) {
+  return {
+    positionCartographic: { height: heightM },
+    positionWC: { x: 0, y: 0, z: 0 },
+    heading: 0,
+    pitch: 0,
+    roll: 0,
+  };
+}
+
+/** Minimal Cesium BillboardCollection/PointPrimitiveCollection stand-in. */
+function makePrimitiveCollectionMock() {
+  const items = new Set();
+  return {
+    items,
+    add(options) {
+      const item = { ...options };
+      items.add(item);
+      return item;
+    },
+    remove(item) {
+      return items.delete(item);
+    },
+  };
+}
+
 function makeTrailSpy() {
   return {
     clearCalls: 0,
@@ -1641,4 +1670,118 @@ test('a vessel analyst record carries the MMSI the tracker keys on', () => {
   const nameless = mapAnalystRecord({ mmsi: '366999124', name: null, lat: 37.9, lon: -122.5 });
   assert.equal(nameless.id, '366999124');
   assert.equal(nameless.mmsi, '366999124');
+});
+
+test('LOD sweep: ambient vessels swap to point primitives above the altitude threshold, exempting the selected vessel', () => {
+  const billboards = makePrimitiveCollectionMock();
+  const points = makePrimitiveCollectionMock();
+  const selected = makeRecord({ mmsi: '111' });
+  const ambient = makeRecord({ mmsi: '222' });
+  selected.billboard = billboards.add({ show: true, position: selected.position, id: selected });
+  ambient.billboard = billboards.add({ show: true, position: ambient.position, id: ambient });
+  _setVesselStateForTest({
+    records: [selected, ambient],
+    selectedRecord: selected,
+    billboardCollection: billboards,
+    pointCollection: points,
+    viewer: { camera: makeCameraMock(500000) }, // above threshold
+  });
+
+  _updateVisibilityForTest(true);
+
+  assert.deepEqual(
+    _getVesselLodStateForTest(),
+    { lodMode: 'point', billboardCount: 1, pointCount: 1 },
+  );
+  assert.ok(selected.billboard, 'selected vessel keeps its full-detail billboard');
+  assert.equal(selected.point, undefined, 'selected vessel never gets a LOD point');
+  assert.equal(ambient.billboard, null, 'ambient vessel released its billboard');
+  assert.ok(ambient.point, 'ambient vessel gained a LOD point');
+  assert.equal(billboards.items.size, 1, 'exactly one billboard remains (the selected vessel)');
+  assert.equal(points.items.size, 1, 'exactly one point exists (no duplicate/leaked primitives)');
+
+  // Camera returns below the threshold: the ambient vessel swaps back and no
+  // point primitive is left behind.
+  _setVesselStateForTest({
+    records: [selected, ambient],
+    selectedRecord: selected,
+    billboardCollection: billboards,
+    pointCollection: points,
+    lodMode: 'point',
+    viewer: { camera: makeCameraMock(50000) }, // below threshold
+  });
+
+  _updateVisibilityForTest(true);
+
+  assert.deepEqual(
+    _getVesselLodStateForTest(),
+    { lodMode: 'billboard', billboardCount: 2, pointCount: 0 },
+  );
+  assert.ok(ambient.billboard, 'ambient vessel swapped back to a billboard when zoomed in');
+  assert.equal(ambient.point, null, 'no leaked point primitive after the swap-back');
+  assert.equal(points.items.size, 0, 'point collection is empty again');
+  assert.equal(billboards.items.size, 2);
+});
+
+test('LOD sweep is a no-op when the camera does not cross the altitude threshold', () => {
+  const billboards = makePrimitiveCollectionMock();
+  const points = makePrimitiveCollectionMock();
+  const record = makeRecord({ mmsi: '333' });
+  record.billboard = billboards.add({ show: true, position: record.position, id: record });
+  const originalBillboard = record.billboard;
+  _setVesselStateForTest({
+    records: [record],
+    billboardCollection: billboards,
+    pointCollection: points,
+    viewer: { camera: makeCameraMock(1000) }, // well below threshold
+  });
+
+  _updateVisibilityForTest(true);
+  _updateVisibilityForTest(true);
+
+  assert.equal(record.billboard, originalBillboard, 'identity preserved — no needless swap');
+  assert.equal(billboards.items.size, 1);
+  assert.equal(points.items.size, 0);
+});
+
+test('reconcile removes a vanished point-mode vessel with no leaked primitive', () => {
+  const billboards = makePrimitiveCollectionMock();
+  const points = makePrimitiveCollectionMock();
+  const ambient = makeRecord({ mmsi: '444' });
+  ambient.point = points.add({ show: true, position: ambient.position, id: ambient });
+  _setVesselStateForTest({
+    records: [ambient],
+    billboardCollection: billboards,
+    pointCollection: points,
+    lodMode: 'point',
+    viewer: { camera: makeCameraMock(500000) },
+  });
+
+  _reconcileVesselsForTest({}, []); // vessel absent from the next feed snapshot
+
+  assert.equal(points.items.size, 0, 'vanished point-mode vessel is removed with no leak');
+  assert.deepEqual(
+    _getVesselLodStateForTest(),
+    { lodMode: 'point', billboardCount: 0, pointCount: 0 },
+  );
+});
+
+test('destroy() removes both the billboard and LOD point collections from the scene', () => {
+  const hadDocument = Object.hasOwn(globalThis, 'document');
+  const priorDocument = globalThis.document;
+  globalThis.document = { getElementById: () => null };
+  try {
+    const removed = [];
+    const viewer = { scene: { primitives: { remove(collection) { removed.push(collection); } } } };
+    const billboards = makePrimitiveCollectionMock();
+    const points = makePrimitiveCollectionMock();
+    _setVesselStateForTest({ billboardCollection: billboards, pointCollection: points });
+
+    aisLiveVesselsLayer.destroy(viewer);
+
+    assert.deepEqual(removed, [billboards, points]);
+  } finally {
+    if (hadDocument) globalThis.document = priorDocument;
+    else delete globalThis.document;
+  }
 });
