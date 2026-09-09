@@ -519,20 +519,59 @@ curl -s -H 'X-Forwarded-For: 1.2.3.4' :$GEV_ADMIN_PORT/api/setup/status  → 403
 ```
 
 ### PR 9 — SQLite cache behind the §5 contract *(parallel with PR 3–8 after PR 2)*
-**Files** `server/lib/cache.js` (+ `cache.sqlite.js`, `cache.memory.js`,
-`cache.test.mjs`), `package.json` (+`better-sqlite3`).
-**Risk** *Medium, contained.* Ships the interface and a memory+disk
-implementation first, with SQLite behind `GEV_CACHE=sqlite` (default `disk`).
-Routes adopt it one at a time in follow-ups, so no route PR blocks on it.
+**Files** `server/lib/cache.js` (backend dispatcher + in-memory backend,
+unchanged public API), `server/lib/cacheSqlite.js` (new — the
+`better-sqlite3` backend), `server/lib/cache.test.mjs` (parametrized —
+every contract test now runs once per backend), `server/routes/celestrak.js`
+(wired to `namespace('celestrak', …)` — PR 1/2 had left it on its own
+memory+per-group-disk-JSON cache), `package.json`/`package-lock.json`
+(+`better-sqlite3@13.0.3`).
+**Risk** *Medium, contained.* `cache.js`'s `namespace()` return type didn't
+change — it still hands back a `CacheNamespace` synchronously, whose async
+methods resolve the live backend internally. `GEV_CACHE_BACKEND=memory|sqlite`
+selects explicitly; unset defaults to `sqlite` and falls back to `memory`
+(one `console.warn`, memoized so it logs once) if the native module fails to
+load. Routes other than CelesTrak are untouched — they keep migrating to the
+namespace API one at a time in their own PRs (PR 3–8), same as before.
+**Implementation notes (deviate from the loose sketch in §5, matching the
+concrete brief this PR shipped against):** DB file `.gev-cache/cache.sqlite`
+(not `gev.sqlite`) so it sits next to every other route's `.gev-cache/`
+state; table `entries(ns, key, value, kind, expires_at, created_at, size)`
+— `kind` (`'buffer'|'string'|'json'`) is the one addition beyond the brief's
+column list, needed to round-trip `CacheEntry.value`'s three possible shapes
+through SQLite's `BLOB`/`TEXT` storage; `PRAGMA user_version` gates schema
+creation; WAL mode + `synchronous=NORMAL` as specified. Per-namespace
+`maxEntries`/`maxBytes` caps evict oldest-`created_at` rows first, mirroring
+the in-memory backend's insertion-order eviction exactly (a `set()` on an
+existing key rewrites its `created_at`, so it moves to the back of the
+eviction order the same way the in-memory `Map` delete-then-reinsert does).
+**`better-sqlite3` prebuild check:** `npm install better-sqlite3` on this
+machine (Node 24.20.0, darwin/arm64) pulled a prebuilt binary — no
+`node-gyp` rebuild triggered, confirmed by loading it immediately after
+install with no `npm rebuild` step. If a future `npm ci` on a different
+Node ABI needs a rebuild, `npm rebuild better-sqlite3` is the fix; the
+`GEV_CACHE_BACKEND` fallback means a stale/missing binary degrades to the
+in-memory backend (with the one warning line) rather than crashing the server.
 **Gate** `GATE` +
 ```
 node --test server/lib/cache.test.mjs
+# 21 tests: the full §5 contract suite runs once against GEV_CACHE_BACKEND=memory
+# and once against GEV_CACHE_BACKEND=sqlite (pointed at a temp DB file), plus one
+# sqlite-only restart-parity test. All 21 pass.
+
 # serve-stale contract (the one that must not regress):
 #   get() on an EXPIRED entry returns the entry with expiresAt in the past — NOT null.
-# cold-restart parity, measured on CelesTrak:
-rm -rf .gev-cache && time curl -s :PORT/api/celestrak/active >/dev/null   # cold
-kill $SERVER; node server/index.js & ; time curl -s :PORT/api/celestrak/active >/dev/null
-  → second timing is cache-warm (x-tle-cache: HIT), proving persistence across restart
+# — verified both as a unit test (above) and over real HTTP: 1s TTL, wait 2s,
+#   upstream failing → 200 with the original body and x-tle-cache: STALE-ERROR.
+
+# cold-restart parity, measured on CelesTrak (PORT=4298):
+rm -rf .gev-cache && node server/index.js &            # start #1
+curl -sD- :4298/api/celestrak/stations | grep x-tle-cache   # → MISS
+curl -sD- :4298/api/celestrak/stations | grep x-tle-cache   # → HIT
+kill %1 && node server/index.js &                       # cold restart, start #2
+curl -sD- :4298/api/celestrak/stations | grep x-tle-cache   # → HIT (persisted — no re-fetch)
+  # body is byte-identical to start #1's fetch; diff confirms it.
+ls -la .gev-cache/cache.sqlite*   # → cache.sqlite, cache.sqlite-shm, cache.sqlite-wal (WAL mode)
 ```
 
 ### PR 10 — archive hook *(parallel with PR 3–8 after PR 2)*
@@ -616,10 +655,15 @@ Notes that the implementation must honour:
   `launches` (15 min / ∞) · `route` (10 min) · `cctv:sources` (15 min / ∞) ·
   `military-installations` (5 min mem, 30 d disk / ∞) · `regional-brief` (5 min / 60 min) ·
   `weather-effects` (5 min / 30 min) · `radio:catalog` (45 min / 7 d) · `track` (60 s).
-- **Schema** `cache(ns TEXT, key TEXT, kind TEXT, value BLOB, stored_at INTEGER,
-  expires_at INTEGER, bytes INTEGER, PRIMARY KEY (ns, key))` with
-  `INDEX (ns, expires_at)` for `sweep`. WAL mode; one file at
-  `.gev-cache/gev.sqlite`.
+- **Schema, as shipped in PR 9** (`server/lib/cacheSqlite.js`):
+  `entries(ns TEXT, key TEXT, value BLOB, kind TEXT, expires_at INTEGER,
+  created_at INTEGER, size INTEGER, PRIMARY KEY (ns, key))` with
+  `INDEX (ns, created_at)` for LRU eviction and sweep's stale scan. WAL mode,
+  `synchronous=NORMAL`, one file at `.gev-cache/cache.sqlite`, `PRAGMA
+  user_version` gating schema migrations. `kind` records which of
+  `CacheEntry.value`'s three shapes (`Buffer`/`string`/plain object) a row
+  holds, so `get()` can reverse the `BLOB`/`TEXT` storage back to the right
+  JS type.
 - **`.gev-cache/` paths are load-bearest during migration.** A route may read
   its legacy disk file on a cache miss for one release so a warm cache survives
   the upgrade — the pattern `migrateMilitaryInstallationEntry` already
