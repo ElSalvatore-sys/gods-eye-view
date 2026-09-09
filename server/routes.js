@@ -11,6 +11,11 @@ import { createCelestrakRoute } from './routes/celestrak.js';
 import { createHudSummaryRoute } from './routes/hudSummary.js';
 import { createAiStatusRoute } from './routes/aiStatus.js';
 import { createRainviewerRoute } from './routes/rainviewer.js';
+import { createLaunchesRoute } from './routes/launches.js';
+import { createFirmsRoute } from './routes/firms.js';
+import { createTomtomRoute } from './routes/tomtom.js';
+import { createAdsbdbRoute } from './routes/adsbdb.js';
+import { createTerrainRoute } from './routes/terrain.js';
 
 /**
  * @typedef {object} RouteEntry
@@ -24,4 +29,9 @@ export const ROUTES = [
   { mount: '/api/openai/hud-summary', handler: createHudSummaryRoute() },
   { mount: '/api/ai/status', handler: createAiStatusRoute() },
   { mount: '/api/rainviewer', handler: createRainviewerRoute() },
+  { mount: '/api/launches', handler: createLaunchesRoute() },
+  { mount: '/api/firms', handler: createFirmsRoute() },
+  { mount: '/api/tomtom', handler: createTomtomRoute() },
+  { mount: '/api/adsbdb', handler: createAdsbdbRoute() },
+  { mount: '/api/terrain/heights', handler: createTerrainRoute() },
 ];
