@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Activates the nearest CCTV record on layer enable and flies only when no
  * aircraft tracker or cockpit camera owns the view.

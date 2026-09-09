@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as Cesium from 'cesium';
 import { retroShader } from './styles/retro.js';
 import { animeShader } from './styles/anime.js';
@@ -2109,6 +2110,7 @@ class CockpitViewController {
   }
 }
 
+/** Owns basemap/imagery style switching and related viewer chrome for the globe. */
 export class StyleManager {
   /**
    * @param {Cesium.Viewer} viewer - The CesiumJS viewer instance.

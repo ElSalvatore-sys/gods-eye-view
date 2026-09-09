@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Shared icon-orientation + horizon helpers. Orientation and culling serve the
  * moving-entity layers (commercial flights, military flights, AIS vessels);

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * groundSnap.js — one-shot cached ground-height snap for MODELED grounded aircraft.
  *

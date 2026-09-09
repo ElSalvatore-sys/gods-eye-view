@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-perf — render-governor regression gate (perf wave 2).
  *

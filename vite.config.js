@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Vite configuration for God's Eye View — a cinematic geospatial app.
  *

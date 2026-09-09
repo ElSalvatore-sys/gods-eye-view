@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-firstrun — the mission launcher's contract, proved in the real app.
  *

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * qa-l9-matrix.mjs — the L9 release-candidate QA matrix, in one command.
  *

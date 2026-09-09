@@ -1,3 +1,4 @@
+// @ts-nocheck
 /** Bottom-to-top order for near-plane-clamped contact sprite collections. */
 export const SPRITE_LAYER_ORDER = Object.freeze([
   'cctv',

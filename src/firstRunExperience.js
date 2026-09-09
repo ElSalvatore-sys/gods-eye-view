@@ -1,3 +1,4 @@
+// @ts-nocheck
 // First-run mission launcher.
 //
 // The map deliberately does not auto-enable live feeds on every visit: doing so

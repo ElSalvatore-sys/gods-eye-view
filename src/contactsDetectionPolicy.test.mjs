@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Contacts-scoped detection (owner playtest 2026-08-18: "when you click on
 // Contacts, detections should just turn on, and they should stay on in Cockpit
 // or in third-person tracking inside Contacts").

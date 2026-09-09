@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/terrainHeights.test.mjs — batched, cached client terrain-height
 // resolver (docs/plans/2026-07-05-entity-height-datum-fix.md Task 3).
 //

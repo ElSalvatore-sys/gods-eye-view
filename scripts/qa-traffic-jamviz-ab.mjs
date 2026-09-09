@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-traffic-jamviz-ab.mjs — A/B screenshot capture for the jam-viz
  * congestion prototypes (feat/traffic-jam-viz).

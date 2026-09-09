@@ -1,3 +1,4 @@
+// @ts-nocheck
 const MAX_ARTICLES = 5;
 
 function cleanText(value, maxLength = 180) {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Pure round-trip + fail-closed tests for the annotation <-> GeoJSON interchange.
 // Run with: npm test   (node --test). No framework, no Cesium, no browser.
 import { test } from 'node:test';

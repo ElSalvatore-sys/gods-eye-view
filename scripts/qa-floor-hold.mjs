@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * scripts/qa-floor-hold.mjs — a grounded contact holds its floor through a
  * terrain-proxy outage (owner incident, 2026-08-21).

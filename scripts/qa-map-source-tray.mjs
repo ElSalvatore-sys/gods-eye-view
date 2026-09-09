@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /** Focused browser proof for the responsive, accessible Map Source tray. */
 import fs from 'node:fs';
 import path from 'node:path';

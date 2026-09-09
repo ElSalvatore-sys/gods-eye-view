@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * scripts/qa-floorhold-staircase.mjs — what a grounded contact DOES while its
  * floor data arrives, tick by tick.

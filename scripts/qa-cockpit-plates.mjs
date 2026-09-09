@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * Rendered proof for backdrop-selective callout plates at GROUND LEVEL.
  *

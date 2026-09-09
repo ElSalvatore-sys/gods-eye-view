@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-traffic-preset-ab.mjs — A/B screenshot capture for preset-aware
  * traffic dot styling (owner field finding 2026-07-23: NVG/FLIR/CRT

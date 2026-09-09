@@ -87,6 +87,16 @@ const SHARE_STYLE_PARAM_REGISTRY = Object.freeze({
 });
 
 export class ShareLinkManager {
+  /**
+   * @param {Cesium.Viewer} viewer
+   * @param {object} [options]
+   * @param {function(object): (void|Promise<void>)} [options.onRestore]
+   *   Callback invoked with the restored view/style/detection params once a shared view is applied.
+   * @param {function(*): boolean} [options.isNavigationCurrent]
+   *   Returns whether a navigation token is still the current in-flight navigation.
+   * @param {function(): void} [options.cancelOwnedNavigation]
+   *   Cancels a navigation owned by the caller, so a restore can take over the camera.
+   */
   constructor(viewer, {
     onRestore,
     isNavigationCurrent,

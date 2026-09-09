@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * fly_route cinematic pins.
  *

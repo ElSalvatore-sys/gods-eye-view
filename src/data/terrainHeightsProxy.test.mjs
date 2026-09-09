@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Terrain proxy cache/retry mechanics. All dependencies are injected; no real
 // network, disk, or Vite server is involved.
 import { test } from 'node:test';

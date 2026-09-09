@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/routePlausible.js
 /**
  * Is an adsbdb scheduled route consistent with where the plane actually is and

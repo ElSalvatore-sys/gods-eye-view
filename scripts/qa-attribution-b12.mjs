@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * qa-attribution-b12.mjs — visual + state proof for Batch 12 (data attribution).
  *

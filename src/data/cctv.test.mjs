@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/data/cctv.test.mjs — CCTV v2 pure frustum geometry (computeFrustumGeometry).
 //
 // Locks the §2a math of docs/plans/2026-07-03-cctv-v2-design.md:

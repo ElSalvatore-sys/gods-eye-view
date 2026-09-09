@@ -40,6 +40,7 @@
     "preview": "vite preview",
     "test": "node scripts/run-unit-tests.mjs",
     "test:track": "node scripts/track-regression.mjs",
+    "typecheck": "tsc --noEmit",
     "qa:map-source-tray": "node scripts/qa-map-source-tray.mjs"
   },
   "dependencies": {
@@ -52,8 +53,10 @@
     "sirv": "^3.0.2"
   },
   "devDependencies": {
+    "@types/node": "^26.5.0",
     "puppeteer": "^24.37.5",
     "sharp": "^0.34.5",
+    "typescript": "^5.9.3",
     "vite": "^6.0.0",
     "vite-plugin-cesium": "^1.2.23",
     "ws": "^8.21.0"

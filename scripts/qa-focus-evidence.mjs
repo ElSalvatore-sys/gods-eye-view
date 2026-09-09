@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * Moving visual evidence for focus de-emphasis and aircraft recession.
  *

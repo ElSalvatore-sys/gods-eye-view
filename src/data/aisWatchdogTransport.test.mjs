@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Transport proof for the AISStream watchdog's central design choice:
 // teardown must be ws.terminate(), never a graceful close().
 //

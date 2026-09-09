@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createGevActionRunner, readLayerLifecycleSummary } from './gevActions.js';
 import {
   DEFAULT_VOICE_TIER,
@@ -193,6 +194,17 @@ export function silenceRadioForVoice({ duckRadio, pauseRadio } = {}) {
  */
 const SUPERSEDED_RESPONSE_MEMORY = 8;
 
+/**
+ * Wire up the voice control button/UI and return a live `GevRealtimeController`
+ * for the viewer. Replaces any previously installed controller.
+ * @param {object} deps
+ * @param {Cesium.Viewer} deps.viewer
+ * @param {object} deps.styleManager
+ * @param {object} deps.dataManager
+ * @param {object} [deps.sceneDirector]
+ * @param {object} [deps.annotations]
+ * @returns {GevRealtimeController}
+ */
 export function initGevVoiceCommands({ viewer, styleManager, dataManager, sceneDirector = null, annotations = null }) {
   if (window.__gevVoiceCommands && typeof window.__gevVoiceCommands.stop === 'function') {
     window.__gevVoiceCommands.stop({ removeUi: true });
@@ -225,6 +237,7 @@ export function initGevVoiceCommands({ viewer, styleManager, dataManager, sceneD
   return controller;
 }
 
+/** Owns the OpenAI Realtime voice session: connection, UI state, and action dispatch. */
 export class GevRealtimeController {
   constructor({ runner, ui, radioLayer = null, dataManager = null }) {
     this.runner = runner;
@@ -2219,9 +2232,15 @@ async function captureViewportImage() {
   }
 }
 
-// Scale (w, h) down so w*h <= maxPixels while preserving aspect ratio. Never
-// upscales. Both dimensions shrink together, so portrait and landscape are
-// treated equally (M13). Pure + deterministic → unit-tested (exported below).
+/**
+ * Scale (w, h) down so w*h <= maxPixels while preserving aspect ratio. Never
+ * upscales. Both dimensions shrink together, so portrait and landscape are
+ * treated equally (M13). Pure + deterministic → unit-tested (exported below).
+ * @param {number} width
+ * @param {number} height
+ * @param {number} maxPixels
+ * @returns {{width: number, height: number}}
+ */
 export function computeDownscale(width, height, maxPixels) {
   const w = Math.max(1, Math.floor(width) || 0);
   const h = Math.max(1, Math.floor(height) || 0);
@@ -2237,9 +2256,13 @@ export function computeDownscale(width, height, maxPixels) {
   };
 }
 
-// Approximate the decoded byte length of a base64 data URL without allocating
-// the buffer: strip the "data:...;base64," prefix, then base64 is 4 chars per
-// 3 bytes (minus any '=' padding). Exported for unit tests.
+/**
+ * Approximate the decoded byte length of a base64 data URL without allocating
+ * the buffer: strip the "data:...;base64," prefix, then base64 is 4 chars per
+ * 3 bytes (minus any '=' padding). Exported for unit tests.
+ * @param {string} dataUrl
+ * @returns {number} Approximate decoded byte length.
+ */
 export function estimateDataUrlBytes(dataUrl) {
   if (typeof dataUrl !== 'string') return 0;
   const commaIndex = dataUrl.indexOf(',');
@@ -2354,11 +2377,16 @@ function extractFunctionCalls(event) {
   return calls.filter((call) => call?.name);
 }
 
-// True when an error payload is the benign result of deleting a viewport
-// screenshot the server had already truncated (M14). Non-fatal if EITHER the
-// error code is item_not_found OR it echoes the event_id of a delete we issued.
-// The event_id match narrows the code-only whitelist so an unrelated
-// item_not_found (should one ever arise) still surfaces normally.
+/**
+ * True when an error payload is the benign result of deleting a viewport
+ * screenshot the server had already truncated (M14). Non-fatal if EITHER the
+ * error code is item_not_found OR it echoes the event_id of a delete we issued.
+ * The event_id match narrows the code-only whitelist so an unrelated
+ * item_not_found (should one ever arise) still surfaces normally.
+ * @param {object} payload Realtime API error event payload.
+ * @param {Set<string>|null} [pendingDeleteIds] event_ids of deletes we issued.
+ * @returns {boolean}
+ */
 export function isBenignViewportDeleteError(payload, pendingDeleteIds = null) {
   if (!payload || payload.type !== 'error') return false;
   const echoedId = payload.event_id;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Satellite classification — CelesTrak source group → operator-legible class.
  *

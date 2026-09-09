@@ -271,8 +271,17 @@ export const SHARE_TRACKING_RESTORE_POLICIES = Object.freeze({
 });
 
 /**
+ * @typedef {object} LayerStateRegistryEntry
+ * @property {string} id Layer id, as used by the data manager.
+ * @property {string} token Single-character URL token for this layer.
+ * @property {'enabled-only'|'enabled+options'|'enabled+mirrored-options'} disposition
+ * @property {string} [optionOwner] Options-registry owner id, for a layer with tunable options.
+ */
+
+/**
  * Canonical serialization registry. Its order, not runtime registration order,
  * owns stable URL ordering.
+ * @type {ReadonlyArray<Readonly<LayerStateRegistryEntry>>}
  */
 export const LAYER_STATE_REGISTRY = Object.freeze([
   Object.freeze({ id: 'ais-live-vessels', token: 'a', disposition: 'enabled-only' }),
