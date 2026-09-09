@@ -1,16 +1,17 @@
-import fsp from 'node:fs/promises';
-import path from 'node:path';
 import { sendText } from '../lib/http.js';
+import { namespace } from '../lib/cache.js';
 
 const TLE_TTL_MS = 6 * 3600_000;
 
 /**
- * CelesTrak GP/TLE proxy with a memory + disk cache and serve-stale-on-failure.
- * Upstream: https://celestrak.org/NORAD/elements/gp.php?GROUP=<group>&FORMAT=tle
+ * CelesTrak GP/TLE proxy backed by the shared cache namespace (§5) and
+ * serve-stale-on-failure. Upstream:
+ * https://celestrak.org/NORAD/elements/gp.php?GROUP=<group>&FORMAT=tle
  * CelesTrak asks clients not to re-fetch GP data more than ~every 2 h and
  * throttles offenders; every dev reload used to refetch every group. Cache TTL
- * 6 h; on upstream failure the freshest stale copy is served (a stale TLE
- * beats an empty satellites layer). Pattern mirrors openSkyProxy's
+ * 6 h, `staleMs: Infinity` — on upstream failure the freshest stale copy is
+ * served (a stale TLE beats an empty satellites layer), matching the
+ * `celestrak` row in §5's namespace table. Pattern mirrors openSkyProxy's
  * cache+serve-stale. Adapted from skylight's TleStore (MIT).
  *
  * Mounted at `/api/celestrak` by both `vite.config.js` (dev + preview) and
@@ -19,34 +20,16 @@ const TLE_TTL_MS = 6 * 3600_000;
  * `server/lib/mount.js`.
  *
  * @param {object} [deps]
- * @param {string} [deps.cacheDir] override for the on-disk cache directory (tests)
+ * @param {import('../lib/cache.js').CacheNamespace} [deps.cache] override cache namespace (tests)
  * @param {typeof fetch} [deps.fetchImpl] override for the upstream fetch (tests)
+ * @param {number} [deps.ttlMs] override the 6 h TTL (tests / serve-stale evidence gathering)
  * @returns {(req: import('http').IncomingMessage, res: import('http').ServerResponse, next: (err?: unknown) => void) => void}
  */
 export function createCelestrakRoute(deps = {}) {
-  const cacheDir = deps.cacheDir || path.join(process.cwd(), '.gev-cache');
   const fetchImpl = deps.fetchImpl || fetch;
-  const mem = new Map(); // group -> { at: epochMs, body: string }
+  const ttlMs = deps.ttlMs || TLE_TTL_MS;
+  const cache = deps.cache || namespace('celestrak', { defaultTtlMs: ttlMs, staleMs: Infinity });
   const inflight = new Map(); // group -> Promise<{at, body}|null>
-
-  const diskPath = (group) => path.join(cacheDir, `celestrak-${group}.json`);
-
-  async function readDisk(group) {
-    try {
-      const parsed = JSON.parse(await fsp.readFile(diskPath(group), 'utf8'));
-      if (typeof parsed?.body === 'string' && Number.isFinite(parsed?.at)) return parsed;
-    } catch { /* no disk cache yet */ }
-    return null;
-  }
-
-  async function writeDisk(group, entry) {
-    try {
-      await fsp.mkdir(cacheDir, { recursive: true });
-      await fsp.writeFile(diskPath(group), JSON.stringify(entry), 'utf8');
-    } catch (err) {
-      console.warn(`[celestrak-route] cache write failed for ${group}:`, err?.message || err);
-    }
-  }
 
   async function fetchUpstream(group) {
     const url = new URL('https://celestrak.org/NORAD/elements/gp.php');
@@ -62,7 +45,7 @@ export function createCelestrakRoute(deps = {}) {
     const body = await res.text();
     // An upstream error page parses to zero TLEs — treat as failure, keep cache.
     if (!/^1 /m.test(body)) throw new Error('no TLE lines in response');
-    return { at: Date.now(), body };
+    return body;
   }
 
   return async function celestrakRoute(req, res) {
@@ -74,22 +57,19 @@ export function createCelestrakRoute(deps = {}) {
     const send = (status, body, cacheStatus) => sendText(res, status, body, { 'x-tle-cache': cacheStatus });
     try {
       const now = Date.now();
-      let entry = mem.get(group);
-      if (!entry) {
-        entry = await readDisk(group);
-        if (entry) mem.set(group, entry);
-      }
-      if (entry && now - entry.at < TLE_TTL_MS) {
-        send(200, entry.body, 'HIT');
+      // §5 serve-stale contract: get() returns the entry whether or not it's
+      // expired — freshness is read off expiresAt here, not filtered by the cache.
+      const cached = await cache.get(group);
+      if (cached && now < cached.expiresAt) {
+        send(200, cached.value, 'HIT');
         return;
       }
       // Stale or missing → refresh, single-flight per group.
       if (!inflight.has(group)) {
         inflight.set(group, fetchUpstream(group)
-          .then(async (fresh) => {
-            mem.set(group, fresh);
-            await writeDisk(group, fresh);
-            return fresh;
+          .then(async (body) => {
+            await cache.set(group, body, ttlMs);
+            return body;
           })
           .catch((err) => {
             console.warn(`[celestrak-route] ${group} refresh failed (${err?.message || err}) — serving cache if any`);
@@ -99,9 +79,9 @@ export function createCelestrakRoute(deps = {}) {
       }
       const fresh = await inflight.get(group);
       if (fresh) {
-        send(200, fresh.body, 'MISS');
-      } else if (entry) {
-        send(200, entry.body, 'STALE-ERROR'); // upstream down — stale beats empty
+        send(200, fresh, 'MISS');
+      } else if (cached) {
+        send(200, cached.value, 'STALE-ERROR'); // upstream down — stale beats empty
       } else {
         send(502, 'celestrak fetch failed and no cache available', 'NONE');
       }
