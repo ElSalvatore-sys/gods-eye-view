@@ -133,6 +133,12 @@ export function courseSlewCapDps(speedMps, maxDps, minDps = COURSE_MIN_DPS) {
  * fixes still describe clear movement. The delayed renderer already derives a
  * matching segment speed and course from those fixes, so tracking and cockpit
  * consumers should prefer that pair over stale poll fields.
+ * @param {object} [kinematics]
+ * @param {number} [kinematics.derivedSpeedMps]
+ * @param {number} [kinematics.derivedTrackDeg]
+ * @param {number} [kinematics.reportedSpeedMps]
+ * @param {number} [kinematics.reportedTrackDeg]
+ * @returns {{speedMps: number|null, trackDeg: number|null}}
  */
 export function displayedKinematics({
   derivedSpeedMps,
@@ -158,6 +164,13 @@ export function displayedKinematics({
  * still hears the aircraft. This horizon permits one grace window after the
  * latest actual contact, while `maximumSec` prevents a cached/stale feed from
  * drifting an aircraft indefinitely.
+ * @param {object} [opts]
+ * @param {number} [opts.fixEpochMs]
+ * @param {number} [opts.lastContactEpochMs]
+ * @param {number} [opts.minimumSec=60]
+ * @param {number} [opts.contactGraceSec=60]
+ * @param {number} [opts.maximumSec=300]
+ * @returns {number} Coast limit, in seconds.
  */
 export function staleCoastLimitSeconds({
   fixEpochMs,
@@ -379,8 +392,11 @@ const _forwardFixOffset = new Cesium.Cartesian3();
  *
  * @param {{time: Cesium.JulianDate, epochMs?: number, position: Cesium.Cartesian3,
  *   velocity?: number, track?: number}} newest Existing immutable history fix.
- * @param {{epochMs: number, velocity: number, track: number, turnRateDps?: number}} next
+ * @param {{epochMs?: number, velocity?: number, track?: number, turnRateDps?: number}} [next]
  *   New kinematics and the wall/source epoch at which they become authoritative.
+ *   Fields are optional on the type only to admit the `{}` default; `epochMs`,
+ *   `velocity`, and `track` are runtime-required — the guard below returns
+ *   null when `epochMs` is missing/non-finite.
  * @returns {{time: Cesium.JulianDate, epochMs: number, position: Cesium.Cartesian3,
  *   velocity: number, track: number}|null} Forward synthetic fix, or null.
  */

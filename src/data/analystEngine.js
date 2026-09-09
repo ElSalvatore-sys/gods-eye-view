@@ -26,6 +26,15 @@
 
 import { pointInRing } from './naturalEarthRegions.js';
 
+/**
+ * @typedef {object} ResolvedScope
+ * @property {{lat: number, lon: number}} [center] Radius/view scope center.
+ * @property {number} [km] Radius, for a radius/view scope.
+ * @property {string|null} [centeredOn] Human label for the center, when named (radius scope only).
+ * @property {Array<Array<number>>} [ring] Boundary polygon, for a region scope.
+ * @property {string} [name] Region name, for a region scope.
+ */
+
 /** Layers the engine understands, with the fields queries may reference. */
 export const ANALYST_LAYERS = {
   flights: { numeric: ['altitudeM', 'speedMps', 'verticalRateMps'], text: ['callsign', 'icao24', 'originCountry', 'operator', 'routeOrigin', 'routeDestination', 'aircraftClass'], flags: ['military', 'onGround'] },
@@ -138,6 +147,7 @@ export function createAnalystEngine(providers) {
     }
 
     // 2) Spatial scope
+    /** @type {ResolvedScope|null} */
     let resolvedScope = null;
     let scopeNote = 'anywhere';
     // Human phrasing for the same scope, so every spoken count can name what it
