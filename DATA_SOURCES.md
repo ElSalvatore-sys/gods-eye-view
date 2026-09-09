@@ -37,6 +37,7 @@ How to read this:
 | **GBFS (Lyft / BCycle)** | Bikeshare availability | Per-feed (attribution-only) | Credit the operator (e.g. Austin BCycle) + its `license_url` |
 | **Radio Browser** | Geolocated internet-radio station directory and station-level tags | Public-domain directory data under PDDL 1.0; individual broadcaster stream terms apply | "Radio Browser" plus a link to the selected broadcaster |
 | **Re:Earth Terrain** (Mapterhorn) | Terrain (keyless globe stacks — OSM etc. — + `/api/terrain/heights` ellipsoidal-height lookups) | Terrain mesh: CC BY 4.0; geoid: EGM2008 (NGA, public domain) | "Terrain (keyless globe stacks): Re:Earth Terrain / Mapterhorn (CC BY 4.0) / EGM2008 (NGA)" |
+| **RainViewer** | Precipitation radar imagery layer (last ~2h + short nowcast, time scrubber) | Free public API, keyless; [rainviewer.com/api.html](https://www.rainviewer.com/api.html) limits use to personal, educational, and small-scale community use and asks for attribution with a link | "Weather radar: RainViewer (rainviewer.com)" |
 
 ### Notes on the live sources
 
