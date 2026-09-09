@@ -5,6 +5,10 @@ export const SPRITE_LAYER_ORDER = Object.freeze([
   'firms',
   'bikeshare',
   'ais',
+  // The AIS LOD point twin (aisLiveVessels.js) is a distinct registered
+  // collection but the same conceptual layer — kept adjacent so both raise
+  // together relative to military/flights.
+  'ais-points',
   'military',
   'flights',
 ]);
