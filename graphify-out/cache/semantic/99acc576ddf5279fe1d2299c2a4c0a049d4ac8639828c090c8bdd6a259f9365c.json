@@ -1,0 +1,1 @@
+{"nodes": [{"id": "qa_traffic_preset_ab_harness", "label": "Preset-Aware Traffic Dot Styling A/B Capture", "file_type": "code", "source_file": "scripts/qa-traffic-preset-ab.mjs", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}
