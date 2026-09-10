@@ -74,8 +74,10 @@ export function evaluateCondition(record, condition) {
 export function withinGeofence(record, geo) {
   if (!geo) return true;
   if (!Number.isFinite(record?.lat) || !Number.isFinite(record?.lon)) return false;
-  if (Array.isArray(geo.ring)) return pointInRing(geo.ring, record.lat, record.lon);
-  if (Number.isFinite(geo.lat) && Number.isFinite(geo.lon) && Number.isFinite(geo.radiusKm)) {
+  // `in` rather than a bare property read: it narrows the union for the type
+  // checker exactly the way the runtime check already discriminates it.
+  if ('ring' in geo && Array.isArray(geo.ring)) return pointInRing(geo.ring, record.lat, record.lon);
+  if ('lat' in geo && Number.isFinite(geo.lat) && Number.isFinite(geo.lon) && Number.isFinite(geo.radiusKm)) {
     return haversineKm(geo.lat, geo.lon, record.lat, record.lon) <= geo.radiusKm;
   }
   return true;
@@ -137,7 +139,7 @@ export function applyCooldown(rule, matches, lastFiredAt, nowMs, getEntityId = d
  * useful rather than being opted into notifications on first load.
  * Wiesbaden is the reference point for the geofenced example, matching the
  * "50 km of Wiesbaden" example in the mission brief.
- * @type {Array<object>}
+ * @type {ReadonlyArray<object>}
  */
 export const DEFAULT_ALERT_RULES = Object.freeze([
   Object.freeze({

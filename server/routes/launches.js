@@ -85,6 +85,7 @@ export function createLaunchesRoute(deps = {}) {
     });
     const body = await readResponseTextCapped(upstream, maxResponseBytes);
     if (!upstream.ok) {
+      /** @type {Error & {upstreamStatus?: number, upstreamBody?: string}} */
       const error = new Error(`upstream HTTP ${upstream.status}`);
       error.upstreamStatus = upstream.status;
       error.upstreamBody = body;

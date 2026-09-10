@@ -54,6 +54,7 @@ test('withinGeofence: radius — inside vs outside, and missing coords fail clos
 });
 
 test('withinGeofence: ring — pointInRing containment', () => {
+  /** @type {{ring: Array<[number, number]>}} */
   const square = { ring: [[-1, -1], [1, -1], [1, 1], [-1, 1]] };
   assert.equal(withinGeofence({ lat: 0, lon: 0 }, square), true);
   assert.equal(withinGeofence({ lat: 5, lon: 5 }, square), false);

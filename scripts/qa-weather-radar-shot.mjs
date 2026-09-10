@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-weather-radar-shot — layer-rainviewer mission evidence.
  * Boots the real app, enables weather-radar, teleports over Europe, waits

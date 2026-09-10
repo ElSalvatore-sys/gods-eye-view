@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-weather-radar-perf — layer-rainviewer mission evidence.
  * Boots the app, enables ONLY weather-radar (left PAUSED, not autoplaying),

@@ -92,7 +92,8 @@ export function loadRules(storage) {
 /**
  * Persist rules, best-effort.
  * @param {Array<object>} rules
- * @param {{setItem: Function}|null} [storage] Explicit store (tests); omit to use the global.
+ * @param {{setItem?: Function}|null} [storage] Explicit store (tests); omit to use the global.
+ *   `setItem` is optional because the body fail-opens when it is missing.
  * @returns {boolean} true only if the value actually landed.
  */
 export function saveRules(rules, storage) {

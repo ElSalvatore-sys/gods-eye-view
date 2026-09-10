@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 /**
  * qa-alerts — the alerts engine's contract, proved in the real app.
  *

@@ -25,7 +25,8 @@ export const MAX_FEED = 50;
  * @param {object} deps
  * @param {(layerKey: string) => Array<object>} deps.getRecords - layer accessor (analyst-record shape)
  * @param {() => Array<object>} deps.getRules - returns the live, already-loaded rule list
- * @param {Document|null} [deps.documentRef] - injectable for tests / non-DOM callers
+ * @param {Document|{dispatchEvent?: Function}|null} [deps.documentRef] - injectable for tests /
+ *   non-DOM callers, so the structural `dispatchEvent` shape is the real contract, not `Document`
  * @param {() => number} [deps.now] - injectable clock
  * @param {Function} [deps.setIntervalFn]
  * @param {Function} [deps.clearIntervalFn]
@@ -43,7 +44,7 @@ export function createAlertRunner({
   setIntervalFn = (typeof setInterval !== 'undefined' ? setInterval : null),
   clearIntervalFn = (typeof clearInterval !== 'undefined' ? clearInterval : null),
   throttleMs = DEFAULT_THROTTLE_MS,
-} = {}) {
+}) {
   let intervalHandle = null;
   /** `${ruleId}:${entityId}` -> epoch ms of last fire. */
   let lastFiredAt = new Map();

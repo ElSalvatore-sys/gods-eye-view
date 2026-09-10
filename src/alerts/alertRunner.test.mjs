@@ -69,6 +69,9 @@ test('alertRunner: a throwing getRecords/rule does not take the whole pass down'
 });
 
 test('alertRunner: start/stop drive tick via the injected interval, and are idempotent', () => {
+  // Annotated because the only assignment happens inside the injected
+  // callback below, which TS does not use to widen an evolving `let`.
+  /** @type {{fn: Function, ms: number}|null} */
   let scheduled = null;
   let cleared = 0;
   const runner = createAlertRunner({
@@ -80,7 +83,7 @@ test('alertRunner: start/stop drive tick via the injected interval, and are idem
   });
   runner.start();
   runner.start(); // idempotent — no second interval
-  assert.equal(scheduled.ms, 5000);
+  assert.equal(scheduled?.ms, 5000);
   runner.stop();
   runner.stop(); // idempotent — no double-clear
   assert.equal(cleared, 1);

@@ -46,9 +46,12 @@ const MAX_FRAMES = 40;
  */
 export function parseRainviewerFrames(json) {
   if (!json || typeof json !== 'object') return null;
-  const host = typeof json.host === 'string' && json.host ? json.host : null;
+  // `unknown` is deliberate above — this is an untrusted upstream body. Narrow
+  // once here so the field reads below stay checked without re-casting each one.
+  const payload = /** @type {Record<string, any>} */ (json);
+  const host = typeof payload.host === 'string' && payload.host ? payload.host : null;
   if (!host) return null;
-  const radar = json.radar && typeof json.radar === 'object' ? json.radar : null;
+  const radar = payload.radar && typeof payload.radar === 'object' ? payload.radar : null;
   if (!radar) return null;
 
   const normalize = (list, kind) => (Array.isArray(list) ? list : [])
@@ -118,7 +121,10 @@ export function buildFrameTileUrlTemplate(frame, options = {}) {
  * The caller shows the target slot at full alpha and the stale slot at 0
  * BEFORE removing/replacing anything, so a viewer never sees zero visible
  * radar layers between frames.
- * @param {{ activeSlot: 'A'|'B', slotFrameIndex: { A: number|null, B: number|null } }} state
+ * Every field is optional on purpose: the body coerces any non-'B' `activeSlot`
+ * to 'A' and treats a missing `slotFrameIndex` as empty, which the
+ * "defaults a missing/invalid activeSlot to A" test pins.
+ * @param {{ activeSlot?: string, slotFrameIndex?: { A?: number|null, B?: number|null } }|null} state
  * @param {number} targetFrameIndex
  * @returns {{ targetSlot: 'A'|'B', needsLoad: boolean, staleSlot: 'A'|'B' }}
  */
@@ -198,6 +204,7 @@ export function createWeatherRadarLayer({
   let _lastError = null;
   let _viewer = null;
   const _slots = { A: null, B: null }; // { frameIndex, imageryLayer } | null
+  /** @type {'A'|'B'} */
   let _activeSlot = 'A';
   let _panelEl = null;
   let _els = {};

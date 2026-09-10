@@ -546,7 +546,7 @@ export function overpassPayloadIsData(payload) {
  * @param {string} body URL-encoded Overpass QL query body.
  * @param {number} [maxResponseBytes] Endpoint-specific response cap.
  * @param {object} [options] Server-only endpoint and I/O overrides for tests.
- * @returns {Promise<{status:number,body:string,contentType:string,endpoint:string,rateLimited:boolean}>}
+ * @returns {Promise<{status:number,body:string,contentType:string,endpoint:string,rateLimited:boolean,runtimeError?:boolean}>}
  */
 export async function fetchOverpassPayload(body, maxResponseBytes = OVERPASS_MAX_RESPONSE_BYTES, {
   endpoints = OVERPASS_UPSTREAMS,
