@@ -18,6 +18,7 @@ import { createAdsbdbRoute } from './routes/adsbdb.js';
 import { createTerrainRoute } from './routes/terrain.js';
 import { createOverpassRoute, createOsrmRoutingRoute } from './routes/overpass.js';
 import { createMilitaryInstallationsRoute } from './routes/military.js';
+import { createGeocodeRoute } from './routes/geocode.js';
 
 /**
  * @typedef {object} RouteEntry
@@ -39,4 +40,5 @@ export const ROUTES = [
   { mount: '/api/overpass', handler: createOverpassRoute() },
   { mount: '/api/route', handler: createOsrmRoutingRoute() },
   { mount: '/api/military-installations', handler: createMilitaryInstallationsRoute() },
+  { mount: '/api/geocode', handler: createGeocodeRoute() },
 ];
