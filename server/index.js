@@ -8,9 +8,44 @@
  */
 
 import http from 'node:http';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import sirv from 'sirv';
 import { ROUTES } from './routes.js';
 import { mount } from './lib/mount.js';
+
+/**
+ * Load dotenv files before anything reads `process.env`.
+ *
+ * Vite calls `loadEnv()` for us in dev, so every key in `.env` was visible
+ * under `npm run dev` and invisible under `node server/index.js`. That made
+ * production quietly keyless: no voice token, no FIRMS, no AISStream, no
+ * OpenSky — each one degrading to its "not configured" path with nothing in
+ * the logs to explain why.
+ *
+ * `process.loadEnvFile` is a Node built-in (>=20.12), so this costs no
+ * dependency — `server/index.js` still runs with zero dev dependencies
+ * (docs/ARCH-SERVER-SPLIT.md §3). It does not overwrite variables already
+ * present in the real environment, so a value exported by the shell or set by
+ * the host platform still wins over the file — which is what a deployment
+ * expects.
+ *
+ * Both files are optional: a container that injects real environment
+ * variables and ships no `.env` is the normal production case, not an error.
+ */
+function loadDotenvFiles() {
+  const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+  // `.env.local` last, so it wins over `.env` — matching Vite's precedence.
+  for (const name of ['.env', '.env.local']) {
+    try {
+      process.loadEnvFile(path.join(root, name));
+    } catch {
+      // Absent or unreadable: expected, and not worth a warning.
+    }
+  }
+}
+
+loadDotenvFiles();
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const host = process.env.HOST || 'localhost';

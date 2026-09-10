@@ -5,8 +5,8 @@ import {
   isHudSummaryUnconfigured,
   keylessHudSummaryResponse,
 } from './hudSummaryResponse.js';
-import { openAiRealtimeProxy } from '../vite.config.js';
 import { createHudSummaryRoute } from '../server/routes/hudSummary.js';
+import { createRealtimeTokenRoute } from '../server/routes/realtime.js';
 
 const UNCONFIGURED_PAYLOAD = {
   configured: false,
@@ -14,18 +14,6 @@ const UNCONFIGURED_PAYLOAD = {
   error: null,
   summary: null,
 };
-
-function installOpenAiRoutes() {
-  const routes = new Map();
-  openAiRealtimeProxy().configureServer({
-    middlewares: {
-      use(path, handler) {
-        routes.set(path, handler);
-      },
-    },
-  });
-  return routes;
-}
 
 function invokeRoute(handler, { method = 'GET', url = '/', remoteAddress = '127.0.0.1' } = {}) {
   return new Promise((resolve, reject) => {
@@ -115,12 +103,16 @@ test('the installed keyless HUD route stays successful after the voice quota is 
   delete process.env.AI_BASE_URL;
   process.env.GEV_RATELIMIT_OPENAI_PER_MIN = '1';
   try {
-    const routes = installOpenAiRoutes();
-    const token = routes.get('/api/realtime/token');
-    // hud-summary lives in server/routes/hudSummary.js since docs/ARCH-SERVER-SPLIT.md
-    // §3 (the local-ai-provider mission) — no longer part of openAiRealtimeProxy.
-    // Constructed here, after the env above is set, matching how server/routes.js
-    // itself only builds the provider lazily on first request (see that file).
+    // BOTH routes are now server/routes/* modules, constructed here after the
+    // env above is set. hud-summary moved in docs/ARCH-SERVER-SPLIT.md §3; the
+    // Realtime token route followed on 2026-09-10, because living only inside
+    // vite.config.js meant a production build served it through sirv's SPA
+    // fallback and the voice agent was dead in every deployment.
+    //
+    // What this test guards is unchanged and is the reason they must stay
+    // SEPARATE limiter instances: exhausting the voice quota must not take the
+    // keyless HUD summary down with it.
+    const token = createRealtimeTokenRoute();
     const hud = createHudSummaryRoute();
     assert.equal(typeof token, 'function');
     assert.equal(typeof hud, 'function');

@@ -19,6 +19,7 @@ import { createTerrainRoute } from './routes/terrain.js';
 import { createOverpassRoute, createOsrmRoutingRoute } from './routes/overpass.js';
 import { createMilitaryInstallationsRoute } from './routes/military.js';
 import { createGeocodeRoute } from './routes/geocode.js';
+import { createRealtimeTokenRoute, createRealtimeDebugLogRoute } from './routes/realtime.js';
 
 /**
  * @typedef {object} RouteEntry
@@ -41,4 +42,8 @@ export const ROUTES = [
   { mount: '/api/route', handler: createOsrmRoutingRoute() },
   { mount: '/api/military-installations', handler: createMilitaryInstallationsRoute() },
   { mount: '/api/geocode', handler: createGeocodeRoute() },
+  // Voice. Previously dev-only inside vite.config.js, which left a deployed
+  // build with no agent at all — see server/routes/realtime.js.
+  { mount: '/api/realtime/token', handler: createRealtimeTokenRoute() },
+  { mount: '/api/realtime/debug-log', handler: createRealtimeDebugLogRoute() },
 ];

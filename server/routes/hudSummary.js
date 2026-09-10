@@ -29,7 +29,7 @@ function toFiveWordHudSummary(value) {
  * `/api/openai/hud-summary` — a one-line intelligence-HUD summary from whatever
  * text provider is configured (`server/lib/aiProvider.js`): OpenAI by default,
  * or any OpenAI-compatible local endpoint when `AI_BASE_URL` is set. Moved out
- * of `vite.config.js`'s `openAiRealtimeProxy()` (docs/ARCH-SERVER-SPLIT.md §3
+ * of the former `openAiRealtimeProxy()` (docs/ARCH-SERVER-SPLIT.md §3
  * pattern) — OpenAI Realtime voice (`/api/realtime/token`) is untouched and
  * stays there.
  *

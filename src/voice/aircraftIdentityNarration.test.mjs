@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-const voiceConfig = readFileSync(new URL('../../vite.config.js', import.meta.url), 'utf8');
+// Realtime instructions moved out of vite.config.js into the shared route
+// module, so they exist in production builds too.
+const voiceConfig = readFileSync(new URL('../../server/routes/realtime.js', import.meta.url), 'utf8');
 const realtime = readFileSync(new URL('./gevRealtime.js', import.meta.url), 'utf8');
 
 test('aircraft identity narration acknowledges missing enrichment', () => {

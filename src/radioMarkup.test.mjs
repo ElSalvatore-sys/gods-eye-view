@@ -8,7 +8,10 @@ const ui = readFileSync(new URL('./ui.js', import.meta.url), 'utf8');
 const radio = readFileSync(new URL('./data/radio.js', import.meta.url), 'utf8');
 const rocketLaunches = readFileSync(new URL('./data/rocketLaunches.js', import.meta.url), 'utf8');
 const realtime = readFileSync(new URL('./voice/gevRealtime.js', import.meta.url), 'utf8');
-const voice = readFileSync(new URL('../vite.config.js', import.meta.url), 'utf8');
+// The Realtime session (tools + instructions) moved out of vite.config.js into
+// the shared route module, so it is mounted in production too — the dev-only
+// copy left deployed builds with no voice agent at all.
+const voice = readFileSync(new URL('./../server/routes/realtime.js', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../style.css', import.meta.url), 'utf8');
 
 /** Parse the Realtime tool array out of the Vite config as real data. */
