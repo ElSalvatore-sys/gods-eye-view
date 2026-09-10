@@ -47,11 +47,11 @@ test('adjacent proxy validators also require every coordinate explicitly', () =>
 test('new data proxies install the same routes in dev and preview servers', () => {
   const config = createViteConfig({ mode: 'test' });
   const byName = new Map(config.plugins.map((plugin) => [plugin.name, plugin]));
-  // rocket-launches-proxy moved into the shared server/routes.js manifest
-  // (docs/ARCH-SERVER-SPLIT.md §4 PR 3) — it now installs via the single
-  // 'gev-routes' plugin alongside celestrak, not as its own named plugin.
+  // rocket-launches-proxy (PR 3) and military-installations-proxy (PR 4) moved
+  // into the shared server/routes.js manifest (docs/ARCH-SERVER-SPLIT.md §4) —
+  // they now install via the single 'gev-routes' plugin alongside celestrak,
+  // not as their own named plugins.
   for (const name of [
-    'military-installations-proxy',
     'regional-brief-proxy',
     'weather-effects-proxy',
   ]) {

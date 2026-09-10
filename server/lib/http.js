@@ -1,11 +1,14 @@
 /**
  * Small request/response helpers shared by every route handler: writing a
- * response (`sendText`/`sendJson`) and reading a request or upstream
- * response body under a hard byte cap. Kept deliberately thin — each
- * function does exactly what its name says, so a handler's control flow
- * (cache hit/miss, error branch) stays visible at the call site instead of
- * hiding inside a generic responder. The four `read*` helpers moved
- * verbatim out of `vite.config.js` in docs/ARCH-SERVER-SPLIT.md §4 PR 2.
+ * response (`sendText`/`sendJson`), reading a request or upstream response
+ * body under a hard byte cap, and pulling a validated numeric query param.
+ * Kept deliberately thin — each function does exactly what its name says, so
+ * a handler's control flow (cache hit/miss, error branch) stays visible at
+ * the call site instead of hiding inside a generic responder. The four
+ * `read*` helpers moved verbatim out of `vite.config.js` in
+ * docs/ARCH-SERVER-SPLIT.md §4 PR 2; `requiredFiniteQueryNumber` followed in
+ * PR 4 — it validates `/api/military-installations`' bbox params and is also
+ * used by two routes not yet moved (adsb.lol fallback anchor, regional-brief).
  *
  * @module server/lib/http
  */
@@ -147,4 +150,20 @@ export async function readResponseTextCapped(response, maxBytes) {
  */
 export async function readResponseJsonCapped(response, maxBytes) {
   return JSON.parse(await readResponseTextCapped(response, maxBytes));
+}
+
+/**
+ * Read one query param as a finite number, or `null` if absent, blank, or
+ * non-numeric. Moved verbatim from `vite.config.js` (docs/ARCH-SERVER-SPLIT.md
+ * §4 PR 4) — `null` (not `0`) for a missing param lets callers require every
+ * coordinate explicitly rather than silently coercing an absent one to zero.
+ * @param {URLSearchParams} params
+ * @param {string} key
+ * @returns {?number}
+ */
+export function requiredFiniteQueryNumber(params, key) {
+  const value = params.get(key);
+  if (value === null || value.trim() === '') return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
 }
