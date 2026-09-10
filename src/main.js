@@ -32,6 +32,7 @@ import {
   holdContinuousRender,
   releaseContinuousRender,
 } from './renderGovernor.js';
+import { installCameraZoom } from './cameraZoom.js';
 import { installScopeMask } from './scopeMask.js';
 import { initFirstRunExperience } from './firstRunExperience.js';
 import { initKeySetup } from './keySetup.js';
@@ -144,6 +145,12 @@ async function init() {
     // 120 Hz hardware; a no-op on 60 Hz displays. (perf item 2)
     viewer.targetFrameRate = 60;
 
+    // Cursor-anchored wheel zoom. Cesium's own zoom scales its step from a
+    // canvas-CENTRE pick that always misses here (globe.show=false below), then
+    // falls back to height above the hidden ellipsoid — measured at 1.5x-3.2x
+    // the true distance to the surface over terrain. See src/cameraZoom.js.
+    installCameraZoom(viewer);
+
     // Register per-layer data attribution into the "Data attribution" popover.
     // Required by each source's license (ODbL, CC BY-NC-SA, NASA FIRMS, etc.);
     // strings are verbatim from DATA_SOURCES.md. Static + always-present in the
@@ -174,6 +181,15 @@ async function init() {
     const tileset = photoreal.tileset;
     if (tileset) {
       viewer.scene.primitives.add(tileset);
+      // Make the camera's floor INTENTIONAL. `scene.globeHeight` — which the
+      // controller's collision clamp reads — only includes a tileset when
+      // `enableCollision` is set (Cesium's getMaxPrimitiveHeight requires it).
+      // Until now the only thing setting it was src/annotations/index.js:17, so
+      // the camera's floor was a side effect of the annotations module happening
+      // to initialise. Setting it here, where the tileset is added, makes it a
+      // property of the surface itself. The annotations line is harmless and
+      // stays, but is no longer load-bearing.
+      try { tileset.enableCollision = true; } catch { /* older tileset build */ }
       // NOTE: Cesium World Terrain intentionally disabled — conflicts with Google 3D Tiles at high zoom.
       // Google Photorealistic 3D Tiles provide their own terrain/elevation.
       viewer.scene.globe.show = false;
@@ -334,6 +350,11 @@ async function init() {
     syncVisibilitySuspension();
 
     window.__godsEyeView = {
+      // The Cesium namespace itself: in dev it is an ES module with no
+      // browser-resolvable specifier, so QA harnesses (scripts/qa-*.mjs)
+      // have no other way to reach Cartesian3/SceneTransforms/etc.
+      // The production build happens to expose a global; dev does not.
+      Cesium,
       viewer,
       styleManager,
       tileset,
