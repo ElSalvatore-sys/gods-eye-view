@@ -394,7 +394,12 @@ const MILITARY_DETECTION_PRESET = Object.freeze({ mode: 'dense', densityPct: 75 
 const GLOBAL_POST_DEFAULTS = {
   bloom: { enabled: false, intensity: BLOOM_INTENSITY_DEFAULT },
   sharpen: { enabled: true, intensity: 49 },
-  hudVariant: 'tactical',
+  // 'minimal' on first load: a new viewer should meet the globe, not a full
+  // reconnaissance console. This is the BASELINE (Normal style) only — the
+  // sensor looks below (surveillance, thermal, …) keep 'tactical', because the
+  // instrument dressing is the point of those modes. Every variant stays
+  // available in the DISPLAY panel's Layout select, so nothing is removed.
+  hudVariant: 'minimal',
   hudVisible: true,
   // Detection is ON for EVERY style on a first run, Normal included (owner
   // directive 2026-08-22: "detect should also be on by default"). It is the
@@ -10274,10 +10279,11 @@ export class StyleManager {
       this._syncShareState();
     });
 
+    // Keep this in step with HudOverlay's own default (src/hud.js).
     if (this._hudLayoutSelect) {
-      this._hudLayoutSelect.value = 'tactical';
+      this._hudLayoutSelect.value = 'minimal';
     }
-    this._setHudVariant('tactical');
+    this._setHudVariant('minimal');
     this.hud.setMode('on');
     this._updateHudButtonState();
 

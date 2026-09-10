@@ -85,6 +85,21 @@ async function init() {
     const googleApiKey = import.meta.env.GOOGLE_MAPS_API_KEY;
     if (googleApiKey) window.__GOOGLE_MAPS_API_KEY__ = googleApiKey;
 
+    // Replace CesiumJS's default on-screen "Cesium ion" logo credit with the
+    // operator's own. `CreditDisplay.cesiumCredit` is Cesium's supported hook
+    // for this and must be set BEFORE the Viewer is constructed, because the
+    // CreditDisplay reads the static once at construction.
+    //
+    // This removes only the ion badge, which advertises a Cesium ion account
+    // this build does not necessarily use. It does NOT touch the imagery and
+    // data attributions beside it ("Powered by Esri", "Data attribution") —
+    // those are required by the providers' terms while their content is on
+    // screen, and are registered separately in registerDataCredits().
+    Cesium.CreditDisplay.cesiumCredit = new Cesium.Credit(
+      '<a href="https://thepuffer.de" target="_blank" rel="noopener">Powered by Puffer</a>',
+      true,
+    );
+
     // Create the Cesium viewer with minimal chrome
     const viewer = new Cesium.Viewer('cesiumContainer', {
       timeline: false,

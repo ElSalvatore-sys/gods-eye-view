@@ -72,7 +72,11 @@ export class IntelHUD {
     this._autoMode = true; // auto show/hide based on style
     this._currentStyle = 'normal';
     this._el = null;
-    this._variant = 'tactical';
+    // 'minimal' is the default so a first-time viewer meets the globe, not a
+    // full reconnaissance console. `tactical` (the complete instrument set) and
+    // `operator` stay one click away in the DISPLAY panel's Layout select, so
+    // nothing is removed — only the opening impression changes.
+    this._variant = 'minimal';
     this._recBlinkState = true;
     this._updateInterval = null;
     this._recBlinkInterval = null;
