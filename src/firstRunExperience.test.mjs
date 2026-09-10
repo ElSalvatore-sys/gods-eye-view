@@ -668,10 +668,14 @@ test('the voice TOOL SCHEMA is byte-identical to main — the mission mapping is
   // this test guards is UNCHANGED: the first-run missions still ride existing
   // tools (they call zoom_to_globe and set_layer_visibility, never
   // manage_alerts), and any drift beyond this recorded schema still fails.
-  assert.equal(block.length, 33782, 'tool schema byte length drifted from the pinned release schema');
+  // Re-pinned again 2026-09-10: `control_weather_radar` and `share_view` added,
+  // closing the last two subsystems that existed in the app but had no voice
+  // surface. Same deliberate growth; the guarded claim is still that the
+  // first-run missions ride existing tools, which they do.
+  assert.equal(block.length, 35468, 'tool schema byte length drifted from the pinned release schema');
   assert.equal(
     crypto.createHash('sha256').update(block).digest('hex'),
-    '5080a88f108b2b5fb15a4a4c3b0431603228957b2cf166764cfbcbaddcd8e26a',
+    '68dcf18d498e892c1aac798101489da4e81042ffc85dcc42f52bb603e78b6f07',
     'the first-run missions must ride EXISTING tools: no schema edit, no cache bust',
   );
 

@@ -3836,6 +3836,47 @@ const GEV_REALTIME_TOOLS = [
   },
   {
     type: 'function',
+    name: 'control_weather_radar',
+    description:
+      "Play, pause or scrub the weather-radar rain loop — \"play the rain\", \"pause it\", \"show me an hour ago\", \"what's the latest frame?\". Only affects the radar animation; use set_layer_visibility{layerId:'weather-radar'} to turn the layer on or off first. Frames are roughly 10 minutes apart, newest last.",
+    parameters: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        action: {
+          type: 'string',
+          enum: ['play', 'pause', 'step', 'latest', 'oldest', 'status'],
+          description:
+            "'step' moves by `frames` (negative = back in time); 'latest' jumps to the newest frame, 'oldest' to the start of the loop.",
+        },
+        frames: {
+          type: 'number',
+          description:
+            "Frames to move for 'step'. Negative goes back in time. One frame is about 10 minutes.",
+        },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    type: 'function',
+    name: 'share_view',
+    description:
+      'Produce a shareable link that reproduces the CURRENT view — camera, visual style, active layers, and a tracked target if there is one. Use for "share this", "send me this view", "give me a link". Returns the URL so it can be read back or shown; also copies it to the clipboard when the browser permits.',
+    parameters: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        copyToClipboard: {
+          type: 'boolean',
+          description: 'Attempt a clipboard copy as well as returning the URL. Defaults to true.',
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    type: 'function',
     name: 'manage_alerts',
     description:
       'Arm, inspect, or clear standing watches on live data. Use this whenever the user asks to be TOLD or NOTIFIED about something in the future rather than shown it now — "let me know if a helicopter comes within 20km", "watch for emergency squawks", "alert me about big earthquakes", "what has triggered?". A rule keeps evaluating in the background after the conversation moves on. For a one-off look at what is on screen right now, use analyst_query instead.',

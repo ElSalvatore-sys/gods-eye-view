@@ -337,6 +337,77 @@ export function createGevActionRunner({ viewer, styleManager, dataManager, scene
       }
     }
 
+    if (name === 'control_weather_radar') {
+      const radar = dataManager.layers.get('weather-radar')?.module;
+      if (!radar || typeof radar.play !== 'function') {
+        return { ok: false, action: 'control_weather_radar', error: 'Weather radar is unavailable' };
+      }
+      const stats = radar.getStats?.() || {};
+      if (!stats.count) {
+        // Honest about the difference between "off" and "loaded but empty" —
+        // the model otherwise reports success over a blank loop.
+        return {
+          ok: false,
+          action: 'control_weather_radar',
+          error: 'No radar frames loaded — enable the weather-radar layer first',
+          layerEnabled: !!dataManager.layers.get('weather-radar')?.enabled,
+        };
+      }
+
+      const act = String(args.action || '').toLowerCase();
+      const describe = (frameIndex) => {
+        const frames = radar.listFrames?.() || [];
+        const frame = frames[frameIndex];
+        return {
+          frameIndex,
+          frameCount: frames.length,
+          minutesFromNewest: frame ? Math.round((frames[frames.length - 1].time - frame.time) / 60) : null,
+          kind: frame?.kind ?? null,
+        };
+      };
+
+      if (act === 'status') {
+        return { ok: true, action: 'control_weather_radar', op: 'status', playing: !!stats.playing, ...describe(stats.frameIndex) };
+      }
+      if (act === 'play') {
+        radar.play();
+        return { ok: true, action: 'control_weather_radar', op: 'play', playing: true, ...describe(radar.getStats().frameIndex) };
+      }
+      if (act === 'pause') {
+        radar.pause();
+        return { ok: true, action: 'control_weather_radar', op: 'pause', playing: false, ...describe(radar.getStats().frameIndex) };
+      }
+      if (act === 'step') {
+        const shown = radar.stepFrame(Number(args.frames) || -1);
+        return { ok: true, action: 'control_weather_radar', op: 'step', playing: false, ...describe(shown) };
+      }
+      if (act === 'latest' || act === 'oldest') {
+        radar.pause();
+        const target = act === 'latest' ? stats.count - 1 : 0;
+        radar.setFrameIndex(target);
+        return { ok: true, action: 'control_weather_radar', op: act, playing: false, ...describe(target) };
+      }
+      return { ok: false, action: 'control_weather_radar', error: `Unknown radar action: ${args.action || 'missing'}` };
+    }
+
+    if (name === 'share_view') {
+      const share = styleManager?.shareLinkManager;
+      if (typeof share?.buildShareUrl !== 'function') {
+        return { ok: false, action: 'share_view', error: 'Share links are unavailable in this session' };
+      }
+      const url = share.buildShareUrl();
+      if (!url) {
+        return { ok: false, action: 'share_view', error: 'There is no shareable view state yet' };
+      }
+      // The clipboard needs a user gesture, so it can fail in an agent turn.
+      // That must not fail the tool — the URL is the deliverable.
+      let copied = false;
+      if (args.copyToClipboard !== false) {
+        try { copied = await share.copyLink(); } catch { copied = false; }
+      }
+      return { ok: true, action: 'share_view', url, copiedToClipboard: copied };
+    }
+
     // Standing watches. Distinct from analyst_query: that answers about the
     // scene NOW, this keeps evaluating after the conversation moves on.
     if (name === 'manage_alerts') {

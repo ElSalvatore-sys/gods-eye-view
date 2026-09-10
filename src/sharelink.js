@@ -452,15 +452,32 @@ export class ShareLinkManager {
     this._scheduleUpdate();
   }
 
+  /**
+   * Build a current-state snapshot URL with a creation timestamp, WITHOUT
+   * touching the clipboard.
+   *
+   * Split out of `copyLink` for the voice agent: clipboard writes need a user
+   * gesture and fail silently in an agent-driven turn, and an agent usually
+   * wants to report the link anyway rather than only stash it.
+   *
+   * @param {{nowMs?: number}} [options]
+   * @returns {string|null} null when there is no shareable state yet
+   */
+  buildShareUrl({ nowMs = Date.now() } = {}) {
+    const params = this._buildHashParams();
+    if (!params) return null;
+    params.set(SHARE_CREATED_AT_PARAM, String(Math.floor(nowMs / 1000)));
+    const url = new URL(window.location.href);
+    url.hash = params.toString();
+    return url.href;
+  }
+
   /** Copy a current-state snapshot with a copy-time timestamp. Returns true on success. */
   async copyLink({ nowMs = Date.now() } = {}) {
-    const params = this._buildHashParams();
-    if (!params) return false;
-    params.set(SHARE_CREATED_AT_PARAM, String(Math.floor(nowMs / 1000)));
-    const copiedUrl = new URL(window.location.href);
-    copiedUrl.hash = params.toString();
+    const href = this.buildShareUrl({ nowMs });
+    if (!href) return false;
     try {
-      await navigator.clipboard.writeText(copiedUrl.href);
+      await navigator.clipboard.writeText(href);
       return true;
     } catch {
       return false;

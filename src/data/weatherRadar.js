@@ -472,6 +472,41 @@ export function createWeatherRadarLayer({
         playing: _playing,
       };
     },
+
+    // Playback was reachable only through the panel's own buttons, which left
+    // the loop invisible to the voice agent ("play the rain", "show me an hour
+    // ago"). These are the same functions the panel binds — exposed, not
+    // duplicated, so the two controls cannot drift.
+    play,
+    pause,
+    setFrameIndex,
+
+    /**
+     * Step the visible frame by `delta` and clamp at the ends. Autoplay is
+     * stopped first: scrubbing while the loop advances fights the user.
+     * @param {number} delta frames to move; negative goes back in time
+     * @returns {number} the frame index actually shown
+     */
+    stepFrame(delta) {
+      pause();
+      const step = Number.isFinite(delta) ? Math.trunc(delta) : 0;
+      const target = Math.max(0, Math.min(_frames.length - 1, _frameIndex + step));
+      setFrameIndex(target);
+      return target;
+    },
+
+    /**
+     * Frame timestamps, so a caller can say WHEN a frame is rather than
+     * reciting an index.
+     * @returns {Array<{index: number, time: number, kind: string}>}
+     */
+    listFrames() {
+      return _frames.map((frame, index) => ({
+        index,
+        time: frame.time,
+        kind: frame.kind,
+      }));
+    },
   };
   return layer;
 }
