@@ -36,8 +36,10 @@ import { installScopeMask } from './scopeMask.js';
 import { initFirstRunExperience } from './firstRunExperience.js';
 import { initKeySetup } from './keySetup.js';
 import { loadPhotorealisticTileset } from './mapStartup.js';
+import { initDesktopBridge } from './platform/desktopBridge.js';
 
 initLogoGaze();
+initDesktopBridge();
 
 /**
  * Extract a human-readable error message from any thrown value.

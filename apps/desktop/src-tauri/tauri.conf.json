@@ -1,0 +1,39 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "God's Eye View",
+  "version": "0.1.0",
+  "identifier": "de.thepuffer.godseyeview",
+  "build": {
+    "frontendDist": "../web",
+    "devUrl": "http://localhost:4206"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["app", "dmg"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "12.0"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://updates.thepuffer.internal/godseyeview/{{target}}/{{arch}}/{{current_version}}"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQ1OUI2NTI5NUMzMzIyQjYKUldTMklqTmNLV1diMVNBNWk5Q21oOGQyVWVHSnlwUGJNS2lQdHoxWVNSRU13Vy9DaktlZUNVdnAK"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "../gen/schemas/remote-schema.json",
+  "identifier": "remote-server",
+  "description": "Lets the configured (user-editable) God's Eye View server URL invoke ONLY the notification bridge command from the main window — the server URL is arbitrary (localhost during dev, later the owner's Tailscale host), so this is scoped by command, not by origin.",
+  "windows": ["main"],
+  "remote": {
+    "urls": ["http://*/*", "https://*/*"]
+  },
+  "permissions": ["core:default"]
+}

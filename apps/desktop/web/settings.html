@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Settings — God's Eye View</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #0a0a1a;
+    color: #e8e8f0;
+    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  }
+  h1 { font-size: 14px; margin: 0 0 4px; }
+  p.hint { color: #9a9ab0; margin: 0 0 16px; }
+  label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #9a9ab0; margin-bottom: 6px; }
+  input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    background: #14142a;
+    border: 1px solid #2a2a45;
+    border-radius: 6px;
+    color: #e8e8f0;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+  .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+  button {
+    border: 0;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  button.primary { background: #7c3aed; color: white; }
+  button.secondary { background: #2a2a45; color: #e8e8f0; }
+  #error { color: #f87171; font-size: 12px; min-height: 16px; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <h1>Server URL</h1>
+  <p class="hint">Where God's Eye View connects. Default is the local dev/preview server; point this at the Mac Studio's Tailscale address to use the always-on instance.</p>
+  <label for="url">URL</label>
+  <input id="url" type="text" placeholder="http://localhost:4173" autocomplete="off" spellcheck="false" />
+  <div id="error"></div>
+  <div class="row">
+    <button class="secondary" id="cancel">Cancel</button>
+    <button class="primary" id="save">Save &amp; Reload</button>
+  </div>
+  <script>
+    const invoke = (cmd, args) => window.__TAURI__.core.invoke(cmd, args);
+    const urlInput = document.getElementById('url');
+    const errorEl = document.getElementById('error');
+
+    invoke('get_server_url').then((url) => { urlInput.value = url; }).catch((e) => {
+      errorEl.textContent = String(e);
+    });
+
+    document.getElementById('cancel').addEventListener('click', () => window.close());
+
+    document.getElementById('save').addEventListener('click', async () => {
+      errorEl.textContent = '';
+      try {
+        await invoke('set_server_url', { url: urlInput.value.trim() });
+        // Rust closes this window on success; nothing else to do here.
+      } catch (e) {
+        errorEl.textContent = String(e);
+      }
+    });
+
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('save').click();
+    });
+  </script>
+</body>
+</html>
