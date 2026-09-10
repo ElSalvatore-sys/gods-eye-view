@@ -337,6 +337,85 @@ export function createGevActionRunner({ viewer, styleManager, dataManager, scene
       }
     }
 
+    // Standing watches. Distinct from analyst_query: that answers about the
+    // scene NOW, this keeps evaluating after the conversation moves on.
+    if (name === 'manage_alerts') {
+      const action = String(args.action || '').toLowerCase();
+      if (typeof styleManager?.addAlertRule !== 'function') {
+        return { ok: false, action: 'manage_alerts', error: 'Alerts are unavailable in this session' };
+      }
+
+      if (action === 'list') {
+        const rules = styleManager.listAlertRules();
+        return { ok: true, action: 'manage_alerts', op: 'list', count: rules.length, rules };
+      }
+
+      if (action === 'feed') {
+        const fired = styleManager.getAlertFeed(10);
+        return { ok: true, action: 'manage_alerts', op: 'feed', count: fired.length, fired };
+      }
+
+      if (action === 'create') {
+        const conditions = Array.isArray(args.conditions) ? args.conditions : [];
+        const where = conditions
+          .filter((c) => c && c.field && c.op && c.value !== undefined && c.value !== null && c.value !== '')
+          .map((c) => ({ field: String(c.field), op: String(c.op), value: c.value }));
+        if (!where.length) {
+          return {
+            ok: false,
+            action: 'manage_alerts',
+            op: 'create',
+            error: 'A rule needs at least one condition',
+          };
+        }
+
+        // "near here" is snapshotted at creation, matching the panel's own
+        // behaviour — a geofence that followed the camera would silently
+        // change meaning every time the user flew somewhere else.
+        let geo;
+        const radiusKm = Number(args.radiusKm);
+        if (Number.isFinite(radiusKm) && radiusKm > 0) {
+          const cam = styleManager.getCameraState?.();
+          if (cam) geo = { lat: cam.lat, lon: cam.lon, radiusKm: Math.max(1, radiusKm) };
+        }
+
+        const rule = styleManager.addAlertRule({
+          name: args.name,
+          layer: args.layer || 'flights',
+          where,
+          geo,
+          severity: args.severity || 'info',
+        });
+        return {
+          ok: true,
+          action: 'manage_alerts',
+          op: 'create',
+          ruleId: rule.id,
+          name: rule.name,
+          layer: rule.layer,
+          conditions: rule.where,
+          geofenced: !!rule.geo,
+          radiusKm: rule.geo?.radiusKm ?? null,
+        };
+      }
+
+      if (action === 'enable' || action === 'disable') {
+        const ok = styleManager.setAlertRuleEnabled(String(args.ruleId || ''), action === 'enable');
+        return ok
+          ? { ok: true, action: 'manage_alerts', op: action, ruleId: args.ruleId }
+          : { ok: false, action: 'manage_alerts', op: action, error: 'No rule with that id' };
+      }
+
+      if (action === 'delete') {
+        const ok = styleManager.removeAlertRule(String(args.ruleId || ''));
+        return ok
+          ? { ok: true, action: 'manage_alerts', op: 'delete', ruleId: args.ruleId }
+          : { ok: false, action: 'manage_alerts', op: 'delete', error: 'No rule with that id' };
+      }
+
+      return { ok: false, action: 'manage_alerts', error: `Unknown alerts action: ${args.action || 'missing'}` };
+    }
+
     if (name === 'set_layer_visibility') {
       const layerId = normalizeLayerId(args.layerId);
       if (!layerId) {

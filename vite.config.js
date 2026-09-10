@@ -3836,6 +3836,59 @@ const GEV_REALTIME_TOOLS = [
   },
   {
     type: 'function',
+    name: 'manage_alerts',
+    description:
+      'Arm, inspect, or clear standing watches on live data. Use this whenever the user asks to be TOLD or NOTIFIED about something in the future rather than shown it now — "let me know if a helicopter comes within 20km", "watch for emergency squawks", "alert me about big earthquakes", "what has triggered?". A rule keeps evaluating in the background after the conversation moves on. For a one-off look at what is on screen right now, use analyst_query instead.',
+    parameters: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        action: {
+          type: 'string',
+          enum: ['create', 'list', 'enable', 'disable', 'delete', 'feed'],
+          description: "'feed' reports what has already fired; 'list' reports the armed rules.",
+        },
+        name: { type: 'string', description: 'Short human label for a created rule.' },
+        layer: {
+          type: 'string',
+          enum: ['flights', 'military', 'earthquakes', 'ais-live-vessels', 'local-firms'],
+          description: 'Which live feed the rule watches. Defaults to flights.',
+        },
+        conditions: {
+          type: 'array',
+          description:
+            'Conditions, ALL of which must hold. Common fields by layer — flights/military: altitude (metres), velocity (m/s), squawk, callsign, category; earthquakes: magnitude, depth; ais-live-vessels: speed, type; local-firms: brightness, frp.',
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              field: { type: 'string' },
+              op: {
+                type: 'string',
+                enum: ['lt', 'lte', 'gt', 'gte', 'eq', 'neq', 'in', 'contains'],
+              },
+              value: {
+                type: ['string', 'number', 'array'],
+                items: { type: ['string', 'number'] },
+                description: "Use an array only with op 'in'.",
+              },
+            },
+            required: ['field', 'op', 'value'],
+          },
+        },
+        radiusKm: {
+          type: 'number',
+          description:
+            'Optional geofence radius around the CURRENT camera centre, snapshotted when the rule is created. Use when the user says "near here"/"within N km".',
+        },
+        severity: { type: 'string', enum: ['info', 'warning', 'critical'] },
+        ruleId: { type: 'string', description: "Target rule for 'enable', 'disable' and 'delete'." },
+      },
+      required: ['action'],
+    },
+  },
+  {
+    type: 'function',
     name: 'show_data_layers_menu',
     description: 'Open the data layers dropdown/menu and optionally scroll to a specific layer row without toggling it.',
     parameters: {

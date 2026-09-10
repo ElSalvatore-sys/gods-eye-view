@@ -661,10 +661,17 @@ test('the voice TOOL SCHEMA is byte-identical to main — the mission mapping is
   // exactly the kind of schema change this pin exists to make loud). The
   // guarded claim is unchanged: first-run missions ride existing tools, and
   // any NEW drift from this recorded schema still fails here.
-  assert.equal(block.length, 31218, 'tool schema byte length drifted from the pinned release schema');
+  //
+  // Re-pinned 2026-09-10: `manage_alerts` added — standing watches over the
+  // existing src/alerts engine, which had no voice surface at all. Also a
+  // deliberate schema growth, and it busts the session cache by design. What
+  // this test guards is UNCHANGED: the first-run missions still ride existing
+  // tools (they call zoom_to_globe and set_layer_visibility, never
+  // manage_alerts), and any drift beyond this recorded schema still fails.
+  assert.equal(block.length, 33782, 'tool schema byte length drifted from the pinned release schema');
   assert.equal(
     crypto.createHash('sha256').update(block).digest('hex'),
-    'bdc78e341f09c9a8deeb9b2752c37f3cfeba1761f502dc26950a55e843254dc4',
+    '5080a88f108b2b5fb15a4a4c3b0431603228957b2cf166764cfbcbaddcd8e26a',
     'the first-run missions must ride EXISTING tools: no schema edit, no cache bust',
   );
 

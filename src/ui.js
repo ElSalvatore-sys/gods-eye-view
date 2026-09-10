@@ -6922,23 +6922,107 @@ export class StyleManager {
       const radiusKm = Math.max(1, Number(this._alertsRuleGeoKm?.value) || 50);
       if (cam) geo = { lat: cam.lat, lon: cam.lon, radiusKm };
     }
+    const rule = this.addAlertRule({ name, layer: layerKey, where, geo });
+    this._closeAlertRuleForm();
+    this._showToast(`Rule "${rule.name}" added`);
+  }
+
+  /**
+   * Create and persist an alert rule programmatically.
+   *
+   * Extracted from `_saveNewAlertRule` so the rule builder is reachable from
+   * something other than the DOM form — specifically the voice agent's
+   * `manage_alerts` tool, which must be able to arm a watch without a human
+   * filling in the panel. The form remains the only caller that reads inputs;
+   * everything below the read is shared.
+   *
+   * @param {object} spec
+   * @param {string} [spec.name] display name; defaults from the layer
+   * @param {string} [spec.layer] layer key the rule watches (default 'flights')
+   * @param {Array<{field: string, op: string, value: *}>} spec.where conditions, ANDed
+   * @param {{lat: number, lon: number, radiusKm: number}} [spec.geo] optional geofence
+   * @param {number} [spec.cooldownSec] per-entity re-fire cooldown
+   * @param {string} [spec.severity] 'info' | 'warning' | 'critical'
+   * @returns {object} the created rule
+   */
+  addAlertRule({ name, layer = 'flights', where = [], geo, cooldownSec = 120, severity = 'info' }) {
     const rule = {
       id: `rule-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
-      name,
+      name: (name || '').trim() || `${layer} rule`,
       enabled: true,
-      layer: layerKey,
+      layer,
       where,
       ...(geo ? { geo } : {}),
-      cooldownSec: 120,
-      severity: 'info',
+      cooldownSec,
+      severity,
     };
     this._alertRules = [...this._alertRules, rule];
     saveAlertRules(this._alertRules);
+    // A new rule must not inherit another rule's cooldown state, or its first
+    // match can be swallowed silently.
     this._alertRunner?.resetCooldowns();
     this._requestAlertNotificationPermission();
-    this._closeAlertRuleForm();
     this._renderAlertsRuleList();
-    this._showToast(`Rule "${name}" added`);
+    return rule;
+  }
+
+  /**
+   * Snapshot of the current rules, safe to hand to the voice agent.
+   * @returns {Array<object>}
+   */
+  listAlertRules() {
+    return this._alertRules.map((r) => ({
+      id: r.id,
+      name: r.name,
+      enabled: !!r.enabled,
+      layer: r.layer,
+      where: r.where,
+      geo: r.geo || null,
+      severity: r.severity,
+    }));
+  }
+
+  /**
+   * Enable or disable one rule by id.
+   * @param {string} ruleId
+   * @param {boolean} enabled
+   * @returns {boolean} false when no rule carries that id
+   */
+  setAlertRuleEnabled(ruleId, enabled) {
+    const rule = this._alertRules.find((r) => r.id === ruleId);
+    if (!rule) return false;
+    rule.enabled = !!enabled;
+    saveAlertRules(this._alertRules);
+    if (rule.enabled) this._requestAlertNotificationPermission();
+    this._renderAlertsRuleList();
+    this._updateAlertsStatus();
+    return true;
+  }
+
+  /**
+   * Delete one rule by id.
+   * @param {string} ruleId
+   * @returns {boolean} false when no rule carried that id
+   */
+  removeAlertRule(ruleId) {
+    const before = this._alertRules.length;
+    this._alertRules = this._alertRules.filter((r) => r.id !== ruleId);
+    if (this._alertRules.length === before) return false;
+    saveAlertRules(this._alertRules);
+    this._renderAlertsRuleList();
+    this._updateAlertsStatus();
+    return true;
+  }
+
+  /**
+   * Recent fired alerts, newest first — what the agent reads to answer
+   * "has anything triggered?".
+   * @param {number} [limit]
+   * @returns {Array<object>}
+   */
+  getAlertFeed(limit = 10) {
+    const feed = this._alertRunner?.getFeed?.() || [];
+    return feed.slice(0, Math.max(1, limit));
   }
 
   /** Enable/disable toggle in the rule list (event-delegated). */
