@@ -81,8 +81,25 @@ export const VOICE_MODELS = Object.freeze({
   }),
 });
 
-/** The tier used when nothing (or nonsense) was requested. */
-export const DEFAULT_VOICE_TIER = 'standard';
+/**
+ * The tier used when nothing (or nonsense) was requested.
+ *
+ * `mini` since 2026-09-11, on measured cost. Nine logged sessions on
+ * `standard` averaged $0.018 per spoken reply and $0.109 per conversation,
+ * and audio is effectively the whole bill: $64/1M out and $32/1M in, against
+ * mini's $20 and $10. Mini is 3.2x cheaper on audio and 10x on text output —
+ * which is where reasoning tokens land — so everyday use costs roughly a
+ * third to a fifth as much.
+ *
+ * The strong model is one click away, not gone: the tier chip beside the mic
+ * still selects `standard` and persists that choice per browser, which is the
+ * right shape for "cheap by default, strong for a demo".
+ *
+ * It is also the safer fallback. This constant doubles as the resolution
+ * target for an unknown or hostile `?tier=`, so a bad querystring can no
+ * longer land on the most expensive model.
+ */
+export const DEFAULT_VOICE_TIER = 'mini';
 
 /** Every tier name the UI and the token endpoint accept. */
 export const VOICE_TIERS = Object.freeze(Object.keys(VOICE_MODELS));
@@ -168,8 +185,13 @@ export function resolveVoiceModelById(modelId) {
  * Either may be null/0/Infinity to disable that threshold.
  */
 export const VOICE_COST_LIMITS = Object.freeze({
-  warnUsd: 2,
-  capUsd: 5,
+  // Lowered 2026-09-11. A logged conversation cost about $0.11 on the standard
+  // model and will cost roughly a third of that on mini, so a $5 ceiling was
+  // never a guard rail — it was ~45 conversations of runway before anything
+  // objected. These sit just above normal use, so a stuck or forgotten session
+  // trips them while a real conversation never does.
+  warnUsd: 0.5,
+  capUsd: 2,
 });
 
 /**

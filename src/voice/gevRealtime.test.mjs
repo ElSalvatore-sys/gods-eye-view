@@ -2592,22 +2592,25 @@ test('voice tier round-trips through storage', () => {
   assert.equal(readStoredVoiceTier(storage), 'standard');
 });
 
-test('an unset or hand-edited tier reads back as standard', () => {
-  assert.equal(readStoredVoiceTier(fakeVoiceStorage()), 'standard');
+test('an unset or hand-edited tier reads back as the default tier', () => {
+  // The landing spot is `mini` since 2026-09-11 (see voiceCost.js). The
+  // property under test is unchanged: a missing or tampered value resolves to
+  // a known tier rather than reaching OpenAI as a model id.
+  assert.equal(readStoredVoiceTier(fakeVoiceStorage()), 'mini');
   assert.equal(
     readStoredVoiceTier(fakeVoiceStorage({ 'godsEyeView.voiceCost.tier': 'gpt-4o' })),
-    'standard'
+    'mini'
   );
   assert.equal(
     readStoredVoiceTier(fakeVoiceStorage({ 'godsEyeView.voiceCost.tier': '__proto__' })),
-    'standard'
+    'mini'
   );
 });
 
 test('writing a bogus tier persists the safe fallback, not the bogus value', () => {
   const storage = fakeVoiceStorage();
-  assert.equal(writeStoredVoiceTier('turbo', storage), 'standard');
-  assert.equal(storage.dump()['godsEyeView.voiceCost.tier'], 'standard');
+  assert.equal(writeStoredVoiceTier('turbo', storage), 'mini');
+  assert.equal(storage.dump()['godsEyeView.voiceCost.tier'], 'mini');
 });
 
 test('a storage that throws never breaks the mic', () => {
@@ -2619,9 +2622,9 @@ test('a storage that throws never breaks the mic', () => {
       throw new Error('SecurityError');
     },
   };
-  assert.equal(readStoredVoiceTier(hostile), 'standard');
+  assert.equal(readStoredVoiceTier(hostile), 'mini');
   assert.equal(writeStoredVoiceTier('mini', hostile), 'mini');
-  assert.deepEqual(readStoredVoiceLimits(hostile), { warnUsd: 2, capUsd: 5 });
+  assert.deepEqual(readStoredVoiceLimits(hostile), { warnUsd: 0.5, capUsd: 2 });
 });
 
 test('spend limits round-trip as one object', () => {
@@ -2636,14 +2639,14 @@ test('corrupt stored limits fall back to defaults rather than disarming the cap'
   const limits = readStoredVoiceLimits(
     fakeVoiceStorage({ 'godsEyeView.voiceCost.limits': '{oops' })
   );
-  assert.deepEqual(limits, { warnUsd: 2, capUsd: 5 });
+  assert.deepEqual(limits, { warnUsd: 0.5, capUsd: 2 });
 });
 
 test('partially stored limits keep the default for the missing threshold', () => {
   const limits = readStoredVoiceLimits(
     fakeVoiceStorage({ 'godsEyeView.voiceCost.limits': '{"warnUsd":0.5}' })
   );
-  assert.deepEqual(limits, { warnUsd: 0.5, capUsd: 5 });
+  assert.deepEqual(limits, { warnUsd: 0.5, capUsd: 2 });
 });
 
 test('a disabled threshold survives the storage round-trip', () => {
@@ -2764,9 +2767,12 @@ test('F1: the cap still fires after a mid-session toggle, at the original rates'
 test('F1: the toggle still records the next-session preference while live', () => {
   const { controller, ui } = costControllerHarness();
   controller.status = 'listening';
-  controller.setVoiceTier('mini');
-  assert.equal(controller.voiceTier, 'mini');
-  assert.equal(ui.tierButton.textContent, 'MINI');
+  // Toggle to STANDARD: mini is the default since 2026-09-11, so selecting it
+  // is a no-op and would assert nothing. The behaviour under test is that a
+  // toggle while live records a preference without switching the live session.
+  controller.setVoiceTier('standard');
+  assert.equal(controller.voiceTier, 'standard');
+  assert.equal(ui.tierButton.textContent, 'STD');
   // ...and says so, rather than implying the live session switched.
   assert.match(ui.tierButton.title, /this session stays on/i);
 });
@@ -2774,8 +2780,8 @@ test('F1: the toggle still records the next-session preference while live', () =
 test('F1: when idle, toggling does re-price the preview meter', () => {
   const { controller } = costControllerHarness();
   controller.status = 'idle';
-  controller.setVoiceTier('mini');
-  assert.equal(controller.costTracker.state().modelId, 'gpt-realtime-2.1-mini');
+  controller.setVoiceTier('standard');
+  assert.equal(controller.costTracker.state().modelId, 'gpt-realtime-2');
 });
 
 test('F4: once the cap latches, queued function calls do not execute', async () => {

@@ -37,6 +37,23 @@ const DEBUG_LOG_URL = '/api/realtime/debug-log';
 // Voice cost control (repo-wide `godsEyeView.<feature>.<field>` convention;
 // the neighbouring ERROR_STORAGE_KEY predates it).
 const VOICE_TIER_STORAGE_KEY = 'godsEyeView.voiceCost.tier';
+
+/**
+ * Stop a session that has gone quiet.
+ *
+ * With `semantic_vad` the browser streams microphone audio continuously for as
+ * long as the session is open, and audio INPUT bills per token whether anyone
+ * is talking or not ($32/1M on the standard model, $10/1M on mini). Until this
+ * existed there was no idle path at all: every one of the 33 stops in the debug
+ * log came from an explicit UI action, so a mic left open after a demo billed
+ * silence until someone remembered it.
+ *
+ * Two minutes is deliberately longer than a person pausing to think or read the
+ * map, and far shorter than a forgotten tab.
+ */
+const VOICE_IDLE_STOP_MS = 120_000;
+/** How often the idle check runs. Coarse on purpose — this is a bill guard. */
+const VOICE_IDLE_POLL_MS = 10_000;
 const VOICE_LIMITS_STORAGE_KEY = 'godsEyeView.voiceCost.limits';
 // The input meter is intentionally stricter than the assistant-output meter:
 // microphones carry room tone even after browser noise suppression, whereas the
@@ -465,6 +482,8 @@ export class GevRealtimeController {
           ? (this.pushToTalkKeyHeld ? 'Release Space to send' : 'Hold Space to talk')
           : 'Ask or command';
         this.setStatus('listening', detail);
+        // The mic is live from here, so the bill starts here too.
+        this.startIdleWatch();
         this.debugLog('data_channel.open', { connection: this.connectionDiagnostics(dataChannel) });
       });
       dataChannel.addEventListener('message', (event) => this.handleRealtimeEvent(event));
@@ -780,6 +799,34 @@ export class GevRealtimeController {
     return this.reportError(source, error, extra);
   }
 
+  /**
+   * Mark the session as active. Called wherever a human or the model actually
+   * did something, so silence is the only thing that can trip the idle stop.
+   */
+  noteVoiceActivity() {
+    this._lastVoiceActivityAt = Date.now();
+  }
+
+  /** Begin watching for an idle session. Safe to call repeatedly. */
+  startIdleWatch() {
+    this.noteVoiceActivity();
+    if (this._idleWatchTimer) return;
+    this._idleWatchTimer = setInterval(() => {
+      const last = this._lastVoiceActivityAt || 0;
+      if (Date.now() - last < VOICE_IDLE_STOP_MS) return;
+      this.debugLog('session.idle_stop', { idleMs: Date.now() - last });
+      this.stop({ preserveStatus: true });
+      this.setStatus('idle', 'Mic closed after 2 min idle — tap to resume');
+    }, VOICE_IDLE_POLL_MS);
+  }
+
+  /** Stop watching. Called from stop() so a closed session never keeps a timer. */
+  stopIdleWatch() {
+    if (!this._idleWatchTimer) return;
+    clearInterval(this._idleWatchTimer);
+    this._idleWatchTimer = null;
+  }
+
   stop(options = {}) {
     const { removeUi = false, preserveStatus = false, preserveRadioPlayback = false } = options;
     // Bump the epoch so any start() awaiting a token/getUserMedia/SDP bails and
@@ -804,6 +851,7 @@ export class GevRealtimeController {
     this.radioVisibilityOffPending = false;
     this.radioToolHandoffReservations.clear();
     this.radioHandoffDeferredByReservation = false;
+    this.stopIdleWatch();
     this.clearDisconnectGrace();
     // Guard against the dc.close() below re-entering our own error handlers while
     // we're intentionally tearing down (the close/error listeners bail on this
@@ -1073,6 +1121,7 @@ export class GevRealtimeController {
     }
 
     if (payload.type === 'input_audio_buffer.speech_started') {
+      this.noteVoiceActivity();
       this.userTurnPending = true;
       this.pendingResponseInstructions = null;
       this.cancelRadioHandoff({ abortTools: true });
@@ -1939,6 +1988,9 @@ export class GevRealtimeController {
       return;
     }
     if (payload.type === 'response.done') {
+      // The model finishing a reply is activity: a long chain of tool calls
+      // must not look idle just because the human has not spoken recently.
+      this.noteVoiceActivity();
       this.responseActive = false;
       this.responseCreatePending = false;
       this.activeResponseId = null;

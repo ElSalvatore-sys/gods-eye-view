@@ -55,7 +55,10 @@ const dollarsOfUsage = (usd) => ({
 
 test('registry exposes exactly the two tiers the UI offers', () => {
   assert.deepEqual([...VOICE_TIERS].sort(), ['mini', 'standard']);
-  assert.equal(DEFAULT_VOICE_TIER, 'standard');
+  // mini since 2026-09-11: measured $0.018/reply on standard, and audio is the
+  // whole bill (64/32 per 1M vs mini's 20/10). The strong model stays one click
+  // away on the tier chip, so this is "cheap by default", not "standard removed".
+  assert.equal(DEFAULT_VOICE_TIER, 'mini');
 });
 
 test('standard tier still points at the model vite.config.js defaults to', () => {
@@ -92,9 +95,12 @@ test('resolveVoiceModel tolerates case and whitespace', () => {
   assert.equal(resolveVoiceModel('Standard').tier, 'standard');
 });
 
-test('unknown, empty, and hostile tiers fall back to standard rather than throwing', () => {
+test('unknown, empty, and hostile tiers fall back to the default rather than throwing', () => {
   // This is the guard that keeps an arbitrary querystring out of the OpenAI
   // model field. Every one of these must resolve, never throw.
+  //
+  // The landing spot became `mini` on 2026-09-11, which also makes the guard
+  // cheaper: a hostile ?tier= can no longer force the most expensive model.
   for (const bad of [
     undefined,
     null,
@@ -111,8 +117,8 @@ test('unknown, empty, and hostile tiers fall back to standard rather than throwi
     true,
   ]) {
     const resolved = resolveVoiceModel(bad);
-    assert.equal(resolved.tier, 'standard', `fallback for ${JSON.stringify(bad)}`);
-    assert.equal(resolved.id, 'gpt-realtime-2');
+    assert.equal(resolved.tier, 'mini', `fallback for ${JSON.stringify(bad)}`);
+    assert.equal(resolved.id, 'gpt-realtime-2.1-mini');
   }
 });
 
@@ -313,15 +319,18 @@ test('formatCostUsd clamps junk to zero', () => {
  * -------------------------------------------------------------- */
 
 test('default limits are generous and ordered warn < cap', () => {
-  assert.equal(VOICE_COST_LIMITS.warnUsd, 2);
-  assert.equal(VOICE_COST_LIMITS.capUsd, 5);
+  // Lowered 2026-09-11 to sit just above real use (~$0.11/conversation on
+  // standard, less on mini) so a forgotten session trips the cap in minutes
+  // rather than after ~45 conversations.
+  assert.equal(VOICE_COST_LIMITS.warnUsd, 0.5);
+  assert.equal(VOICE_COST_LIMITS.capUsd, 2);
   assert.ok(VOICE_COST_LIMITS.warnUsd < VOICE_COST_LIMITS.capUsd);
 });
 
 test('normalizeCostLimits fills gaps from the defaults', () => {
-  assert.deepEqual(normalizeCostLimits({ warnUsd: 1 }), { warnUsd: 1, capUsd: 5 });
-  assert.deepEqual(normalizeCostLimits({}), { warnUsd: 2, capUsd: 5 });
-  assert.deepEqual(normalizeCostLimits(null), { warnUsd: 2, capUsd: 5 });
+  assert.deepEqual(normalizeCostLimits({ warnUsd: 1 }), { warnUsd: 1, capUsd: 2 });
+  assert.deepEqual(normalizeCostLimits({}), { warnUsd: 0.5, capUsd: 2 });
+  assert.deepEqual(normalizeCostLimits(null), { warnUsd: 0.5, capUsd: 2 });
 });
 
 test('zero or negative thresholds mean "disabled", not "stop immediately"', () => {
@@ -337,8 +346,8 @@ test('zero or negative thresholds mean "disabled", not "stop immediately"', () =
 
 test('unparseable thresholds fall back to defaults', () => {
   assert.deepEqual(normalizeCostLimits({ warnUsd: 'abc', capUsd: 'xyz' }), {
-    warnUsd: 2,
-    capUsd: 5,
+    warnUsd: 0.5,
+    capUsd: 2,
   });
 });
 
@@ -445,10 +454,12 @@ test('the tracker reports the model it is charging against', () => {
   assert.equal(state.modelId, 'gpt-realtime-2.1-mini');
 });
 
-test('an unknown tier tracks at standard rates rather than free', () => {
-  // Charging $0 for an unrecognised tier would silently disable the cap.
+test('an unknown tier tracks at the default tier\'s rates rather than free', () => {
+  // Charging $0 for an unrecognised tier would silently disable the cap. The
+  // rates are mini's since the default moved, but the property under test is
+  // unchanged: an unknown tier still bills, it does not go free.
   const tracker = createVoiceCostTracker({ tier: 'nonsense' });
-  assert.equal(tracker.state().tier, 'standard');
+  assert.equal(tracker.state().tier, 'mini');
   assert.ok(tracker.record(FULL_USAGE).totalUsd > 0);
 });
 
