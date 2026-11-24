@@ -20,6 +20,7 @@ import { createOverpassRoute, createOsrmRoutingRoute } from './routes/overpass.j
 import { createMilitaryInstallationsRoute } from './routes/military.js';
 import { createGeocodeRoute } from './routes/geocode.js';
 import { createRealtimeTokenRoute, createRealtimeDebugLogRoute } from './routes/realtime.js';
+import { createJarvisBridgeRoute } from './routes/jarvisBridge.js';
 
 /**
  * @typedef {object} RouteEntry
@@ -46,4 +47,5 @@ export const ROUTES = [
   // build with no agent at all — see server/routes/realtime.js.
   { mount: '/api/realtime/token', handler: createRealtimeTokenRoute() },
   { mount: '/api/realtime/debug-log', handler: createRealtimeDebugLogRoute() },
+  { mount: '/api/jarvis', handler: createJarvisBridgeRoute() },
 ];

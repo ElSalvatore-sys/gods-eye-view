@@ -1,0 +1,58 @@
+/**
+ * The page half of the Jarvis bridge. The page long-polls /api/jarvis/next on its own server, runs the one tool it is
+ * given with the normal action runner (or a Jarvis tool), and posts the result plus the current view state back.
+ * The page never holds the Jarvis token and never runs code it is sent: a tool name maps to a function, nothing else.
+ *
+ * @module jarvisBridge
+ */
+import { JARVIS_EXTRA_NAMES, runJarvisExtra } from './voice/jarvisTools.js';
+
+const RETRY_MS = 2000;
+
+/** Run one job. Never throws. */
+export async function runJob(job, { runner, viewer, allow }) {
+  const tool = String(job?.tool || '');
+  if (!allow?.has(tool)) return { ok: false, error: 'tool_not_allowed' };
+  try {
+    const args = job.args && typeof job.args === 'object' ? job.args : {};
+    const result = JARVIS_EXTRA_NAMES.has(tool) ? await runJarvisExtra(tool, args, { runner, viewer }) : await runner(tool, args);
+    let view = null;
+    try {
+      view = await runner('get_current_view_state', {});
+    } catch {
+      view = null;
+    }
+    return { ok: result?.ok !== false, result, view };
+  } catch (error) {
+    return { ok: false, error: 'page_error', message: String(error?.message || error).slice(0, 200) };
+  }
+}
+
+/** Start polling. Returns { stop }. */
+export function startJarvisBridge({ runner, viewer, fetchImpl = globalThis.fetch?.bind(globalThis), base = '' }) {
+  let running = true;
+  const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+  (async () => {
+    let allow = null;
+    while (running) {
+      try {
+        if (!allow) {
+          const a = await fetchImpl(`${base}/api/jarvis/allow`, { cache: 'no-store' });
+          if (!a.ok) { await delay(RETRY_MS * 5); continue; }
+          allow = new Set((await a.json()).names || []);
+        }
+        const r = await fetchImpl(`${base}/api/jarvis/next`, { cache: 'no-store' });
+        if (r.status === 204) continue;
+        if (!r.ok) { await delay(RETRY_MS); continue; }
+        const job = await r.json();
+        const result = await runJob(job, { runner, viewer, allow });
+        await fetchImpl(`${base}/api/jarvis/result`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: job.id, result }),
+        });
+      } catch {
+        await delay(RETRY_MS);
+      }
+    }
+  })();
+  return { stop() { running = false; } };
+}

@@ -38,6 +38,7 @@ import { initFirstRunExperience } from './firstRunExperience.js';
 import { initKeySetup } from './keySetup.js';
 import { loadPhotorealisticTileset } from './mapStartup.js';
 import { initDesktopBridge } from './platform/desktopBridge.js';
+import { startJarvisBridge } from './jarvisBridge.js';
 
 initLogoGaze();
 initDesktopBridge();
@@ -368,6 +369,8 @@ async function init() {
       requestRender: governorRequestRender,
     };
     window.__godsEyeView.voiceCommands = initGevVoiceCommands({ viewer, styleManager, dataManager, sceneDirector, annotations });
+    // Jarvis (the owner's office assistant) drives the app's own tools through the same-origin bridge (/api/jarvis).
+    startJarvisBridge({ runner: window.__godsEyeView.voiceCommands.runner, viewer });
 
   } catch (error) {
     console.error("God's Eye View initialization failed:", error);
