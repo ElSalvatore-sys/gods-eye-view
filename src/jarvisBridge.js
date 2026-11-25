@@ -8,6 +8,7 @@
 import { JARVIS_EXTRA_NAMES, runJarvisExtra } from './voice/jarvisTools.js';
 
 const RETRY_MS = 2000;
+const JOB_TIMEOUT_MS = 90000;
 
 /** Run one job. Never throws. */
 export async function runJob(job, { runner, viewer, allow }) {
@@ -28,10 +29,27 @@ export async function runJob(job, { runner, viewer, allow }) {
   }
 }
 
-/** Start polling. Returns { stop }. */
-export function startJarvisBridge({ runner, viewer, fetchImpl = globalThis.fetch?.bind(globalThis), base = '' }) {
+/**
+ * Start polling. Returns { stop }. Jobs run side by side: a job that hangs (a camera flight that never arrives) never
+ * blocks the next poll, and is answered with page_timeout after `jobTimeoutMs`.
+ */
+export function startJarvisBridge({ runner, viewer, fetchImpl = globalThis.fetch?.bind(globalThis), base = '',
+  jobTimeoutMs = JOB_TIMEOUT_MS }) {
   let running = true;
   const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+  const handle = async (job, allow) => {
+    let timer;
+    const timeout = new Promise((r) => { timer = setTimeout(() => r({ ok: false, error: 'page_timeout' }), jobTimeoutMs); });
+    const result = await Promise.race([runJob(job, { runner, viewer, allow }), timeout]);
+    clearTimeout(timer);
+    try {
+      await fetchImpl(`${base}/api/jarvis/result`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: job.id, result }),
+      });
+    } catch {
+      // the server is gone; Jarvis's side times out on its own
+    }
+  };
   (async () => {
     let allow = null;
     while (running) {
@@ -45,10 +63,7 @@ export function startJarvisBridge({ runner, viewer, fetchImpl = globalThis.fetch
         if (r.status === 204) continue;
         if (!r.ok) { await delay(RETRY_MS); continue; }
         const job = await r.json();
-        const result = await runJob(job, { runner, viewer, allow });
-        await fetchImpl(`${base}/api/jarvis/result`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: job.id, result }),
-        });
+        handle(job, allow);
       } catch {
         await delay(RETRY_MS);
       }

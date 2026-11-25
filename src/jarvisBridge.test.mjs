@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { runJob } from './jarvisBridge.js';
+import { runJob, startJarvisBridge } from './jarvisBridge.js';
 import { runJarvisExtra, JARVIS_EXTRA_TOOLS } from './voice/jarvisTools.js';
 
 function fakeRunner(results = {}) {
@@ -55,6 +55,27 @@ test('leave the cockpit', async () => {
   const { runner, calls } = fakeRunner();
   await runJarvisExtra('leave_cockpit', {}, { runner });
   assert.deepEqual(calls, [['control_cockpit', { action: 'exit' }]]);
+});
+
+test('a job that hangs does not block the next one (found live: a camera flight in a hidden tab never arrived)', async () => {
+  const jobs = [{ id: 'slow', tool: 'select_nearest_aircraft', args: {} }, { id: 'fast', tool: 'get_current_view_state', args: {} }];
+  const posted = [];
+  const fetchImpl = async (url, opts = {}) => {
+    if (url.endsWith('/allow')) return { ok: true, status: 200, json: async () => ({ names: ['select_nearest_aircraft', 'get_current_view_state'] }) };
+    if (url.endsWith('/next')) {
+      const job = jobs.shift();
+      if (!job) { await new Promise((r) => setTimeout(r, 20)); return { ok: true, status: 204 }; }
+      return { ok: true, status: 200, json: async () => job };
+    }
+    posted.push(JSON.parse(opts.body).id);
+    return { ok: true, status: 204 };
+  };
+  const runner = (name) => (name === 'select_nearest_aircraft' ? new Promise(() => {}) : Promise.resolve({ ok: true }));
+  const bridge = startJarvisBridge({ runner, fetchImpl, jobTimeoutMs: 100 });
+  await new Promise((r) => setTimeout(r, 300));
+  bridge.stop();
+  assert.ok(posted.includes('fast'));
+  assert.ok(posted.includes('slow'), 'the hanging job is answered with a timeout');
 });
 
 test('every Jarvis tool has a name, a description and an object schema', () => {
