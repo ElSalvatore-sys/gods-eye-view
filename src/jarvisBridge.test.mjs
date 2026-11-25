@@ -110,6 +110,17 @@ test('frame and circle: a continent-wide drawing is framed from higher and does 
   assert.ok(calls[0][1].rangeM >= 10000000 && calls[0][1].rangeM <= 12000000, String(calls[0][1].rangeM));
 });
 
+test('frame and circle: events around the world show the whole globe, spinning slowly', async () => {
+  // Live 2026-11-25: five events (Mauritius, Jiuquan, Florida, Kourou, Chiapas) were framed from over the Atlantic;
+  // China and Mauritius were on the back of the globe.
+  const { runner, calls } = fakeRunner();
+  const points = [{ lat: -20.2, lon: 57.5 }, { lat: 40.96, lon: 100.3 }, { lat: 28.5, lon: -80.6 }, { lat: 5.2, lon: -52.8 }];
+  const out = await runJarvisExtra('frame_and_circle', { points }, { runner });
+  assert.equal(out.ok, true);
+  assert.equal(out.global, true);
+  assert.deepEqual(calls, [['zoom_to_globe', {}], ['move_camera', { motion: 'rotate_globe', speed: 'slow', mode: 'continuous' }]]);
+});
+
 test('frame and circle: no points and no centre is refused, nothing moves', async () => {
   const { runner, calls } = fakeRunner();
   const out = await runJarvisExtra('frame_and_circle', {}, { runner });

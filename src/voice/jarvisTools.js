@@ -35,7 +35,8 @@ export const JARVIS_EXTRA_TOOLS = Object.freeze([
     description: 'Show what you drew: fly from above and a little to the side so the whole drawing is in view (the height '
       + 'follows its size), wait until the camera arrives, then circle it slowly at -45 degrees. Use right after '
       + 'annotate_map, with the drawing\'s points (or its centre and size). circle=false only frames it. A drawing wider '
-      + 'than 1,500 km (places on different coasts) is framed from higher and not circled.',
+      + 'than 1,500 km (places on different coasts) is framed from higher and not circled; one wider than 6,000 km '
+      + '(events around the world) shows the whole globe, spinning slowly.',
     parameters: {
       type: 'object',
       additionalProperties: false,
@@ -109,6 +110,8 @@ const FRAME_MAX_M = 6000000;
 const WIDE_KM = 1500;
 const WIDE_RANGE_FACTOR = 2.2;
 const WIDE_MAX_M = 12000000;
+// Wider than this (events around the world): no single view holds them, so show the whole globe and spin it slowly.
+const GLOBAL_KM = 6000;
 const KM_PER_DEG_LAT = 110.57;
 const KM_PER_DEG_LON_EQUATOR = 111.32;
 
@@ -188,6 +191,12 @@ export async function runJarvisExtra(name, args = {}, { runner, capture, wait = 
   if (name === 'frame_and_circle') {
     const frame = drawingFrame(args);
     if (!frame) return { ok: false, error: 'no_points' };
+    if (frame.sizeKm > GLOBAL_KM) {
+      const globe = await runner('zoom_to_globe', {});
+      if (!globe || globe.ok === false) return { ok: false, step: 'zoom_to_globe', globe };
+      const spin = await runner('move_camera', { motion: 'rotate_globe', speed: 'slow', mode: 'continuous' });
+      return { ok: spin?.ok !== false, globe, spin, global: true };
+    }
     const wide = frame.sizeKm > WIDE_KM;
     const rangeM = wide
       ? Math.round(Math.min(frame.sizeKm * 1000 * WIDE_RANGE_FACTOR, WIDE_MAX_M))
