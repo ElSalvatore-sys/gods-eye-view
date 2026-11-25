@@ -78,6 +78,41 @@ test('a job that hangs does not block the next one (found live: a camera flight 
   assert.ok(posted.includes('slow'), 'the hanging job is answered with a timeout');
 });
 
+test('frame and circle: fly to the middle of the drawing from its own size, wait, then orbit slowly at -45', async () => {
+  // Live 2026-11-25: the brain drew the Nepal flood path but left the camera 3 km over one end of a 30 km line.
+  const { runner, calls } = fakeRunner();
+  const points = [{ lat: 28.30, lon: 85.30 }, { lat: 28.10, lon: 85.40 }, { lat: 28.00, lon: 85.36 }];
+  const out = await runJarvisExtra('frame_and_circle', { points }, { runner });
+  assert.equal(out.ok, true);
+  const [fly, orbit] = calls;
+  assert.equal(fly[0], 'fly_to_location');
+  assert.ok(Math.abs(fly[1].latitude - 28.15) < 1e-9 && Math.abs(fly[1].longitude - 85.35) < 1e-9);
+  assert.ok(fly[1].rangeM > 30000 && fly[1].rangeM < 80000, String(fly[1].rangeM));  // about 35 km across
+  assert.equal(fly[1].waitForArrival, true);
+  assert.deepEqual(orbit, ['move_camera', { motion: 'orbit', speed: 'slow', mode: 'continuous', pitchDeg: -45 }]);
+});
+
+test('frame and circle: a centre and a size work too, and circle=false only frames', async () => {
+  const { runner, calls } = fakeRunner();
+  await runJarvisExtra('frame_and_circle', { latitude: 50.03, longitude: 8.57, sizeKm: 4, circle: false }, { runner });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][1].rangeM, 5600);
+});
+
+test('frame and circle: no points and no centre is refused, nothing moves', async () => {
+  const { runner, calls } = fakeRunner();
+  const out = await runJarvisExtra('frame_and_circle', {}, { runner });
+  assert.equal(out.ok, false);
+  assert.equal(calls.length, 0);
+});
+
+test('frame and circle: a flight that fails is not followed by an orbit', async () => {
+  const { runner, calls } = fakeRunner({ fly_to_location: { ok: false, error: 'cancelled' } });
+  const out = await runJarvisExtra('frame_and_circle', { latitude: 1, longitude: 2, sizeKm: 10 }, { runner });
+  assert.equal(out.ok, false);
+  assert.equal(calls.length, 1);
+});
+
 test('every Jarvis tool has a name, a description and an object schema', () => {
   for (const t of JARVIS_EXTRA_TOOLS) {
     assert.equal(t.type, 'function');
