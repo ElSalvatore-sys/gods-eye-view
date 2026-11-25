@@ -113,6 +113,54 @@ test('frame and circle: a flight that fails is not followed by an orbit', async 
   assert.equal(calls.length, 1);
 });
 
+test('a job is prepared before it runs: Stories is closed first, never for open_stories itself', async () => {
+  // Live 2026-11-25: with GEV Stories open every globe action was refused ("Close Stories first").
+  const { runner } = fakeRunner();
+  const prepared = [];
+  const allow = new Set(['fly_to_location', 'open_stories']);
+  await runJob({ tool: 'fly_to_location', args: {} }, { runner, allow, prepare: async (tool) => prepared.push(tool) });
+  await runJob({ tool: 'open_stories', args: {} }, { runner, allow, prepare: async (tool) => prepared.push(tool) });
+  assert.deepEqual(prepared, ['fly_to_location', 'open_stories']);
+});
+
+test('visit a stop: city size by default, wait for arrival, hold so the map can draw', async () => {
+  const { runner, calls } = fakeRunner();
+  const waits = [];
+  const out = await runJarvisExtra('visit_stop', { latitude: 28.2, longitude: 85.4 }, { runner, wait: async (ms) => waits.push(ms) });
+  assert.equal(out.ok, true);
+  assert.deepEqual(calls, [['fly_to_location', { latitude: 28.2, longitude: 85.4, rangeM: 30000, waitForArrival: true }]]);
+  assert.deepEqual(waits, [3000]);
+});
+
+test('visit a stop: closer only when asked, by place name too, and a failed flight does not hold', async () => {
+  const { runner, calls } = fakeRunner();
+  await runJarvisExtra('visit_stop', { place: 'Syabru Besi, Nepal', rangeKm: 6, holdS: 0 }, { runner, wait: async () => {} });
+  assert.deepEqual(calls[0], ['fly_to_location', { query: 'Syabru Besi, Nepal', rangeM: 6000, waitForArrival: true }]);
+  const failing = fakeRunner({ fly_to_location: { ok: false } });
+  const waits = [];
+  const out = await runJarvisExtra('visit_stop', { place: 'Nowhere' }, { runner: failing.runner, wait: async (ms) => waits.push(ms) });
+  assert.equal(out.ok, false);
+  assert.deepEqual(waits, []);
+  assert.equal((await runJarvisExtra('visit_stop', {}, { runner })).ok, false);
+});
+
+test('zoom step: from far away, zoom in goes to city size first', async () => {
+  // The owner, 2026-11-25: "it needs to always zoom in as city size then closer if asked to".
+  const view = { get_current_view_state: { ok: true, camera: { latitude: 28.1, longitude: 85.3, heightM: 2500000 } } };
+  const { runner, calls } = fakeRunner(view);
+  await runJarvisExtra('zoom_step', { direction: 'in' }, { runner });
+  assert.deepEqual(calls[1], ['fly_to_location', { latitude: 28.1, longitude: 85.3, rangeM: 40000, waitForArrival: true }]);
+});
+
+test('zoom step: near the ground, in is a little step; out is a normal step', async () => {
+  const view = { get_current_view_state: { ok: true, camera: { latitude: 28.1, longitude: 85.3, heightM: 30000 } } };
+  const { runner, calls } = fakeRunner(view);
+  await runJarvisExtra('zoom_step', { direction: 'in' }, { runner });
+  await runJarvisExtra('zoom_step', { direction: 'out' }, { runner });
+  assert.deepEqual(calls.filter((c) => c[0] === 'adjust_camera_zoom').map((c) => c[1]),
+    [{ direction: 'in', amount: 'little' }, { direction: 'out', amount: 'medium' }]);
+});
+
 test('every Jarvis tool has a name, a description and an object schema', () => {
   for (const t of JARVIS_EXTRA_TOOLS) {
     assert.equal(t.type, 'function');

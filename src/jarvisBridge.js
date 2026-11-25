@@ -11,11 +11,12 @@ const RETRY_MS = 2000;
 const JOB_TIMEOUT_MS = 90000;
 
 /** Run one job. Never throws. */
-export async function runJob(job, { runner, capture, allow }) {
+export async function runJob(job, { runner, capture, allow, prepare }) {
   const tool = String(job?.tool || '');
   if (!allow?.has(tool)) return { ok: false, error: 'tool_not_allowed' };
   try {
     const args = job.args && typeof job.args === 'object' ? job.args : {};
+    if (prepare) await prepare(tool); // e.g. close GEV Stories: while it is open every globe action is refused
     const result = JARVIS_EXTRA_NAMES.has(tool) ? await runJarvisExtra(tool, args, { runner, capture }) : await runner(tool, args);
     let view = null;
     try {
@@ -33,14 +34,14 @@ export async function runJob(job, { runner, capture, allow }) {
  * Start polling. Returns { stop }. Jobs run side by side: a job that hangs (a camera flight that never arrives) never
  * blocks the next poll, and is answered with page_timeout after `jobTimeoutMs`.
  */
-export function startJarvisBridge({ runner, capture, fetchImpl = globalThis.fetch?.bind(globalThis), base = '',
+export function startJarvisBridge({ runner, capture, prepare, fetchImpl = globalThis.fetch?.bind(globalThis), base = '',
   jobTimeoutMs = JOB_TIMEOUT_MS }) {
   let running = true;
   const delay = (ms) => new Promise((r) => setTimeout(r, ms));
   const handle = async (job, allow) => {
     let timer;
     const timeout = new Promise((r) => { timer = setTimeout(() => r({ ok: false, error: 'page_timeout' }), jobTimeoutMs); });
-    const result = await Promise.race([runJob(job, { runner, capture, allow }), timeout]);
+    const result = await Promise.race([runJob(job, { runner, capture, allow, prepare }), timeout]);
     clearTimeout(timer);
     try {
       await fetchImpl(`${base}/api/jarvis/result`, {

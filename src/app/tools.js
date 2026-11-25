@@ -367,7 +367,13 @@ export function createApplicationTools({
   debug.voiceCommands = voiceCommands;
   if (!isEmbeddedInline()) {
     // Jarvis (the owner's office assistant) drives the app's own tools through the same-origin bridge (/api/jarvis).
-    const jarvis = startJarvisBridge({ runner: voiceCommands.runner });
+    // While GEV Stories is open every globe action is refused ("Close Stories first"): Jarvis closes it before acting.
+    const prepare = async (tool) => {
+      if (tool === 'open_stories' || !isStoriesOpen()) return;
+      stories.close();
+      await new Promise((resolve) => setTimeout(resolve, 700));
+    };
+    const jarvis = startJarvisBridge({ runner: voiceCommands.runner, prepare });
     defer(() => jarvis.stop());
   }
   // The owner's studio, on the attribution line next to the original's credits (LICENSE keeps both copyrights).
