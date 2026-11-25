@@ -66,6 +66,16 @@ test('page endpoints refuse anything that is not same-origin', async () => {
   assert.equal((await hit(route, req('GET', '/allow', { headers: PAGE }))).statusCode, 200);
 });
 
+test('the page side is accepted only from localhost:4173 itself (DNS rebinding sends a foreign Host)', async () => {
+  const route = createJarvisBridgeRoute({ token: TOKEN });
+  const rebound = { 'sec-fetch-site': 'same-origin', origin: 'http://evil.example:4173', host: 'evil.example:4173' };
+  assert.equal((await hit(route, req('GET', '/allow', { headers: rebound }))).statusCode, 403);
+  const loopback = { 'sec-fetch-site': 'same-origin', origin: 'http://127.0.0.1:4173', host: '127.0.0.1:4173' };
+  assert.equal((await hit(route, req('GET', '/allow', { headers: loopback }))).statusCode, 200);
+  const mixed = { 'sec-fetch-site': 'same-origin', origin: 'http://evil.example:4173', host: 'localhost:4173' };
+  assert.equal((await hit(route, req('GET', '/allow', { headers: mixed }))).statusCode, 403);
+});
+
 test('a call waits for the page and returns its result', async () => {
   const route = createJarvisBridgeRoute({ token: TOKEN, waitMs: 500, noPageMs: 60000 });
   // the page is polling

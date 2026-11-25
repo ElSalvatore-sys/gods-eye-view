@@ -38,12 +38,19 @@ function tokenOk(given, token) {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 }
 
+const LOOPBACK = new Set(['localhost', '127.0.0.1', '[::1]']);
+
+/**
+ * The page side: same-origin AND served from this machine's loopback name. Comparing Origin with Host alone is not
+ * enough: under DNS rebinding both carry the attacker's hostname.
+ */
 function samePage(req) {
   const h = req.headers || {};
   if (h['sec-fetch-site'] !== 'same-origin') return false;
-  const from = h.origin || h.referer || '';
   try {
-    return new URL(from).host === h.host;
+    const host = new URL(`http://${h.host || ''}`);
+    const from = new URL(h.origin || h.referer || '');
+    return LOOPBACK.has(host.hostname) && LOOPBACK.has(from.hostname) && from.host === host.host;
   } catch {
     return false;
   }
