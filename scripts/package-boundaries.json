@@ -4340,6 +4340,8 @@
       "src/app/stateChannel.js",
       "src/app/surfaceServices.js",
       "src/app/tools.js",
+      "src/jarvisBridge.js",
+      "src/voice/jarvisTools.js",
       "src/data/followed.js",
       "src/render/cesium/applicationViewer.js",
       "src/render/cesium/ctrlWheelZoom.js",

@@ -145,7 +145,7 @@ test('root config retains existing named exports and standalone provider order',
     assert.equal(compatibility[name], value, name);
   const config = standaloneConfig({ mode: 'test' }, { nominatimStorageDir });
   const standaloneProviders = config.plugins
-    .slice(4, -7)
+    .slice(4, -8)
     .map((plugin) => plugin.name);
   assert.equal(
     standaloneProviders.filter((name) => name === 'gemini-live-proxy').length,
@@ -161,9 +161,11 @@ test('root config retains existing named exports and standalone provider order',
       .localProviderPlugins({ nominatimStorageDir })
       .map((plugin) => plugin.name),
   );
-  assert.equal(config.plugins.at(-8).name, 'gev-key-setup');
+  assert.equal(config.plugins.at(-9).name, 'gev-key-setup');
   // Token fallback follows real providers and local MCP before the API 404.
-  assert.equal(config.plugins.at(-7).name, 'local-mcp');
+  assert.equal(config.plugins.at(-8).name, 'local-mcp');
+  // The Puffer fork: the Jarvis bridge (/api/jarvis), also before the API 404.
+  assert.equal(config.plugins.at(-7).name, 'gev-jarvis-bridge');
   assert.equal(config.plugins.at(-6).name, 'google-token-unavailable');
   // Dev-only, under its own path.
   assert.equal(config.plugins.at(-5).name, 'conformance-references');

@@ -46,6 +46,8 @@ import {
 } from '../renderGovernor.js';
 import { entityRecord, readEntityRecord } from '../data/entityRecords.js';
 import { overlayHost } from './layers/overlayHost.js';
+import { startJarvisBridge } from '../jarvisBridge.js';
+import { findCredits } from '../render/rendererOf.js';
 
 /**
  * Attach scene tools, rendering listeners and the application debug handle.
@@ -363,6 +365,14 @@ export function createApplicationTools({
       delete window.__gevVoiceCommands;
   });
   debug.voiceCommands = voiceCommands;
+  if (!isEmbeddedInline()) {
+    // Jarvis (the owner's office assistant) drives the app's own tools through the same-origin bridge (/api/jarvis).
+    const jarvis = startJarvisBridge({ runner: voiceCommands.runner });
+    defer(() => jarvis.stop());
+  }
+  // The owner's studio, on the attribution line next to the original's credits (LICENSE keeps both copyrights).
+  const offPufferCredit = findCredits(viewer)?.addStatic({ text: 'Powered by Puffer', href: 'https://thepuffer.de', inline: true });
+  if (typeof offPufferCredit === 'function') defer(offPufferCredit);
   defer(
     installViews({
       shell: styleManager,

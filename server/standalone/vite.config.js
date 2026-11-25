@@ -4,6 +4,7 @@ import { resolveAllowedHosts } from '../../build/allowedHosts.js';
 import { createBrowserViteConfig } from '../../build/vite.js';
 import { localProviderPlugins } from '../providers/local.js';
 import { localMcpPlugin } from '../mcp/plugin.js';
+import { jarvisBridgePlugin } from '../jarvis/plugin.js';
 import { apiNotFoundPlugin } from './api-not-found.js';
 import { conformanceReferencesPlugin } from './conformance-references.js';
 import { googleTokenUnavailablePlugin } from './google-token-unavailable.js';
@@ -30,6 +31,7 @@ export function standaloneConfig(
         nominatimStorageDir,
       }),
       localMcpPlugin(),
+      jarvisBridgePlugin(),
       googleTokenUnavailablePlugin(),
       conformanceReferencesPlugin(),
       apiNotFoundPlugin(),
