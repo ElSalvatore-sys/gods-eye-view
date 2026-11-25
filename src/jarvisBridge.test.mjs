@@ -99,6 +99,17 @@ test('frame and circle: a centre and a size work too, and circle=false only fram
   assert.equal(calls[0][1].rangeM, 5600);
 });
 
+test('frame and circle: a continent-wide drawing is framed from higher and does not circle', async () => {
+  // Live 2026-11-25: a quake near Mauritius and a cyclone landfall in India were framed at 6,000 km and circled;
+  // the orbit swung one pin to the horizon. Far-apart points: everything in view, no orbit.
+  const { runner, calls } = fakeRunner();
+  const out = await runJarvisExtra('frame_and_circle', { points: [{ lat: -20.2, lon: 57.5 }, { lat: 17.0, lon: 82.3 }] }, { runner });
+  assert.equal(out.ok, true);
+  assert.equal(out.wide, true);
+  assert.deepEqual(calls.map((c) => c[0]), ['fly_to_location']);
+  assert.ok(calls[0][1].rangeM >= 10000000 && calls[0][1].rangeM <= 12000000, String(calls[0][1].rangeM));
+});
+
 test('frame and circle: no points and no centre is refused, nothing moves', async () => {
   const { runner, calls } = fakeRunner();
   const out = await runJarvisExtra('frame_and_circle', {}, { runner });

@@ -34,7 +34,8 @@ export const JARVIS_EXTRA_TOOLS = Object.freeze([
     name: 'frame_and_circle',
     description: 'Show what you drew: fly from above and a little to the side so the whole drawing is in view (the height '
       + 'follows its size), wait until the camera arrives, then circle it slowly at -45 degrees. Use right after '
-      + 'annotate_map, with the drawing\'s points (or its centre and size). circle=false only frames it.',
+      + 'annotate_map, with the drawing\'s points (or its centre and size). circle=false only frames it. A drawing wider '
+      + 'than 1,500 km (places on different coasts) is framed from higher and not circled.',
     parameters: {
       type: 'object',
       additionalProperties: false,
@@ -103,6 +104,11 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const FRAME_RANGE_FACTOR = 1.4; // camera range per km of drawing: the whole drawing in view, a margin round it
 const FRAME_MIN_M = 1500;
 const FRAME_MAX_M = 6000000;
+// Wider than this (points on different coasts or continents): frame from higher and do not circle. Live 2026-11-25:
+// an orbit round a 5,000 km frame swung one pin to the horizon.
+const WIDE_KM = 1500;
+const WIDE_RANGE_FACTOR = 2.2;
+const WIDE_MAX_M = 12000000;
 const KM_PER_DEG_LAT = 110.57;
 const KM_PER_DEG_LON_EQUATOR = 111.32;
 
@@ -182,9 +188,13 @@ export async function runJarvisExtra(name, args = {}, { runner, capture, wait = 
   if (name === 'frame_and_circle') {
     const frame = drawingFrame(args);
     if (!frame) return { ok: false, error: 'no_points' };
-    const rangeM = Math.round(Math.min(Math.max(frame.sizeKm * 1000 * FRAME_RANGE_FACTOR, FRAME_MIN_M), FRAME_MAX_M));
+    const wide = frame.sizeKm > WIDE_KM;
+    const rangeM = wide
+      ? Math.round(Math.min(frame.sizeKm * 1000 * WIDE_RANGE_FACTOR, WIDE_MAX_M))
+      : Math.round(Math.min(Math.max(frame.sizeKm * 1000 * FRAME_RANGE_FACTOR, FRAME_MIN_M), FRAME_MAX_M));
     const flown = await runner('fly_to_location', { latitude: frame.latitude, longitude: frame.longitude, rangeM, waitForArrival: true });
     if (!flown || flown.ok === false) return { ok: false, step: 'fly_to_location', flown };
+    if (wide) return { ok: true, flown, rangeM, wide: true };
     if (args.circle === false) return { ok: true, flown, rangeM };
     const orbit = await runner('move_camera', { motion: 'orbit', speed: 'slow', mode: 'continuous', pitchDeg: -45 });
     return { ok: orbit?.ok !== false, flown, orbit, rangeM };
